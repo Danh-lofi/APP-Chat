@@ -1,0 +1,15 @@
+-- SCSS
+- Muốn dùng được scss config ở mỗi file phải thêm
+@use '{path}/scss/' as *;
+- Sử dụng responsive trong element đó dùng @include 
+element{
+  @include tablet{
+    css
+  }  
+}
+
+- Sử dụng variable
+Dùng varibale của App\app-reactjs\src\scss\_variables.scss
+$nameVar vd: $font-family
+
+
