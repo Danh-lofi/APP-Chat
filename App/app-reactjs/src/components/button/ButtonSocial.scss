@@ -1,0 +1,28 @@
+@use '../../scss/' as *;
+.buttonSocial {
+    width: 30%;
+    padding: 14px 0px;
+    border: none;
+    background-color: #f6f6f9;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.fb {
+    transition: 0.2s ease-in-out;
+    &:hover{background-color: rgba(72, 123, 253, 0.8);
+    color: white
+    }
+}
+.tw {
+    transition: 0.2s ease-in-out;
+    &:hover{background-color: rgba(124, 164, 255, 0.8);
+        color: white
+    }
+}
+.gg {
+    transition: 0.2s ease-in-out;
+    &:hover{background-color: rgba(253, 72, 72, 0.8);
+        color: white
+    }
+}
+

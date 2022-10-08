@@ -1,10 +1,20 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFacebook } from "@fortawesome/free-brands-svg-icons";
+import {
+  faFacebook,
+  faTwitter,
+  faGoogle,
+} from "@fortawesome/free-brands-svg-icons";
+import "./ButtonSocial.scss";
 const ButtonSocial = (props) => {
+  let icon = faFacebook;
+  if (props.type === "fb") icon = faFacebook;
+  else if (props.type === "tw") icon = faTwitter;
+  else if (props.type === "gg") icon = faGoogle;
+
   return (
-    <button>
-      <FontAwesomeIcon icon={faFacebook} />
+    <button className={`buttonSocial ${props.type}`}>
+      <FontAwesomeIcon icon={icon} />
     </button>
   );
 };

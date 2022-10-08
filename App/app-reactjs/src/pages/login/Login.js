@@ -8,12 +8,9 @@ const Login = (props) => {
   return (
     <div className="login">
       <div className="login__container">
-        {/* Tông */}
         <div className="login__title">
           <h3 className="login__title__main">Welcome Back !</h3>
-          <span className="login__title__sub">
-            Sign in to continue to Doot.
-          </span>
+          <p className="login__title__sub">Sign in to continue to Doot.</p>
         </div>
         <div className="login__input">
           <InputAuthen
@@ -27,26 +24,30 @@ const Login = (props) => {
             isPassword
             placeholder="Enter your password"
           />
-          <div>
-            <input type="checkbox"></input>
-            <label>Remember me</label>
+          <div className="combo-check">
+            <div className="checkbox-div">
+              <input className="checkbox" type="checkbox"></input>
+            </div>
+
+            <label className="remember">Remember me</label>
           </div>
         </div>
-        {/* Chính */}
-        <div>
+        <div className="button_authen__wrapper">
           <ButtonAuthen content="Log in" />
         </div>
-        <div>
+        <div className="login__descript">
+          <div className="line"></div>
           <span>Sign in with</span>
+          <div className="line"></div>
         </div>
-        <div>
-          <ButtonSocial />
-          <ButtonSocial />
-          <ButtonSocial />
+        <div className="login__btn-link">
+          <ButtonSocial type="fb" />
+          <ButtonSocial type="tw" />
+          <ButtonSocial type="gg" />
         </div>
         <div className="login__link">
           <p>Don't have an account ? </p>
-          <Link to="/register" className="text">
+          <Link to="/register" className="login__link__text">
             Register
           </Link>
         </div>

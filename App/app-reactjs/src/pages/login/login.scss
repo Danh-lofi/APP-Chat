@@ -1,4 +1,87 @@
 @use '../../scss/' as *;
-.text{
+
+.login__link__text{
     color: $primary-color;
+}
+.login__title{
+    width: 100%;
+}
+
+
+.login__title__main{
+    text-align: center;
+    color: $text-color;
+    letter-spacing: 1px;
+    font-weight: 600;
+    font-size: 2rem;
+    margin: 0 0 8px;
+}
+
+.login__title__sub{
+    font-size: $font-size-normal;
+    font-weight: 400;
+    text-align: center;
+    margin: 0 0 16px;
+    color: $text-muted;
+}
+
+.checkbox-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 1rem ;
+}
+.combo-check{
+    display: flex;
+}
+
+.checkbox{
+    
+}
+
+.remember{
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+
+
+
+
+
+.login__descript {
+    @include flex(center, center);
+    margin: 20px 0;
+
+    .line {
+        width: 35%;
+        height: 0.7px;
+        background-color: rgb(209, 209, 209);
+    }
+
+    span {
+        color: $text-color;
+        margin: 0 10px;
+        font-weight: 500;
+        font-size: $font-size-normal;
+    }
+}
+
+.login__btn-link {
+    @include flex(center, space-between);
+    margin-bottom: 40px;
+
+}
+
+.login__link {
+    @include flex(center, center);
+
+    p {
+        margin-right: 10px;
+        font-weight: 300;
+        color: rgb(122, 122, 122)
+    }
+}
+
+.button_authen__wrapper{
+    margin-top: 20px;
 }

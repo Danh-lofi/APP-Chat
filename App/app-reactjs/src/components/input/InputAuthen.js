@@ -1,25 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./InputAuthen.scss";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 
 const InputAuthen = (props) => {
-  //   if (props.isPassword) {
-  //     props.type = "password";
-  //   }
+  let inputPasswordEye = "";
+  if (props.isPassword) {
+    inputPasswordEye += "inputPasswordEye";
+  }
+
   return (
     <div className="input-authen">
       <div>
         <label className="input-authen__label">{props.label}</label>
         {props.isPassword ? (
-          <span className="input-authen__forgot">Forgot password?</span>
+          <Link to="/forgot" className="text">
+            Forgot Password?
+          </Link>
         ) : (
           ""
         )}
       </div>
       <input
         type={props.type}
-        className="input-authen__input"
+        className={`input-authen__input ${inputPasswordEye}`}
         name={props.name}
         placeholder={props.placeholder}
       ></input>
+      {props.isPassword ? <FontAwesomeIcon className="eye" icon={faEye} /> : ""}
     </div>
   );
 };
