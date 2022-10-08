@@ -20,10 +20,7 @@ const LayoutAuth = (props) => {
           </div>
         </div>
         <div className="auth__right">
-          <div className="auth__right__container">
-            <h1>Chidled</h1>
-            {props.children}
-          </div>
+          <div className="auth__right__container">{props.children}</div>
         </div>
         <img className="auth__bg" src={bg} alt="bg"></img>
       </div>

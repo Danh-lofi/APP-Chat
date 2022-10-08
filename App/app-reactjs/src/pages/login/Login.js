@@ -8,6 +8,7 @@ const Login = (props) => {
   return (
     <div className="login">
       <div className="login__container">
+        {/* Tông */}
         <div className="login__title">
           <h3 className="login__title__main">Welcome Back !</h3>
           <span className="login__title__sub">
@@ -31,6 +32,7 @@ const Login = (props) => {
             <label>Remember me</label>
           </div>
         </div>
+        {/* Chính */}
         <div>
           <ButtonAuthen content="Log in" />
         </div>
