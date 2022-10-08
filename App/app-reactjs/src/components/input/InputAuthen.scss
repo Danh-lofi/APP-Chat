@@ -12,7 +12,7 @@
 
 .input-authen__input{
   width: 100%;
-  padding: 8px 16px;
+  padding: 10px 16px;
   border-radius: 0.4rem;
   border: 1px solid #e6ebf5;
   font-size: 1.3rem;
@@ -20,7 +20,7 @@
 
 .input-authen__label{
   margin: 0 0 8px;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: $text-color;
 }
@@ -35,8 +35,9 @@
 }
 
 .inputPasswordEye{
-  padding: 8px 48px 8px 16px;
+  padding: 10px 48px 10px 16px;
   position: relative;
+
 }
 
 .eye{
@@ -45,4 +46,5 @@
   top: 50%;
   transform: translate(-50%, 50%);
   right: 5%;
+  cursor: pointer;
 }

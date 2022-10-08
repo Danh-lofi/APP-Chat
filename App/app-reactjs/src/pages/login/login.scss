@@ -1,19 +1,22 @@
 @use '../../scss/' as *;
 
 .login__link__text{
+    text-decoration: underline;
     color: $primary-color;
 }
 .login__title{
     width: 100%;
 }
-
+.login__input{
+    margin-top: 30px;
+}
 
 .login__title__main{
     text-align: center;
     color: $text-color;
     letter-spacing: 1px;
     font-weight: 600;
-    font-size: 2rem;
+    font-size: 2.5rem;
     margin: 0 0 8px;
 }
 
@@ -36,12 +39,17 @@
 }
 
 .checkbox{
-    
+    height: 15px;
+    width: 15px;
+    &:checked{
+        filter: hue-rotate(240deg);
+    }
 }
 
 .remember{
-    font-size: 1.4rem;
-    font-weight: 500;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: $text-color;
 }
 
 
