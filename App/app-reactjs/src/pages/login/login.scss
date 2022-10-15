@@ -41,6 +41,7 @@
 .checkbox{
     height: 15px;
     width: 15px;
+    background-color: $primary-color;
     &:checked{
         filter: hue-rotate(240deg);
     }
@@ -68,7 +69,7 @@
 
     span {
         color: $text-color;
-        margin: 0 10px;
+        margin: 0 8px;
         font-weight: 500;
         font-size: $font-size-normal;
     }
@@ -82,7 +83,6 @@
 
 .login__link {
     @include flex(center, center);
-
     p {
         margin-right: 10px;
         font-weight: 300;

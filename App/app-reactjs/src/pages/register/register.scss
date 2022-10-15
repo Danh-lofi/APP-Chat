@@ -1,0 +1,8 @@
+@use '../../scss/' as *;
+
+.agree {
+  & span{
+    color: $primary-color;
+    cursor: pointer;
+  }
+}

@@ -5,13 +5,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const InputAuthen = (props) => {
-  const [isText, setIsText] = useState(false);
+  const [isText, setIsText] = useState(true);
   let inputPasswordEye = "";
-  let typeInput = props.isPassword ? "password" : props.type;
+  let typeInput = props.isPassword  ? (isText ? "password" : "") : props.type;
+  
   const changeTypeInputHandle = () => {
     setIsText((prev) => !prev);
   };
-  typeInput = isText ? "text" : "password";
+
 
   if (props.isPassword) {
     inputPasswordEye += "inputPasswordEye";
@@ -29,16 +30,17 @@ const InputAuthen = (props) => {
           ""
         )}
       </div>
+      
       <input
-        type={typeInput}
+        type={typeInput} 
         className={`input-authen__input ${inputPasswordEye}`}
         name={props.name}
         placeholder={props.placeholder}
       ></input>
       {props.isPassword ? (
         <FontAwesomeIcon
-          className="eye"
-          icon={isText ? faEyeSlash : faEye}
+          className="eye" 
+          icon={isText ? faEye : faEyeSlash}
           onClick={changeTypeInputHandle}
         />
       ) : (
