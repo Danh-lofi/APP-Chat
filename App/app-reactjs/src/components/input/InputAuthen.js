@@ -7,12 +7,14 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 const InputAuthen = (props) => {
   const [isText, setIsText] = useState(false);
   let inputPasswordEye = "";
-  let typeInput = props.isPassword ? "password" : props.type;
+  let typeInput = !isText && props.isPassword ? "password" : props.type;
   const changeTypeInputHandle = () => {
     setIsText((prev) => !prev);
   };
-  typeInput = isText ? "text" : "password";
-
+  const changeValueInputHandle = (e) => {
+    props.onInput(e.target.value);
+  };
+  typeInput = !isText && props.isPassword ? "password" : "text";
   if (props.isPassword) {
     inputPasswordEye += "inputPasswordEye";
   }
@@ -34,7 +36,8 @@ const InputAuthen = (props) => {
         className={`input-authen__input ${inputPasswordEye}`}
         name={props.name}
         placeholder={props.placeholder}
-      ></input>
+        onChange={changeValueInputHandle}
+      />
       {props.isPassword ? (
         <FontAwesomeIcon
           className="eye"

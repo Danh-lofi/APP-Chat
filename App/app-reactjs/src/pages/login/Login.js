@@ -1,11 +1,38 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 import ButtonAuthen from "../../components/button/ButtonAuthen";
 import ButtonSocial from "../../components/button/ButtonSocial";
 import InputAuthen from "../../components/input/InputAuthen";
-import axiosClients from "../../api/axiosClient";
+import { login } from "../../store/userSlice";
 import "./login.scss";
 const Login = (props) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  console.log(username, password);
+
+  const submitHandle = () => {
+    dispatch(login({ username, password })).then((res) => {
+      console.log();
+      if (res.payload.status === 200) {
+        console.log(res.payload.data);
+        navigate("/register");
+      } else {
+      }
+    });
+  };
+
+  const changeUsernameHandle = (value) => {
+    setUsername(value);
+  };
+  const changePasswordHandle = (value) => {
+    setPassword(value);
+  };
   return (
     <div className="login">
       <div className="login__container">
@@ -18,12 +45,14 @@ const Login = (props) => {
             label="Username"
             type="text"
             placeholder="Enter your phone"
+            onInput={changeUsernameHandle}
           />
           <InputAuthen
             label="Password"
             type="password"
             isPassword
             placeholder="Enter your password"
+            onInput={changePasswordHandle}
           />
           <div className="combo-check">
             <div className="checkbox-div">
@@ -34,7 +63,7 @@ const Login = (props) => {
           </div>
         </div>
         <div className="button_authen__wrapper">
-          <ButtonAuthen content="Log in" />
+          <ButtonAuthen content="Log in" onClick={submitHandle} />
         </div>
         <div className="login__descript">
           <div className="line"></div>
