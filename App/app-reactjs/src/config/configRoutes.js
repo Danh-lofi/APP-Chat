@@ -4,6 +4,7 @@ const configRoutes = {
   register: "/register",
   forgot: "/forgot",
   profile: "/profile",
+  logout: "/logout",
 };
 
 export default configRoutes;
