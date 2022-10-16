@@ -3,6 +3,7 @@ const configRoutes = {
   login: "/login",
   register: "/register",
   forgot: "/forgot",
+  logout: "/logout"
 };
 
 export default configRoutes;
