@@ -14,14 +14,10 @@ const Login = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log(username, password);
-
   const submitHandle = () => {
     dispatch(login({ username, password })).then((res) => {
-      console.log();
       if (res.payload.status === 200) {
-        console.log(res.payload.data);
-        navigate("/register");
+        navigate("/profile");
       } else {
       }
     });

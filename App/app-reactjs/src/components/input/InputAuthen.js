@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const InputAuthen = (props) => {
-  const [isText, setIsText] = useState(true);
+  const [isText, setIsText] = useState(false);
   let inputPasswordEye = "";
   let typeInput = !isText && props.isPassword ? "password" : props.type;
   const changeTypeInputHandle = () => {
@@ -23,7 +23,7 @@ const InputAuthen = (props) => {
     <div className="input-authen">
       <div>
         <label className="input-authen__label">{props.label}</label>
-        {props.isPassword ? (
+        {props.isPassword && !props.isRegister ? (
           <Link to="/forgot" className="text">
             Forgot Password?
           </Link>

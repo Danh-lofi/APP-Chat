@@ -10,7 +10,7 @@ const authApi = {
       return response;
     });
   },
-  registry: (username, password) => {
+  register: (username, password) => {
     const url = "/register";
 
     return axiosClient.post(url, { username, password });

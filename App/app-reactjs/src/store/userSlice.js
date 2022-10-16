@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authApi from "../api/authApi";
+const user = JSON.parse(localStorage.getItem("user"));
 
 export const login = createAsyncThunk(
   "/login",
@@ -12,3 +13,49 @@ export const login = createAsyncThunk(
     }
   }
 );
+
+export const register = createAsyncThunk(
+  "/register",
+  async ({ username, password }) => {
+    try {
+      const response = await authApi.register(username, password);
+      return { data: response.data, status: response.status };
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+const initialState = user
+  ? { isLoggedIn: true, user }
+  : { isLoggedIn: false, user: null };
+
+const userSlice = createSlice({
+  name: "auth",
+  initialState: initialState,
+  extraReducers: {
+    [register.fulfilled]: (state, action) => {
+      console.log(state);
+      state.isLoggedIn = false;
+    },
+    [register.rejected]: (state, action) => {
+      state.isLoggedIn = false;
+    },
+    [login.fulfilled]: (state, action) => {
+      console.log(initialState);
+      console.log(action.payload.data.user);
+      console.log(state);
+      state.isLoggedIn = true;
+      state.user = action.payload.data.user;
+    },
+    [login.rejected]: (state, action) => {
+      state.isLoggedIn = false;
+      state.user = null;
+    },
+    // [logout.fulfilled]: (state, action) => {
+    //   state.isLoggedIn = false;
+    //   state.user = null;
+    // },
+  },
+});
+
+export default userSlice;
