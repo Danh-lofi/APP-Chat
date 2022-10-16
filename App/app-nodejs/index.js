@@ -1,17 +1,14 @@
-import express from "express";
-// const express = require("express");
-import cors from "cors";
-import mongoose from "mongoose";
-import ConnectDB from "./config/db/index.js";
-import route from "./routes/index.js";
+require("dotenv").config();
+const express = require("express");
+const userRouter = require("./src/routers/user");
+const port = process.env.PORT;
+require("./src/database/db");
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(cors());
-ConnectDB();
-route(app);
 
-app.listen(3001, () => {
-  console.log("started");
+app.use(express.json());
+app.use("/api/users", userRouter);
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
