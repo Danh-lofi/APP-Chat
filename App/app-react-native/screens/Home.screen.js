@@ -36,10 +36,10 @@ function alert(item) {
   Alert.alert(item.name);
 }
 
-export const Home = ({ navigation }) => {
+export const Home = ({ navigation, route }) => {
   const [infor, setInfor] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  // const { token } = route.params;
+  const { token } = route.params;
   const [temp, setTemp] = useState("");
 
   // const callApiProfile = useCallback(async () => {
@@ -50,19 +50,19 @@ export const Home = ({ navigation }) => {
   //   });
   // }, []);
 
-  const testGetProfile = useCallback(async () => {
-    ApiProfile({})
-      .then((response) => response.json())
-      .then((data) => {
-        // setTest("1");
-        setTemp("aaa");
-        Alert.alert("Da tra ve token");
-      });
-  }, []);
+  // const testGetProfile = useCallback(async () => {
+  //   ApiProfile({})
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       // setTest("1");
+  //       setTemp("aaa");
+  //       Alert.alert("Da tra ve token");
+  //     });
+  // }, []);
 
-  useEffect(() => {
-    testGetProfile();
-  }, []);
+  // useEffect(() => {
+  //   testGetProfile();
+  // }, []);
 
   function test1() {
     Alert.alert(temp);
@@ -125,7 +125,7 @@ export const Home = ({ navigation }) => {
         />
       </View>
       <View>
-        <Text>temp: {temp}</Text>
+        <Text>temp: {token}</Text>
       </View>
     </SafeAreaView>
   );

@@ -68,28 +68,29 @@ const SC_Continue = ({ navigation, route }) => {
     Alert.alert(gender);
   };
 
-  const handleRegister = () => {
-    ApiRegisterUser({
-      username: username.toLocaleLowerCase(),
-      password: password,
-      name: name,
-      gender: gender,
-      introducePersonal: introduceYourself,
-    })
-      .then((result) => {
-        if (result.status === 201) {
-          // navigation.replace("SC_Login");
-          // Alert.alert(result.message);
-          Alert.alert("Dang ky thanh cong");
-        } else {
-          // Alert.alert(result.message);
-          Alert.alert("Dang ky khong thanh cong");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        Alert.alert(err);
-      });
+  const handleRegister = async () => {
+    const data = {
+      username,
+      password,
+      name,
+      gender,
+      introduceYourself,
+    };
+
+    try {
+      await ApiRegisterUser.register(data)
+        .then((res) => {
+          console.log(
+            "dang ky thanh cong voi so dien thoai tra ve la: " +
+              res.data.user.username
+          );
+        })
+        .catch((err) => {
+          console.log("dang ky khong thanh cong");
+        });
+    } catch (error) {
+      Alert.alert(error);
+    }
   };
 
   return (

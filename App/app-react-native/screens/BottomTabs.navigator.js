@@ -20,8 +20,8 @@ const BottomTabs = createBottomTabNavigator();
 const Tab = createMaterialBottomTabNavigator();
 const size = 27;
 
-const BottomTabsNavigator = ({}) => {
-  // const { token } = route.params;
+const BottomTabsNavigator = ({ route }) => {
+  const { token } = route.params;
   return (
     // <BottomTabs.Navigator
     //     screenOptions={({ route }) => ({
@@ -97,7 +97,7 @@ const BottomTabsNavigator = ({}) => {
           tabBarLabel: "Home",
           tabBarIcon: ({ color }) => <HomeIcon color={color} size={size} />,
         }}
-        // initialParams={{ token: token }}
+        initialParams={{ token: token }}
       />
       <Tab.Screen
         name="PhoneBook"

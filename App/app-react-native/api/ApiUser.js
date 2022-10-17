@@ -1,33 +1,60 @@
 import ApiManager from "./ApiManager";
 
-export const ApiUser = async (data) => {
-  try {
-    const result = await ApiManager("/login", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      data: data,
-    });
-    return result;
-  } catch (error) {
-    return error.response.data;
-  }
+// dong tam lai
+//
+// export const ApiUser = async (data) => {
+//   console.log(data);
+//   try {
+//     const result = await ApiManager("/login", {
+//       method: "POST",
+//       headers: {
+//         "content-type": "application/json",
+//       },
+//       // data: data,
+//       body: JSON.stringify(data),
+//     });
+
+//     // const result = fetch(`http://localhost:3000/api/users/login`, {
+//     //   method: "POST",
+//     //   headers: {
+//     //     "Content-Type": "application/json",
+//     //   },
+//     //   body: JSON.stringify(data),
+//     // });
+
+//     return result;
+//   } catch (error) {
+//     return error.response.data;
+//   }
+// };
+
+export const ApiUser = {
+  login: (data) => {
+    const url = `/login`;
+    return ApiManager.post(url, data);
+  },
 };
 
-export const ApiRegisterUser = async (data) => {
-  try {
-    const result = await ApiManager("/register", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      data: data,
-    });
-    return result;
-  } catch (error) {
-    return error.response.data;
-  }
+// export const ApiRegisterUser = async (data) => {
+//   try {
+//     const result = await ApiManager("/register", {
+//       method: "POST",
+//       headers: {
+//         "content-type": "application/json",
+//       },
+//       data: data,
+//     });
+//     return result;
+//   } catch (error) {
+//     return error.response.data;
+//   }
+// };
+
+export const ApiRegisterUser = {
+  register: (data) => {
+    const url = `/register`;
+    return ApiManager.post(url, data);
+  },
 };
 
 export const ApiProfile = async (token) => {

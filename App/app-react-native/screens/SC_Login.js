@@ -79,45 +79,23 @@ const SC_Login = ({ navigation }) => {
     return null;
   };
 
-  // const testGetProfile = useCallback(async () => {
-  //   ApiProfile()
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       // setTest("1");
-  //       Alert.alert("Da tra ve token");
-  //     });
-  // }, []);
-
-  // useEffect(() => {
-  //   testGetProfile();
-  // }, []);
-
-  const handleLogin = () => {
-    const checkPassword = checkPasswordValidity(password);
-    if (!checkPassword) {
-      ApiUser({
-        username: username.toLocaleLowerCase(),
-        password: password,
-      })
-        .then(async (result) => {
-          if (result.status === 201) {
-            // AsyncStorage.setItem("AccessToken", result.accessToken);
-            // Alert.alert(result);
-
-            Alert.alert("Dang nhap thanh cong" + result);
-            // navigation.replace("BottomTabsNavigator");
-            // testGetProfile;
-          } else {
-            // Alert.alert(result.message);
-            Alert.alert("Sai tai khoan hoac mat khau");
-          }
+  const handleLogin = async () => {
+    const data = {
+      username,
+      password,
+    };
+    try {
+      await ApiUser.login(data)
+        .then((res) => {
+          console.log(
+            "dang nhap thanh cong voi token tra ve la: " + res.data.token
+          );
         })
         .catch((err) => {
-          console.error(err);
-          Alert.alert(err);
+          console.log("dang nhap khong thanh cong");
         });
-    } else {
-      alert(checkPassword);
+    } catch (error) {
+      Alert.alert(error);
     }
   };
 
@@ -257,6 +235,7 @@ const SC_Login = ({ navigation }) => {
                   <TouchableOpacity
                     style={styles.btnLogin}
                     // onPress={() => navigation.navigate("BottomTabsNavigator")}
+                    // onPress={onSubmitHandler}
                     onPress={handleLogin}
                   >
                     <Text
