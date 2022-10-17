@@ -1,7 +1,8 @@
-import routerUser from "./User.js";
+import routerAuth from "./Auth.js";
 
 function route(app) {
-  app.use("/", routerUser);
+  // ROUTE sử dụng đường dẫn nào
+  app.use("/", routerAuth);
 }
 
 export default route;

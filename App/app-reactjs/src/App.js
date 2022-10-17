@@ -31,11 +31,15 @@ function App() {
         <Routes>
           {authRoutes.map((route, index) => {
             const Page = route.component;
+            let isRegister = false;
+            if (route.path === "/register") {
+              isRegister = true;
+            }
             return (
               <Route
                 path={route.path}
                 element={
-                  <LayoutAuth>
+                  <LayoutAuth isRegister={isRegister}>
                     <Page />
                   </LayoutAuth>
                 }

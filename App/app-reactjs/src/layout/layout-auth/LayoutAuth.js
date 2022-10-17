@@ -5,9 +5,13 @@ import { faMessage } from "@fortawesome/free-regular-svg-icons";
 import bg from "../../assets/image/auth/bg.png";
 import "./stayout.scss";
 const LayoutAuth = (props) => {
+  let classAuthContainer = props.isRegister
+    ? "auth-container auth-container-register"
+    : "auth-container";
+
   return (
     <div className="auth">
-      <div className="auth-container">
+      <div className={classAuthContainer}>
         <div className="auth__left">
           <div className="auth__logo">
             <FontAwesomeIcon icon={faMessage} className="auth__logo__icon" />

@@ -30,7 +30,7 @@ const initialState = user
   : { isLoggedIn: false, user: null };
 
 const userSlice = createSlice({
-  name: "auth",
+  name: "user",
   initialState: initialState,
   extraReducers: {
     [register.fulfilled]: (state, action) => {
@@ -41,11 +41,10 @@ const userSlice = createSlice({
       state.isLoggedIn = false;
     },
     [login.fulfilled]: (state, action) => {
-      console.log(initialState);
-      console.log(action.payload.data.user);
-      console.log(state);
       state.isLoggedIn = true;
       state.user = action.payload.data.user;
+      state = JSON.parse(JSON.stringify(state));
+      console.log(state);
     },
     [login.rejected]: (state, action) => {
       state.isLoggedIn = false;
