@@ -78,5 +78,78 @@ const AutherController = {
       })
       .catch(next);
   },
+
+  refreshToken: async (req, res, next) => {
+    /*
+  - Lấy 1 accessToken mới khi accessToken cũ sắp hết hạn
+  - Hoặc đơn giản là lấy lại 1 accessToken
+  - FE  cần :
+    + Cần accessToken cũ attach từ header
+    + refreshToken từ body
+  */
+
+    // Lấy access token từ header
+    const accessTokenFromHeader = req.headers.x_authorization;
+    console.log(accessTokenFromHeader);
+    if (!accessTokenFromHeader) {
+      return res.status(400).send("Không tìm thấy access token.");
+    }
+    // Lấy refresh token từ body
+    const refreshTokenFromBody = req.body.refreshToken;
+    if (!refreshTokenFromBody) {
+      return res.status(400).send("Không tìm thấy refresh token.");
+    }
+
+    const accessTokenSecret =
+      process.env.ACCESS_TOKEN_SECRET || jwtVariable.accessTokenSecret;
+    const accessTokenLife =
+      process.env.ACCESS_TOKEN_LIFE || jwtVariable.accessTokenLife;
+
+    // Decode access token đó
+    const decoded = await AuthService.decodeToken(
+      accessTokenFromHeader,
+      accessTokenSecret
+    );
+    if (!decoded) {
+      return res.status(400).send("Access token không hợp lệ.");
+    }
+    console.log(decoded);
+    const username = decoded.payload.username; // Lấy username từ payload
+
+    const user = await UserModel.findOne({ username: username });
+
+    if (!user) {
+      return res.status(401).send("User không tồn tại.");
+    }
+
+    if (refreshTokenFromBody !== user.refreshToken) {
+      return res.status(400).send("Refresh token không hợp lệ.");
+    }
+    // Tạo access token mới
+    const dataForAccessToken = {
+      username,
+    };
+    const accessToken = await AuthService.generateToken(
+      dataForAccessToken,
+      accessTokenSecret,
+      accessTokenLife
+    );
+    if (!accessToken) {
+      return res
+        .status(400)
+        .send("Tạo access token không thành công, vui lòng thử lại.");
+    }
+    return res.json({
+      accessToken,
+    });
+  },
+
+  profile: function (req, res) {
+    // Nhận vào accessToken từ Header
+    res.send(req.user);
+  },
+  me: async (req, res) => {
+    res.json(req.user);
+  },
 };
 export default AutherController;

@@ -1,3 +1,4 @@
+import axios from "axios";
 import axiosClient from "./axiosClient";
 
 const authApi = {
@@ -12,8 +13,20 @@ const authApi = {
   },
   register: (username, password) => {
     const url = "/register";
-
     return axiosClient.post(url, { username, password });
+  },
+  profile: (accessToken) => {
+    const url = "http://localhost:3001/profile";
+    return axios
+      .get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          x_authorization: accessToken,
+        },
+      })
+      .then((response) => {
+        return response;
+      });
   },
 };
 

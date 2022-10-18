@@ -25,6 +25,16 @@ export const register = createAsyncThunk(
     }
   }
 );
+export const profile = createAsyncThunk("/profile", async (accessToken) => {
+  try {
+    console.log(accessToken);
+    const response = await authApi.profile(accessToken);
+    return { data: response.data };
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 const initialState = user
   ? { isLoggedIn: true, user }
   : { isLoggedIn: false, user: null };
@@ -49,6 +59,12 @@ const userSlice = createSlice({
     [login.rejected]: (state, action) => {
       state.isLoggedIn = false;
       state.user = null;
+    },
+    [profile.fulfilled]: (state, action) => {
+      state.isLoggedIn = true;
+      state.user = action.payload.data;
+      state = JSON.parse(JSON.stringify(state));
+      console.log(state);
     },
     // [logout.fulfilled]: (state, action) => {
     //   state.isLoggedIn = false;
