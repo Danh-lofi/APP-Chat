@@ -10,7 +10,7 @@ const AutherController = {
 
     // Truy xuất db
     const user = await UserModel.findOne({ username: username });
-
+    console.log(user);
     if (!user) {
       return res.status(404).send("Tên đăng nhập không tồn tại!");
     }
@@ -25,6 +25,7 @@ const AutherController = {
 
     // Data lưu trong AccessToken
     const dataForAccessToken = {
+      _id: user._id,
       username,
     };
     // Tạo access token

@@ -1,5 +1,6 @@
 import UserModel from "../models/User.js";
 import AuthService from "../Service/AuthService.js";
+import jwt from "jsonwebtoken";
 
 const authMiddleware = {
   isAuth: async (req, res, next) => {
@@ -31,9 +32,13 @@ const authMiddleware = {
   },
   authApp: async (req, res, next) => {
     const token = req.header("Authorization").replace("Bearer ", "");
-    const data = jwt.verify(token, process.env.JWT_KEY);
+    const data = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
     try {
-      const user = await User.findOne({ _id: data._id, "tokens.token": token });
+      const user = await UserModel.findOne({
+        _id: data.payload._id,
+        accessToken: token,
+      });
       if (!user) {
         throw new Error();
       }
