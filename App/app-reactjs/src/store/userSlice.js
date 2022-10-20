@@ -27,16 +27,16 @@ export const register = createAsyncThunk(
 );
 export const profile = createAsyncThunk("/profile", async (accessToken) => {
   try {
-    console.log(accessToken);
     const response = await authApi.profile(accessToken);
-    return { data: response.data };
+    return { data: response.data, status: response.status };
   } catch (error) {
-    console.log(error);
+    console.log(error.response.status);
+    return { status: error.response.status };
   }
 });
 
 const initialState = user
-  ? { isLoggedIn: true, user }
+  ? { isLoggedIn: true, user: user }
   : { isLoggedIn: false, user: null };
 
 const userSlice = createSlice({
@@ -44,7 +44,6 @@ const userSlice = createSlice({
   initialState: initialState,
   extraReducers: {
     [register.fulfilled]: (state, action) => {
-      console.log(state);
       state.isLoggedIn = false;
     },
     [register.rejected]: (state, action) => {
@@ -54,7 +53,6 @@ const userSlice = createSlice({
       state.isLoggedIn = true;
       state.user = action.payload.data.user;
       state = JSON.parse(JSON.stringify(state));
-      console.log(state);
     },
     [login.rejected]: (state, action) => {
       state.isLoggedIn = false;
@@ -62,9 +60,14 @@ const userSlice = createSlice({
     },
     [profile.fulfilled]: (state, action) => {
       state.isLoggedIn = true;
-      state.user = action.payload.data;
-      state = JSON.parse(JSON.stringify(state));
-      console.log(state);
+      if (action.payload.data) {
+        state.user = action.payload.data.user;
+      }
+    },
+    [profile.rejected]: (state, action) => {
+      console.log("profile error");
+      // state.isLoggedIn = true;
+      // state.user = action.payload.data.user;
     },
     // [logout.fulfilled]: (state, action) => {
     //   state.isLoggedIn = false;

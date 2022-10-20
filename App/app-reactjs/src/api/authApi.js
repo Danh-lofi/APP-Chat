@@ -16,11 +16,10 @@ const authApi = {
     return axiosClient.post(url, { username, password });
   },
   profile: (accessToken) => {
-    const url = "http://localhost:3001/profile";
-    return axios
+    const url = "/profile";
+    return axiosClient
       .get(url, {
         headers: {
-          "Content-Type": "application/json",
           x_authorization: accessToken,
         },
       })

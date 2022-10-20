@@ -16,6 +16,7 @@ const authMiddleware = {
       accessTokenFromHeader,
       accessTokenSecret
     );
+    console.log(verified);
     if (!verified) {
       return res
         .status(401)

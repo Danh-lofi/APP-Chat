@@ -146,8 +146,9 @@ const AutherController = {
   },
 
   profile: function (req, res) {
-    // Nhận vào accessToken từ Header
-    res.send(req.user);
+    // Nhận vào accessToken từ Header\
+    const user = req.user;
+    res.send({ user });
   },
   me: async (req, res) => {
     res.json(req.user);
