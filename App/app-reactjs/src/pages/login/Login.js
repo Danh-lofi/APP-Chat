@@ -1,18 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import ButtonAuthen from "../../components/button/ButtonAuthen";
 import ButtonSocial from "../../components/button/ButtonSocial";
 import InputAuthen from "../../components/input/InputAuthen";
-import { login } from "../../store/userSlice";
+import { login, profile } from "../../store/userSlice";
 import "./login.scss";
+
 const Login = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      dispatch(profile(user.accessToken)).then((res) => {
+        if (res.payload.status === 200) navigate("/profile");
+      });
+    }
+  }, []);
 
   const submitHandle = () => {
     dispatch(login({ username, password })).then((res) => {

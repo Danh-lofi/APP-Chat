@@ -5,7 +5,8 @@ const configRoutes = {
   forgot: "/forgot",
   profile: "/profile",
   logout: "/logout",
-  confirmOTP: "/confirmOTP"
+  confirmOTP: "/confirmOTP",
+  resetPassword: "/reset-password",
 };
 
 export default configRoutes;

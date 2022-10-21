@@ -6,6 +6,7 @@ import Register from "../pages/register/Register";
 import Logout from "../pages/logout/Logout";
 import ConfirmOTP from "../pages/confirmOTP/ConfirmOTP";
 
+import ResetPassword from "../pages/reset-pass/ResetPassword";
 
 const mainRoutes = [{ path: configRoutes.home, component: Login }];
 export const authRoutes = [
@@ -17,6 +18,7 @@ export const authRoutes = [
   { path: configRoutes.logout, component: Logout },
   { path: configRoutes.confirmOTP, component: ConfirmOTP },
 
+  { path: configRoutes.resetPassword, component: ResetPassword },
 ];
 
 export default mainRoutes;
