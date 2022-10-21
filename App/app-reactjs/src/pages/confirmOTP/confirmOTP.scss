@@ -1,0 +1,31 @@
+@use '../../scss/' as *;
+.confirmOTP__title__main{
+    text-align: center;
+    color: $text-color;
+    letter-spacing: 1px;
+    font-weight: 600;
+    font-size: 2.5rem;
+    margin: 0 0 8px;
+}
+
+.confirmOTP__title__sub{
+    font-size: $font-size-normal;
+    font-weight: 400;
+    text-align: center;
+    margin: 0 0 16px;
+    color: $text-muted;
+}
+
+.confirmOTP__resend__link {
+    @include flex(center, center);
+    p {
+        margin-right: 10px;
+        font-weight: 300;
+        color: rgb(122, 122, 122)
+    }
+    .confirmOTP__resend__link__text {
+        text-decoration-line: underline;
+        color: $primary-color;
+    }
+}
+
