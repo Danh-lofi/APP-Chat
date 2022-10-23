@@ -25,7 +25,7 @@ const Register = (props) => {
     dispatch(register({ username, password })).then((res) => {
       if (res.payload.status === 200) {
         console.log(res.payload.data);
-        navigate("/login");
+        navigate("/info");
       } else {
         console.log("Fail!!!");
       }

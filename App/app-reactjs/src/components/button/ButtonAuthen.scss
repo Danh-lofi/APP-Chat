@@ -14,3 +14,13 @@
     transition: .4s linear;
     }
 }
+
+.inputButtonSkip{
+    background-color: #ffffff;
+    border: 1px solid #000;
+    color: #000;
+    &:hover {
+        background-color: #FFD0D9;
+        transition: .3s linear;
+    }
+}

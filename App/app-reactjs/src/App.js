@@ -32,7 +32,7 @@ function App() {
           {authRoutes.map((route, index) => {
             const Page = route.component;
             let isRegister = false;
-            if (route.path === "/register") {
+            if (route.path === "/register" || route.path === "/info") {
               isRegister = true;
             }
             return (
