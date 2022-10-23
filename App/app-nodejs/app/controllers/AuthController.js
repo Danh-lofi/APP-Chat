@@ -56,6 +56,8 @@ const AutherController = {
     });
   },
 
+  // POST (username,password)
+  // Đăng kí
   register: (req, res, next) => {
     const username = req.body.username.toLowerCase();
     const hashPassword = bcrypt.hashSync(req.body.password, 10);
@@ -68,8 +70,47 @@ const AutherController = {
       if (err) {
         return res.status(400).send("Có lỗi khi tạo " + err);
       }
-      return res.status(200).send({ username, hashPassword });
+      return res.status(200).json({ username, hashPassword });
     });
+  },
+  // Post (username) check username
+  verifyUsername: (req, res) => {
+    const username = req.body.username;
+    UserModel.findOne({ username }).then((user) => {
+      if (user) {
+        res.status(409).send("Tài khoản này đã tồn tại!");
+      } else {
+        res.status(200).send("Tài khoản này chưa tồn tại!");
+      }
+    });
+  },
+  // POST (username, name, birthday, gender, bio)
+  // Thông tin chi tiết
+  registerInfomation: (req, res) => {
+    console.log(req.body);
+    const username = req.body.user.username;
+    const nameUser = req.body.user.name;
+    const birthDate = req.body.user.birthDate;
+    const gender = req.body.user.gender;
+    const introducePersonal = req.body.user.introducePersonal;
+    UserModel.updateOne(
+      { username },
+      {
+        name: nameUser,
+        birthDate,
+        gender,
+        introducePersonal,
+      }
+    )
+      .then(() => {
+        res.status(200).send({
+          message: "Cập nhật thành công",
+          user: { name: nameUser, birthDate, gender, introducePersonal },
+        });
+      })
+      .catch((error) => {
+        res.status(400).send({ message: "Cập nhật thất bại!!!", error });
+      });
   },
 
   refreshToken: async (req, res, next) => {
@@ -144,16 +185,6 @@ const AutherController = {
   },
   me: async (req, res) => {
     res.json(req.user);
-  },
-  verifyUsername: (req, res) => {
-    const username = req.body.username;
-    UserModel.findOne({ username }).then((user) => {
-      if (user) {
-        res.status(409).send("Tài khoản này đã tồn tại!");
-      } else {
-        res.status(200).send("Tài khoản này chưa tồn tại!");
-      }
-    });
   },
 };
 export default AutherController;

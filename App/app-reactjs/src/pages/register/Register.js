@@ -72,7 +72,7 @@ const Register = (props) => {
         dispatch(register({ username, password })).then((res) => {
           if (res.payload.status === 200) {
             console.log(res.payload.data);
-            navigate("/profile");
+            navigate("info");
           } else {
             console.log("Fail!!!");
           }
@@ -153,7 +153,7 @@ const Register = (props) => {
       </div>
     </div>
   ) : (
-    <ConfirmOTP onSubmit={confirmOTPHandle} />
+    <ConfirmOTP onSubmit={confirmOTPHandle} username={username} />
   );
 };
 

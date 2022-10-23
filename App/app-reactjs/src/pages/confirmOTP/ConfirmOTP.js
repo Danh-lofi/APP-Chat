@@ -8,7 +8,7 @@ import "./confirmOTP.scss";
 const ConfirmOTP = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const username = useSelector((state) => state.user.user);
+  const username = props.username;
 
   const [OTP, setOTP] = useState("");
   const changeOTPHandle = (value) => {

@@ -31,6 +31,10 @@ const authApi = {
         return response;
       });
   },
+  registerInfomation: (user) => {
+    const url = "/register/info";
+    return axiosClient.post(url, { user });
+  },
 };
 
 export default authApi;
