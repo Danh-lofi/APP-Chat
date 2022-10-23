@@ -6,30 +6,83 @@ import InputAuthen from "../../components/input/InputAuthen";
 import axiosClients from "../../api/axiosClient";
 import "./register.scss";
 import { useDispatch } from "react-redux";
+
+import ConfirmOTP from "../confirmOTP/ConfirmOTP";
 import { register } from "../../store/userSlice";
+
+import authentication from "../../api/firebase";
+import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
+import authApi from "../../api/authApi";
 
 const Register = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmOTP, setConfirmOTP] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const submitHandle = () => {
+  const onSignInSubmit = (response) => {
+    console.log(response);
+    if (response) {
+      setConfirmOTP(true);
+    }
+  };
+
+  const generateRecapcha = () => {
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      "recaptcha-container",
+      {
+        size: "visable",
+        callback: (response) => {
+          onSignInSubmit(response);
+        },
+      },
+      authentication
+    );
+  };
+  const submitHandle = async () => {
     const isConfirm = confirmPassword === password;
     if (!isConfirm) {
       console.log("Password confirmed is fail!");
       return;
     }
-    dispatch(register({ username, password })).then((res) => {
-      if (res.payload.status === 200) {
-        console.log(res.payload.data);
-        navigate("verify-otp");
-      } else {
-        console.log("Fail!!!");
-      }
-    });
+    const data = await authApi.verifyUsername(username);
+    console.log(data);
+    if (data.status === 200) {
+      generateRecapcha();
+      const appVerifier = window.recaptchaVerifier;
+      console.log(`+84${username}`);
+      signInWithPhoneNumber(authentication, `+84${username}`, appVerifier)
+        .then((confirmationResult) => {
+          window.confirmationResult = confirmationResult;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  const confirmOTPHandle = (otp) => {
+    let confirmationResult = window.confirmationResult;
+    confirmationResult
+      .confirm(otp)
+      .then((result) => {
+        dispatch(register({ username, password })).then((res) => {
+          if (res.payload.status === 200) {
+            console.log(res.payload.data);
+            navigate("/profile");
+          } else {
+            console.log("Fail!!!");
+          }
+        });
+      })
+      .catch((error) => {
+        if (error) {
+          console.log("error");
+        }
+      });
   };
 
   const changeUsernameHandle = (value) => {
@@ -41,7 +94,7 @@ const Register = (props) => {
   const changeConfirmPasswordHandle = (value) => {
     setConfirmPassword(value);
   };
-  return (
+  return !confirmOTP ? (
     <div className="login">
       <div className="login__container">
         <div className="login__title">
@@ -50,25 +103,25 @@ const Register = (props) => {
         </div>
         <div className="login__input">
           <InputAuthen
-            label="Email"
+            label="Số điện thoại"
             type="text"
-            placeholder="Enter Email"
+            placeholder="Nhập số điện thoại..."
             onInput={changeUsernameHandle}
           />
           <InputAuthen
-            label="Password"
+            label="Mật khẩu"
             type="password"
             isPassword
             isRegister
-            placeholder="Enter your password"
+            placeholder="Nhập mật khẩu"
             onInput={changePasswordHandle}
           />
           <InputAuthen
-            label="Confirm Password"
+            label="Xác nhận mật khẩu"
             type="password"
             isPassword
             isRegister
-            placeholder="Enter your password"
+            placeholder="Nhập lại mật khẩu..."
             onInput={changeConfirmPasswordHandle}
           />
           <div className="combo-check">
@@ -86,14 +139,10 @@ const Register = (props) => {
         </div>
         <div className="login__descript">
           <div className="line"></div>
-          <span>Sign up using</span>
+          <span>Xác nhận</span>
           <div className="line"></div>
         </div>
-        <div className="login__btn-link">
-          <ButtonSocial type="fb" />
-          <ButtonSocial type="tw" />
-          <ButtonSocial type="gg" />
-        </div>
+        <div id="recaptcha-container"></div>
 
         <div className="login__link">
           <p>Already have an account ? </p>
@@ -103,6 +152,8 @@ const Register = (props) => {
         </div>
       </div>
     </div>
+  ) : (
+    <ConfirmOTP onSubmit={confirmOTPHandle} />
   );
 };
 

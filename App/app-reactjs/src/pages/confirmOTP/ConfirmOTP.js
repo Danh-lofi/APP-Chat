@@ -5,16 +5,17 @@ import ButtonAuthen from "../../components/button/ButtonAuthen";
 import InputAuthen from "../../components/input/InputAuthen";
 import "./confirmOTP.scss";
 
-const ConfirmOTP = () => {
+const ConfirmOTP = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const username = useSelector((state) => state.user.user);
+
   const [OTP, setOTP] = useState("");
   const changeOTPHandle = (value) => {
     setOTP(value);
   };
   const submitHandle = () => {
-    console.log(OTP, username);
+    props.onSubmit(OTP);
   };
   return (
     <div className="confirmOTP_container">
