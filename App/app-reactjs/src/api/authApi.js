@@ -15,6 +15,11 @@ const authApi = {
     const url = "/register";
     return axiosClient.post(url, { username, password });
   },
+  // registerVerifyOTP: (){
+  //   const url = "/register";
+  //   return axiosClient.post(url, { username, password });
+  // }
+  // ,
   profile: (accessToken) => {
     const url = "/profile";
     return axiosClient

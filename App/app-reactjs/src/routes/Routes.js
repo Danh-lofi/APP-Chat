@@ -17,7 +17,6 @@ export const authRoutes = [
   { path: configRoutes.profile, component: Profile },
   { path: configRoutes.logout, component: Logout },
   { path: configRoutes.confirmOTP, component: ConfirmOTP },
-
   { path: configRoutes.resetPassword, component: ResetPassword },
 ];
 

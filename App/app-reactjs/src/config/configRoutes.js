@@ -5,7 +5,7 @@ const configRoutes = {
   forgot: "/forgot",
   profile: "/profile",
   logout: "/logout",
-  confirmOTP: "/confirmOTP",
+  confirmOTP: "/register/verify-otp",
   resetPassword: "/reset-password",
 };
 

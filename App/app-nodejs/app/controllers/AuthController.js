@@ -60,24 +60,16 @@ const AutherController = {
     const username = req.body.username.toLowerCase();
     const hashPassword = bcrypt.hashSync(req.body.password, 10);
 
-    UserModel.findOne({ username })
-      .then((user) => {
-        if (user) {
-          res.status(409).send("Tài khoản này đã tồn tại!");
-        } else {
-          const newUser = new UserModel({
-            username: username,
-            password: hashPassword,
-          });
-          newUser.save((err) => {
-            if (err) {
-              return res.status(400).send("Có lỗi khi tạo " + err);
-            }
-            return res.status(200).send({ username, hashPassword });
-          });
-        }
-      })
-      .catch(next);
+    const newUser = new UserModel({
+      username: username,
+      password: hashPassword,
+    });
+    newUser.save((err) => {
+      if (err) {
+        return res.status(400).send("Có lỗi khi tạo " + err);
+      }
+      return res.status(200).send({ username, hashPassword });
+    });
   },
 
   refreshToken: async (req, res, next) => {
@@ -152,6 +144,16 @@ const AutherController = {
   },
   me: async (req, res) => {
     res.json(req.user);
+  },
+  verifyUsername: (req, res) => {
+    const username = req.body.username;
+    UserModel.findOne({ username }).then((user) => {
+      if (user) {
+        res.status(409).send("Tài khoản này đã tồn tại!");
+      } else {
+        res.status(200).send("Tài khoản này chưa tồn tại!");
+      }
+    });
   },
 };
 export default AutherController;
