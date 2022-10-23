@@ -38,6 +38,7 @@ const Login = (props) => {
   const changePasswordHandle = (value) => {
     setPassword(value);
   };
+
   return (
     <div className="login">
       <div className="login__container">
@@ -87,13 +88,10 @@ const Login = (props) => {
           </Link>
         </div>
 
-
         {/* test thui mí nữa xóa */}
-          <Link to="/confirmOTP" className="login__link__text">
-            get OTP Confirm UI
-          </Link>
-
-
+        <Link to="/confirmOTP" className="login__link__text">
+          get OTP Confirm UI
+        </Link>
       </div>
     </div>
   );
