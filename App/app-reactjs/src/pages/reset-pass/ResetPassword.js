@@ -6,6 +6,9 @@ import axiosClients from "../../api/axiosClient";
 import ButtonAuthen from "../../components/button/ButtonAuthen";
 import ButtonSocial from "../../components/button/ButtonSocial";
 import InputAuthen from "../../components/input/InputAuthen";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -21,6 +24,7 @@ const ResetPassword = () => {
   const submitHandle = async () => {
     const isConfirm = confirmPassword === password;
     if (!isConfirm) {
+      toast.error("Mật khẩu không khớp! Vui lòng xác nhận lại");
       return;
     }
     const data = await authApi.resetPassword(username, password);
@@ -58,6 +62,7 @@ const ResetPassword = () => {
         <div className="button_authen__wrapper">
           <ButtonAuthen onClick={submitHandle} content="Lấy lại mật khẩu" />
         </div>
+        <ToastContainer />
       </div>
     </div>
   );

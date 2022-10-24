@@ -10,6 +10,11 @@ import InputAuthen from "../../components/input/InputAuthen";
 import { existUsername } from "../../store/userSlice";
 import ConfirmOTP from "../confirmOTP/ConfirmOTP";
 import "./forgot.scss";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
 const Forgot = () => {
   const [username, setUsername] = useState();
   const [confirmOTP, setConfirmOTP] = useState(false);
@@ -56,6 +61,7 @@ const Forgot = () => {
     // Xác thực không có có tài khoản
     if (data.payload.status === 400) {
       console.log("Err");
+      toast.error("Số điện thoại không tồn tại")
     }
   };
 
@@ -70,6 +76,7 @@ const Forgot = () => {
       .catch((error) => {
         // Xác thực thất bại
         console.log("error");
+        toast.error("Mã OTP sai!!! Vui lòng kiểm tra lại");
       });
   };
   return !confirmOTP ? (
@@ -101,9 +108,10 @@ const Forgot = () => {
         </Link>
       </div>
       <div id="recaptcha-container"></div>
+      <ToastContainer />
     </div>
   ) : (
-    <ConfirmOTP onSubmit={confirmOTPHandle} username={username} />
+    <><ConfirmOTP onSubmit={confirmOTPHandle} username={username} /><ToastContainer /></>
   );
 };
 

@@ -50,7 +50,7 @@ const Register = (props) => {
     }
     const data = await dispatch(registerVerify(username));
     console.log(data);
-    if (data.status === 200) {
+    if (data.payload.status === 200) {
       generateRecapcha();
       const appVerifier = window.recaptchaVerifier;
       console.log(`+84${username}`);
