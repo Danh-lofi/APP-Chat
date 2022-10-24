@@ -32,7 +32,7 @@ const InputAuthen = (props) => {
         <label className="input-authen__label">{props.label}</label>
         {props.isPassword && !props.isRegister ? (
           <Link to="/forgot" className="text">
-            Forgot Password?
+            Quên mật khẩu?
           </Link>
         ) : (
           ""
