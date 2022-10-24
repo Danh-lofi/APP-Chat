@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { profile } from "../../store/userSlice";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Profile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -17,14 +16,17 @@ const Profile = () => {
         } else {
           console.log(res);
           setUser(res.payload.data.user);
-          toast("Đăng nhập thành công");
+          toast.success("Đăng nhập thành công");
         }
       });
     }
   }, []);
   return (
-    <><div>{<h3>{user.username}</h3>}</div><ToastContainer /></>
-  ) ;
+    <>
+      <div>{<h3>{user.username}</h3>}</div>
+      <ToastContainer />
+    </>
+  );
 };
 
 export default Profile;

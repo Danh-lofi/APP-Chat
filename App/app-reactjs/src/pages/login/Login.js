@@ -7,6 +7,7 @@ import ButtonSocial from "../../components/button/ButtonSocial";
 import InputAuthen from "../../components/input/InputAuthen";
 import { login, profile } from "../../store/userSlice";
 import "./login.scss";
+import authApi from "../../api/authApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -34,6 +35,9 @@ const Login = (props) => {
       }
       // Đăng nhập thất bại
       if (res.payload.status === 401) {
+        toast.error(
+          "Số điện thoại hoặc mật khẩu sai. Vui lòng đăng nhập lại!!!"
+        );
       }
     });
   };
@@ -78,16 +82,14 @@ const Login = (props) => {
         <div className="button_authen__wrapper">
           <ButtonAuthen content="Đăng nhập" onClick={submitHandle} />
         </div>
-        {/* <div className="login__descript">
-          <div className="line"></div>
-          {/* <span>Sign in with</span> */}
-        <div className="line"></div>
-      </div>
-      <div className="login__link">
-        <p>Bạn chưa có tài khoản ? </p>
-        <Link to="/register" className="login__link__text">
-          Đăng ký
-        </Link>
+        <ToastContainer />
+
+        <div className="login__link">
+          <p>Bạn chưa có tài khoản ? </p>
+          <Link to="/register" className="login__link__text">
+            Đăng ký
+          </Link>
+        </div>
       </div>
     </div>
   );
