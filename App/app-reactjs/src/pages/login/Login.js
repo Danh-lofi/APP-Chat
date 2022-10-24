@@ -7,6 +7,8 @@ import ButtonSocial from "../../components/button/ButtonSocial";
 import InputAuthen from "../../components/input/InputAuthen";
 import { login, profile } from "../../store/userSlice";
 import "./login.scss";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = (props) => {
   const [username, setUsername] = useState("");
@@ -14,11 +16,13 @@ const Login = (props) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       dispatch(profile(user.accessToken)).then((res) => {
-        if (res.payload.status === 200) navigate("/profile");
+        if (res.payload.status === 200) navigate("/profile");   
       });
     }
   }, []);
