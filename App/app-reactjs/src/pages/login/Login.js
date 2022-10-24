@@ -25,9 +25,12 @@ const Login = (props) => {
 
   const submitHandle = () => {
     dispatch(login({ username, password })).then((res) => {
+      // Đăng nhập thành công
       if (res.payload.status === 200) {
         navigate("/profile");
-      } else {
+      }
+      // Đăng nhập thất bại
+      if (res.payload.status === 401) {
       }
     });
   };

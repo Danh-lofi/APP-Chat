@@ -40,7 +40,7 @@ const Forgot = () => {
   };
   const submitHandle = async () => {
     const data = await dispatch(existUsername(username));
-    console.log(data);
+    // Xác thực có tài khoản
     if (data.payload.status === 200) {
       generateRecapcha();
       const appVerifier = window.recaptchaVerifier;
@@ -53,26 +53,23 @@ const Forgot = () => {
           console.log(error);
         });
     }
+    // Xác thực không có có tài khoản
+    if (data.payload.status === 400) {
+      console.log("Err");
+    }
   };
+
   const confirmOTPHandle = (otp) => {
     let confirmationResult = window.confirmationResult;
     confirmationResult
       .confirm(otp)
       .then((result) => {
+        // Xác thực thành công
         navigate("reset-password");
-        //  axiosClients.resetPassword({ username, password }).then((res) => {
-        //    if (res.payload.status === 200) {
-        //      console.log(res.payload.data);
-        //      navigate("info");
-        //    } else {
-        //      console.log("Fail!!!");
-        //    }
-        //  });
       })
       .catch((error) => {
-        if (error) {
-          console.log("error");
-        }
+        // Xác thực thất bại
+        console.log("error");
       });
   };
   return !confirmOTP ? (

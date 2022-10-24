@@ -9,7 +9,7 @@ export const login = createAsyncThunk(
       const res = await authApi.login(username, password);
       return { data: res.data, status: res.status };
     } catch (error) {
-      console.log(error);
+      return error.response;
     }
   }
 );
@@ -43,7 +43,6 @@ export const profile = createAsyncThunk("/profile", async (accessToken) => {
     const response = await authApi.profile(accessToken);
     return { data: response.data, status: response.status };
   } catch (error) {
-    console.log(error.response.status);
     return { status: error.response.status };
   }
 });
@@ -53,8 +52,7 @@ export const existUsername = createAsyncThunk("/forgot", async (username) => {
     const response = await authApi.existUsername(username);
     return { data: response.data, status: response.status };
   } catch (error) {
-    console.log(error.response.status);
-    return { status: error.response.status };
+    return error.response;
   }
 });
 
@@ -67,7 +65,7 @@ const userSlice = createSlice({
   initialState: initialState,
   extraReducers: {
     [register.fulfilled]: (state, action) => {
-      console.log(action);
+      if (!action.payload) return;
       state.isLoggedIn = false;
       state.user = action.payload.data.user;
       state = JSON.parse(JSON.stringify(state));
@@ -76,6 +74,7 @@ const userSlice = createSlice({
       state.isLoggedIn = false;
     },
     [login.fulfilled]: (state, action) => {
+      if (!action.payload) return;
       state.isLoggedIn = true;
       state.user = action.payload.data.user;
       state = JSON.parse(JSON.stringify(state));
@@ -85,19 +84,19 @@ const userSlice = createSlice({
       state.user = null;
     },
     [profile.fulfilled]: (state, action) => {
+      if (!action.payload) return;
       state.isLoggedIn = true;
       if (action.payload.data) {
         state.user = action.payload.data.user;
       }
     },
     [profile.rejected]: (state, action) => {
-      console.log("profile error");
       // state.isLoggedIn = true;
       // state.user = action.payload.data.user;
     },
     [existUsername.fulfilled]: (state, action) => {
+      if (!action.payload) return;
       state.isLoggedIn = false;
-      console.log(action.payload.data);
       state.user = action.payload.data.username;
     },
     // [logout.fulfilled]: (state, action) => {

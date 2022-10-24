@@ -21,16 +21,14 @@ const ResetPassword = () => {
   const submitHandle = async () => {
     const isConfirm = confirmPassword === password;
     if (!isConfirm) {
-      console.log("Password confirmed is fail!");
       return;
     }
-    console.log(username);
-    console.log(password);
     const data = await authApi.resetPassword(username, password);
+
     if (data.status === 200) {
+      // Thành công chuyển sang trang login thông báo
       navigate("/login");
     }
-    console.log(data);
   };
   return (
     <div className="login">
