@@ -72,23 +72,22 @@ const Login = (props) => {
               <input className="checkbox" type="checkbox"></input>
             </div>
 
-            <label className="remember">Ghi nhớ mật khẩu</label>
+            <label className="remember">Nhớ mật khẩu</label>
           </div>
         </div>
         <div className="button_authen__wrapper">
           <ButtonAuthen content="Đăng nhập" onClick={submitHandle} />
         </div>
-        <div className="login__descript">
+        {/* <div className="login__descript">
           <div className="line"></div>
           {/* <span>Sign in with</span> */}
-          <div className="line"></div>
-        </div>
-        <div className="login__link">
-          <p>Bạn chưa có tài khoản ? </p>
-          <Link to="/register" className="login__link__text">
-            Đăng ký
-          </Link>
-        </div>
+        <div className="line"></div>
+      </div>
+      <div className="login__link">
+        <p>Bạn chưa có tài khoản ? </p>
+        <Link to="/register" className="login__link__text">
+          Đăng ký
+        </Link>
       </div>
     </div>
   );
