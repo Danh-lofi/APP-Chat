@@ -5,6 +5,8 @@ import ButtonAuthen from "../../components/button/ButtonAuthen";
 import InputAuthen from "../../components/input/InputAuthen";
 import "./confirmOTP.scss";
 
+
+
 const ConfirmOTP = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,7 +24,7 @@ const ConfirmOTP = (props) => {
       <div className="confirmOTP__title">
         <h3 className="confirmOTP__title__main">Xác nhận mã OTP</h3>
         <p className="confirmOTP__title__sub">
-          Mã xác thực đã được gửi về {username}. Vui lòng xác thực để tiếp tục.
+          Mã xác thực đã được gửi về số điện thoại {username}. Vui lòng xác thực để tiếp tục.
         </p>
       </div>
       <div className="confirmOTP__input">

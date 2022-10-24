@@ -10,6 +10,9 @@ import { useDispatch } from "react-redux";
 import ConfirmOTP from "../confirmOTP/ConfirmOTP";
 import { register, registerVerify } from "../../store/userSlice";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import authentication from "../../api/firebase";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import authApi from "../../api/authApi";
@@ -45,12 +48,14 @@ const Register = (props) => {
     const isConfirm = confirmPassword === password;
     // Xác nhận mật khẩu không chính xác
     if (!isConfirm) {
+    toast.error('Nhập mật khẩu không khớp')
+
       console.log("Password confirmed is fail!");
       return;
     }
     const data = await dispatch(registerVerify(username));
     console.log(data);
-    if (data.status === 200) {
+    if (data.payload.status === 200) {
       generateRecapcha();
       const appVerifier = window.recaptchaVerifier;
       console.log(`+84${username}`);
@@ -63,6 +68,7 @@ const Register = (props) => {
         });
     } else {
       // Tài khoản đã tồn tại
+      toast.warning('Tài khoản đã tồn tại!')
     }
   };
 
@@ -75,9 +81,12 @@ const Register = (props) => {
           if (res.payload.status === 200) {
             // Đăng kí thành công chuyển trang
             console.log(res.payload.data);
+            
             navigate("info");
+            
           } else {
             // Đăng kí thật bại
+            toast.error('Đăng kí thất bại')
             console.log("Fail!!!");
           }
         });
@@ -85,6 +94,7 @@ const Register = (props) => {
       .catch((error) => {
         if (error) {
           console.log("error");
+          toast.error('Mã OTP không đúng')
         }
       });
   };
@@ -98,7 +108,9 @@ const Register = (props) => {
   const changeConfirmPasswordHandle = (value) => {
     setConfirmPassword(value);
   };
-  return !confirmOTP ? (
+  return <>
+             <ToastContainer />
+  {!confirmOTP ? (
     <div className="login">
       <div className="login__container">
         <div className="login__title">
@@ -158,7 +170,10 @@ const Register = (props) => {
     </div>
   ) : (
     <ConfirmOTP onSubmit={confirmOTPHandle} username={username} />
-  );
+  )}
+  </>
+  
+  
 };
 
 export default Register;

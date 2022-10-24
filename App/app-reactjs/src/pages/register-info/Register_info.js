@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ButtonAuthen from "../../components/button/ButtonAuthen";
 import ButtonSocial from "../../components/button/ButtonSocial";
@@ -7,6 +7,9 @@ import axiosClients from "../../api/axiosClient";
 import "./Register_info.scss";
 import { info, login, registerInfo } from "../../store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register_info = (props) => {
   const [name, setName] = useState("");
@@ -17,7 +20,11 @@ const Register_info = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userRegister = useSelector((state) => state.user.user);
-
+  useEffect(() => {
+    if(userRegister) {
+      toast.success('Đăng kí thành công')
+    }
+  }, [userRegister]) 
   const username = userRegister.username;
   const password = userRegister.password;
   const submitHandle = () => {
@@ -31,6 +38,7 @@ const Register_info = (props) => {
     dispatch(registerInfo({ user })).then((res) => {
       if (res.payload.status === 200) {
         // Đăng kí thành công
+
         dispatch(login({ username, password })).then((res) => {
           if (res.payload.status !== 200) {
             return;
@@ -78,6 +86,7 @@ const Register_info = (props) => {
 
   return (
     <div className="login">
+       <ToastContainer />
       <div className="login__container">
         <div className="login__title">
           <h3 className="login__title__main">Thông tin tài khoản</h3>
