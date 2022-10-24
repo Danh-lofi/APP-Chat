@@ -43,6 +43,7 @@ const Register = (props) => {
   };
   const submitHandle = async () => {
     const isConfirm = confirmPassword === password;
+    // Xác nhận mật khẩu không chính xác
     if (!isConfirm) {
       console.log("Password confirmed is fail!");
       return;
@@ -70,9 +71,11 @@ const Register = (props) => {
       .then((result) => {
         dispatch(register({ username, password })).then((res) => {
           if (res.payload.status === 200) {
+            // Đăng kí thành công chuyển trang
             console.log(res.payload.data);
             navigate("info");
           } else {
+            // Đăng kí thật bại
             console.log("Fail!!!");
           }
         });

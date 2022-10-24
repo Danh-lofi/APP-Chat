@@ -30,6 +30,7 @@ const Register_info = (props) => {
     };
     dispatch(registerInfo({ user })).then((res) => {
       if (res.payload.status === 200) {
+        // Đăng kí thành công
         dispatch(login({ username, password })).then((res) => {
           if (res.payload.status !== 200) {
             return;
@@ -37,6 +38,29 @@ const Register_info = (props) => {
           navigate("/profile");
         });
       } else {
+        // Đăng kí thất bại
+      }
+    });
+  };
+  const skipHandle = () => {
+    const user = {
+      username,
+      name,
+      birthDate: birthDay,
+      gender,
+      bio,
+    };
+    dispatch(registerInfo({ user })).then((res) => {
+      if (res.payload.status === 200) {
+        // Đăng kí thành công
+        dispatch(login({ username, password })).then((res) => {
+          if (res.payload.status !== 200) {
+            return;
+          }
+          navigate("/profile");
+        });
+      } else {
+        // Đăng kí thất bại
       }
     });
   };
@@ -100,7 +124,7 @@ const Register_info = (props) => {
           </div>
 
           <div className="button_authen__wrapper">
-            <ButtonAuthen isSkip content="Bỏ qua >>" />
+            <ButtonAuthen isSkip content="Bỏ qua >>" onClick={skipHandle} />
           </div>
         </div>
       </div>
