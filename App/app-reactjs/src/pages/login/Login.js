@@ -43,21 +43,21 @@ const Login = (props) => {
     <div className="login">
       <div className="login__container">
         <div className="login__title">
-          <h3 className="login__title__main">Welcome Back !</h3>
-          <p className="login__title__sub">Sign in to continue to Doot.</p>
+          <h3 className="login__title__main">Chào mừng bạn !</h3>
+          <p className="login__title__sub">Đăng nhập để sử dụng SUARCHAT</p>
         </div>
         <div className="login__input">
           <InputAuthen
-            label="Username"
+            label="Số điện thoại"
             type="text"
-            placeholder="Enter your phone"
+            placeholder="Nhập số điện thoại"
             onInput={changeUsernameHandle}
           />
           <InputAuthen
-            label="Password"
+            label="Mật khẩu"
             type="password"
             isPassword
-            placeholder="Enter your password"
+            placeholder="Nhập mật khẩu"
             onInput={changePasswordHandle}
           />
           <div className="combo-check">
@@ -65,15 +65,15 @@ const Login = (props) => {
               <input className="checkbox" type="checkbox"></input>
             </div>
 
-            <label className="remember">Remember me</label>
+            <label className="remember">Nhớ mật khẩu</label>
           </div>
         </div>
         <div className="button_authen__wrapper">
-          <ButtonAuthen content="Log in" onClick={submitHandle} />
+          <ButtonAuthen content="Đăng nhập" onClick={submitHandle} />
         </div>
-        <div className="login__descript">
+        {/* <div className="login__descript">
           <div className="line"></div>
-          <span>Sign in with</span>
+          <span>với</span>
           <div className="line"></div>
         </div>
         <div className="login__btn-link">
@@ -82,11 +82,11 @@ const Login = (props) => {
           <ButtonSocial type="gg" />
         </div>
         <div className="login__link">
-          <p>Don't have an account ? </p>
+          <p>Bạn chưa có tài khoản ? </p>
           <Link to="/register" className="login__link__text">
-            Register
+            Đăng kí
           </Link>
-        </div>
+        </div> */}
 
         {/* test thui mí nữa xóa */}
         <Link to="/confirmOTP" className="login__link__text">

@@ -12,11 +12,11 @@ const Logout = (props) => {
                     <FontAwesomeIcon className="icon" icon={faUser} />
                 </div>
                 <div className="logout__title">
-                    <h3 className="logout__title__main">You are Logged Out</h3>
-                    <p className="login__title__sub">Thanks for using <b>Doot</b>.</p>
+                    <h3 className="logout__title__main">Bạn đã đăng xuất</h3>
+                    <p className="login__title__sub">Cảm ơn bạn đã sử dụng <b>SUARCHAT</b>.</p>
                 </div>
                 <div>
-                    <Link to="/login"><ButtonAuthen content="Sign In"/></Link>
+                    <Link to="/login"><ButtonAuthen content="Đăng nhập"/></Link>
                 </div>
             </div>
         </div>
