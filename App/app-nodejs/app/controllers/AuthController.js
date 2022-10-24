@@ -85,6 +85,16 @@ const AutherController = {
       }
     });
   },
+  existUsername: (req, res) => {
+    const username = req.body.username;
+    UserModel.findOne({ username }).then((user) => {
+      if (user) {
+        res.status(200).send({ username });
+      } else {
+        res.status(400).send("Tài khoản này chưa tồn tại!");
+      }
+    });
+  },
   // POST (username, name, birthday, gender, bio)
   // Thông tin chi tiết
   registerInfomation: (req, res) => {
@@ -186,6 +196,15 @@ const AutherController = {
   },
   me: async (req, res) => {
     res.json(req.user);
+  },
+  resetPassword: (req, res) => {
+    const username = req.body.username.toLowerCase();
+    const hashPassword = bcrypt.hashSync(req.body.password, 10);
+    UserModel.updateOne({ username }, { password: hashPassword })
+      .then(() => {
+        return res.status(200).send("Cập nhật thành công");
+      })
+      .catch((err) => res.status(500).send(err));
   },
 };
 export default AutherController;

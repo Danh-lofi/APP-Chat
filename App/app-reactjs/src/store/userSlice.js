@@ -48,6 +48,16 @@ export const profile = createAsyncThunk("/profile", async (accessToken) => {
   }
 });
 
+export const existUsername = createAsyncThunk("/forgot", async (username) => {
+  try {
+    const response = await authApi.existUsername(username);
+    return { data: response.data, status: response.status };
+  } catch (error) {
+    console.log(error.response.status);
+    return { status: error.response.status };
+  }
+});
+
 const initialState = user
   ? { isLoggedIn: true, user: user }
   : { isLoggedIn: false, user: null };
@@ -84,6 +94,11 @@ const userSlice = createSlice({
       console.log("profile error");
       // state.isLoggedIn = true;
       // state.user = action.payload.data.user;
+    },
+    [existUsername.fulfilled]: (state, action) => {
+      state.isLoggedIn = false;
+      console.log(action.payload.data);
+      state.user = action.payload.data.username;
     },
     // [logout.fulfilled]: (state, action) => {
     //   state.isLoggedIn = false;

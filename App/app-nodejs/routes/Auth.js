@@ -7,6 +7,8 @@ routerAuth.post("/register", UserController.register);
 routerAuth.post("/register/info", UserController.registerInfomation);
 routerAuth.post("/register/verify", UserController.verifyUsername);
 routerAuth.post("/refresh", UserController.refreshToken);
+routerAuth.post("/forgot/verify", UserController.existUsername);
+routerAuth.post("/forgot/reset-password", UserController.resetPassword);
 routerAuth.get("/profile", authMiddleware.isAuth, UserController.profile);
 routerAuth.get("/me", authMiddleware.authApp, UserController.me);
 export default routerAuth;

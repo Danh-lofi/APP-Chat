@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import authApi from "../../api/authApi";
+import axiosClients from "../../api/axiosClient";
 import ButtonAuthen from "../../components/button/ButtonAuthen";
 import ButtonSocial from "../../components/button/ButtonSocial";
 import InputAuthen from "../../components/input/InputAuthen";
@@ -7,19 +10,27 @@ import InputAuthen from "../../components/input/InputAuthen";
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
+  const username = useSelector((state) => state.user.user);
   const changePasswordHandle = (value) => {
     setPassword(value);
   };
   const changeConfirmPasswordHandle = (value) => {
     setConfirmPassword(value);
   };
-  const submitHandle = () => {
+  const submitHandle = async () => {
     const isConfirm = confirmPassword === password;
     if (!isConfirm) {
       console.log("Password confirmed is fail!");
       return;
     }
+    console.log(username);
     console.log(password);
+    const data = await authApi.resetPassword(username, password);
+    if (data.status === 200) {
+      navigate("/login");
+    }
+    console.log(data);
   };
   return (
     <div className="login">

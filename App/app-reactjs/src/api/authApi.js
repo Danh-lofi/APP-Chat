@@ -19,6 +19,10 @@ const authApi = {
     const url = "/register/verify";
     return axiosClient.post(url, { username });
   },
+  existUsername: (username) => {
+    const url = "/forgot/verify";
+    return axiosClient.post(url, { username });
+  },
   profile: (accessToken) => {
     const url = "/profile";
     return axiosClient
@@ -34,6 +38,10 @@ const authApi = {
   registerInfomation: (user) => {
     const url = "/register/info";
     return axiosClient.post(url, { user });
+  },
+  resetPassword: (username, password) => {
+    const url = "/forgot/reset-password";
+    return axiosClient.post(url, { username, password });
   },
 };
 
