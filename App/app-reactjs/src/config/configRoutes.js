@@ -8,6 +8,7 @@ const configRoutes = {
   confirmOTP: "/register/verify-otp",
   resetPassword: "/forgot/reset-password",
   info: "/register/info",
+  chat: "/chat",
 };
 
 export default configRoutes;

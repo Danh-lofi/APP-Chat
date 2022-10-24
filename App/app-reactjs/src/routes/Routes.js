@@ -8,8 +8,15 @@ import ConfirmOTP from "../pages/confirmOTP/ConfirmOTP";
 
 import ResetPassword from "../pages/reset-pass/ResetPassword";
 import Info from "../pages/register-info/Register_info";
+import Chat from "../pages/chat/Chat";
 
-const mainRoutes = [{ path: configRoutes.home, component: Login }];
+const mainRoutes = [
+  {
+    path: configRoutes.chat,
+    component: Chat,
+  },
+];
+
 export const authRoutes = [
   { path: configRoutes.home, component: Login },
   { path: configRoutes.login, component: Login },
