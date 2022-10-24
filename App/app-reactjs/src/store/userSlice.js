@@ -38,6 +38,18 @@ export const registerInfo = createAsyncThunk(
   }
 );
 
+export const registerVerify = createAsyncThunk(
+  "/register/verify",
+  async (username) => {
+    try {
+      const response = await authApi.verifyUsername(username);
+      return { data: response.data, status: response.status };
+    } catch (error) {
+      return error.response;
+    }
+  }
+);
+
 export const profile = createAsyncThunk("/profile", async (accessToken) => {
   try {
     const response = await authApi.profile(accessToken);

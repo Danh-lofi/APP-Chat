@@ -8,7 +8,7 @@ import "./register.scss";
 import { useDispatch } from "react-redux";
 
 import ConfirmOTP from "../confirmOTP/ConfirmOTP";
-import { register } from "../../store/userSlice";
+import { register, registerVerify } from "../../store/userSlice";
 
 import authentication from "../../api/firebase";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
@@ -48,7 +48,7 @@ const Register = (props) => {
       console.log("Password confirmed is fail!");
       return;
     }
-    const data = await authApi.verifyUsername(username);
+    const data = await dispatch(registerVerify(username));
     console.log(data);
     if (data.status === 200) {
       generateRecapcha();
@@ -61,6 +61,8 @@ const Register = (props) => {
         .catch((error) => {
           console.log(error);
         });
+    } else {
+      // Tài khoản đã tồn tại
     }
   };
 
