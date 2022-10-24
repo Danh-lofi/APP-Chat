@@ -97,8 +97,8 @@ const Register = (props) => {
     <div className="login">
       <div className="login__container">
         <div className="login__title">
-          <h3 className="login__title__main">Register Account</h3>
-          <p className="login__title__sub">Get your free Doot account now.</p>
+          <h3 className="login__title__main">Đăng ký tài khoản</h3>
+          <p className="login__title__sub">Nhận tài khoản miễn phí của bạn ngay bây giờ.</p>
         </div>
         <div className="login__input">
           <InputAuthen
@@ -123,7 +123,7 @@ const Register = (props) => {
             placeholder="Nhập lại mật khẩu..."
             onInput={changeConfirmPasswordHandle}
           />
-          <div className="combo-check">
+          {/* <div className="combo-check">
             <div className="checkbox-div">
               <input className="checkbox" type="checkbox"></input>
             </div>
@@ -131,10 +131,10 @@ const Register = (props) => {
             <label className="agree">
               By registering you agree to the Doot <span> Terms of Use </span>
             </label>
-          </div>
+          </div> */}
         </div>
         <div className="button_authen__wrapper">
-          <ButtonAuthen onClick={submitHandle} content="Register" />
+          <ButtonAuthen onClick={submitHandle} content="Đăng ký" />
         </div>
         <div className="login__descript">
           <div className="line"></div>
@@ -144,9 +144,9 @@ const Register = (props) => {
         <div id="recaptcha-container"></div>
 
         <div className="login__link">
-          <p>Already have an account ? </p>
+          <p>Bạn đã có tài khoản ? </p>
           <Link to="/login" className="login__link__text">
-            Login
+            Đăng nhập
           </Link>
         </div>
       </div>
