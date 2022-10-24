@@ -24,7 +24,6 @@ const Register = (props) => {
   const navigate = useNavigate();
 
   const onSignInSubmit = (response) => {
-    console.log(response);
     if (response) {
       setConfirmOTP(true);
     }

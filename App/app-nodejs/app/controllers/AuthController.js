@@ -70,7 +70,8 @@ const AutherController = {
       if (err) {
         return res.status(400).send("Có lỗi khi tạo " + err);
       }
-      return res.status(200).json({ username, hashPassword });
+      const user = { username, password: req.body.password };
+      return res.status(200).json({ user });
     });
   },
   // Post (username) check username

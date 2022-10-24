@@ -5,7 +5,7 @@ import ButtonSocial from "../../components/button/ButtonSocial";
 import InputAuthen from "../../components/input/InputAuthen";
 import axiosClients from "../../api/axiosClient";
 import "./Register_info.scss";
-import { info, registerInfo } from "../../store/userSlice";
+import { info, login, registerInfo } from "../../store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const Register_info = (props) => {
@@ -16,10 +16,11 @@ const Register_info = (props) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const username = useSelector((state) => state.user.user);
-  console.log(username);
+  const userRegister = useSelector((state) => state.user.user);
+
+  const username = userRegister.username;
+  const password = userRegister.password;
   const submitHandle = () => {
-    console.log(birthDay + name + gender + bio);
     const user = {
       username,
       name,
@@ -27,11 +28,14 @@ const Register_info = (props) => {
       gender,
       bio,
     };
-    console.log(user);
     dispatch(registerInfo({ user })).then((res) => {
-      console.log(res);
       if (res.payload.status === 200) {
-        navigate("/profile");
+        dispatch(login({ username, password })).then((res) => {
+          if (res.payload.status !== 200) {
+            return;
+          }
+          navigate("/profile");
+        });
       } else {
       }
     });
