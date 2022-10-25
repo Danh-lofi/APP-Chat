@@ -198,11 +198,13 @@ const AutherController = {
     res.json(req.user);
   },
   resetPassword: (req, res) => {
-    const username = req.body.username.toLowerCase();
+    const username = req.body.username;
     const hashPassword = bcrypt.hashSync(req.body.password, 10);
     UserModel.updateOne({ username }, { password: hashPassword })
       .then(() => {
-        return res.status(200).send("Cập nhật thành công");
+        return res
+          .status(200)
+          .json({ message: "Cập nhật thành công", username });
       })
       .catch((err) => res.status(500).send(err));
   },

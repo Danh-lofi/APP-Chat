@@ -68,6 +68,20 @@ export const existUsername = createAsyncThunk("/forgot", async (username) => {
   }
 });
 
+// /forgot/reset-password
+export const resetPassword = createAsyncThunk(
+  "/forgot/reset-password",
+  async (username, password) => {
+    try {
+      const response = await authApi.resetPassword(username, password);
+      console.log(response);
+      return { data: response.data, status: response.status };
+    } catch (error) {
+      return error.response;
+    }
+  }
+);
+
 const initialState = user
   ? { isLoggedIn: true, user: user }
   : { isLoggedIn: false, user: null };
@@ -107,6 +121,12 @@ const userSlice = createSlice({
       // state.user = action.payload.data.user;
     },
     [existUsername.fulfilled]: (state, action) => {
+      if (!action.payload) return;
+      state.isLoggedIn = false;
+      state.user = action.payload.data.username;
+    },
+    [resetPassword.fulfilled]: (state, action) => {
+      console.log(action);
       if (!action.payload) return;
       state.isLoggedIn = false;
       state.user = action.payload.data.username;

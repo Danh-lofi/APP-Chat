@@ -6,9 +6,8 @@ import axiosClients from "../../api/axiosClient";
 import ButtonAuthen from "../../components/button/ButtonAuthen";
 import ButtonSocial from "../../components/button/ButtonSocial";
 import InputAuthen from "../../components/input/InputAuthen";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -28,10 +27,12 @@ const ResetPassword = () => {
       return;
     }
     const data = await authApi.resetPassword(username, password);
+    console.log(data);
 
     if (data.status === 200) {
       // Thành công chuyển sang trang login thông báo
-      navigate("/login");
+      toast.success("Cập nhật thành công");
+      setTimeout(() => navigate("/login"), 1000);
     }
   };
   return (

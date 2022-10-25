@@ -10,10 +10,8 @@ import InputAuthen from "../../components/input/InputAuthen";
 import { existUsername } from "../../store/userSlice";
 import ConfirmOTP from "../confirmOTP/ConfirmOTP";
 import "./forgot.scss";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Forgot = () => {
   const [username, setUsername] = useState();
@@ -61,7 +59,7 @@ const Forgot = () => {
     // Xác thực không có có tài khoản
     if (data.payload.status === 400) {
       console.log("Err");
-      toast.error("Số điện thoại không tồn tại")
+      toast.error("Số điện thoại không tồn tại");
     }
   };
 
@@ -83,35 +81,38 @@ const Forgot = () => {
     <div className="forgot">
       <div className="forgot_container">
         <div className="forgot__title">
-          <h3 className="forgot__title__main">Reset Password</h3>
-          <p className="forgot__title__sub">Reset Password with Doot.</p>
+          <h3 className="forgot__title__main">Quên mật khẩu</h3>
+          <p className="forgot__title__sub">Lấy lại mật khẩu với OTP.</p>
         </div>
       </div>
       <div className="forgot__commention">
-        <p>Enter your Phone number and instructions will be sent to you!</p>
+        <p>Nhập số điện thoại của bạn và hãy đợi ít chút để nhận OTP</p>
       </div>
       <div className="forgot__input">
         <InputAuthen
-          label="Phone number"
+          label="Số điện thoại"
           type="text"
-          placeholder="Enter your phone"
+          placeholder="Nhập số điện thoại..."
           onInput={changeInputHandle}
         />
       </div>
       <div className="button_authen__wrapper">
-        <ButtonAuthen content="Reset" onClick={submitHandle} />
+        <ButtonAuthen content="Lấy lại" onClick={submitHandle} />
       </div>
       <div className="login__link">
-        <p>Remember It ? </p>
+        <p>Bạn đã nhớ lại </p>
         <Link to="/login" className="login__link__text">
-          Login
+          Đăng nhập thôi!
         </Link>
       </div>
       <div id="recaptcha-container"></div>
       <ToastContainer />
     </div>
   ) : (
-    <><ConfirmOTP onSubmit={confirmOTPHandle} username={username} /><ToastContainer /></>
+    <>
+      <ConfirmOTP onSubmit={confirmOTPHandle} username={username} />
+      <ToastContainer />
+    </>
   );
 };
 

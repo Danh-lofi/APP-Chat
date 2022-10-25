@@ -7,7 +7,7 @@ import LayoutAuth from "./layout/layout-auth/LayoutAuth";
 import { useSelector } from "react-redux";
 
 function App() {
-  const [isAuth, setAuth] = useState(true);
+  const [isAuth, setAuth] = useState(false);
   return (
     <div className="App">
       {/* App dùng cho router */}
