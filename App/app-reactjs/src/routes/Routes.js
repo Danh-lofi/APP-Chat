@@ -15,6 +15,7 @@ const mainRoutes = [
     path: configRoutes.chat,
     component: Chat,
   },
+  { path: configRoutes.profile, component: Profile },
 ];
 
 export const authRoutes = [
@@ -22,7 +23,6 @@ export const authRoutes = [
   { path: configRoutes.login, component: Login },
   { path: configRoutes.register, component: Register },
   { path: configRoutes.forgot, component: Forgot },
-  { path: configRoutes.profile, component: Profile },
   { path: configRoutes.logout, component: Logout },
   { path: configRoutes.confirmOTP, component: ConfirmOTP },
   { path: configRoutes.resetPassword, component: ResetPassword },
