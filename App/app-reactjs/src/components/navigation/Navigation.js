@@ -7,8 +7,16 @@ import {
   faAddressBook,
   faGear,
   faMoon,
+  faLock,
+  faCircleLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import Tippy from "@tippyjs/react/headless";
+import "tippy.js/dist/tippy.css";
+import styled from "styled-components";
+import { useSpring, animated } from "react-spring";
+
 import ListTab from "../list-tab/ListTab";
+
 const listTab = [
   { tabName: "user", icon: faCircleUser },
   { tabName: "chat", icon: faComment },
@@ -16,7 +24,43 @@ const listTab = [
   { tabName: "setting", icon: faGear },
 ];
 
+const Box = styled(animated.div)`
+  background: #fff;
+  box-shadow: 0 2px 4px rgb(15 34 58 / 12%);
+  color: #333;
+  // background: #333;
+  // color: #fff;
+  width: 200px;
+  padding: 5px 25px;
+  border-radius: 4px;
+  margin-left: 5px;
+`;
+
 const Navigation = () => {
+  const config = { tension: 300, friction: 30 };
+  const initialStyles = {
+    opacity: 0,
+    transform: "translateY(20%)",
+  };
+  const [props, setSpring] = useSpring(() => initialStyles);
+
+  function onMount() {
+    setSpring({
+      opacity: 1,
+      transform: "translateY(0%)",
+      onRest: () => {},
+      config,
+    });
+  }
+
+  function onHide({ unmount }) {
+    setSpring({
+      ...initialStyles,
+      onRest: unmount,
+      config: { ...config, clamp: true },
+    });
+  }
+
   return (
     <div className="navigation">
       <div className="navigation__container">
@@ -39,9 +83,51 @@ const Navigation = () => {
             <FontAwesomeIcon icon={faMoon} />
             <div className="navigation__main__effect"></div>
           </div>
-          <div className="navigation__bottom__user">
-            <img src="https://s120-ava-talk.zadn.vn/b/9/b/a/6/120/473b8d61137b99d8000663d47e7437c9.jpg" />
-          </div>
+          <Tippy
+            data-placement="top"
+            trigger="click"
+            interactive={true}
+            render={(attrs) => (
+              <Box style={props} {...attrs}>
+                <ul>
+                  <li className="navigation__bottom__item">
+                    <span>Hồ sơ</span>
+                    <div>
+                      <FontAwesomeIcon icon={faCircleUser} />
+                    </div>
+                  </li>
+                  <li className="navigation__bottom__item">
+                    <span>Cài đặt</span>
+                    <div>
+                      <FontAwesomeIcon icon={faGear} />
+                    </div>
+                  </li>
+                  <li className="navigation__bottom__item">
+                    <span>Đổi mật khẩu</span>
+                    <div>
+                      <FontAwesomeIcon icon={faLock} />
+                    </div>
+                  </li>
+                  <li className="navigation__bottom__item">
+                    <span>Đăng xuất</span>
+                    <div>
+                      <FontAwesomeIcon icon={faCircleLeft} />
+                    </div>
+                  </li>
+                </ul>
+              </Box>
+            )}
+            animation={true}
+            onMount={onMount}
+            onHide={onHide}
+          >
+            <div className="navigation__bottom__user">
+              <img
+                src="https://s120-ava-talk.zadn.vn/b/9/b/a/6/120/473b8d61137b99d8000663d47e7437c9.jpg"
+                alt="avatar"
+              />
+            </div>
+          </Tippy>
         </div>
       </div>
     </div>

@@ -60,5 +60,27 @@
             border-radius: 50%;
         }
     }
+    &__item{
+      @include flex(center,space-between);
+      margin: 15px 0;
+      cursor: pointer;
+      &:hover svg,
+      &:hover span
+      {
+        color: $primary-color;
+        font-weight: bold;
+      }
+      & svg{
+        font-size: 1.3rem;
+        color: #797c8c;
+        transition: color .5s ease;
+
+      }
+      & span{
+        font-weight: 400;
+        color: $text-color;
+      }
+    }
   }
 }
+
