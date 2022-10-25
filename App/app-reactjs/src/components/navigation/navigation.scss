@@ -1,0 +1,64 @@
+@use "../../scss/" as *;
+.navigation {
+  height: 100%;
+  width: 100%;
+  background-color: $black;
+  padding: 2rem 1.3rem;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  &__logo {
+    flex: 1;
+    @include flex(center, center);
+    & > svg {
+      fill: $primary-color;
+    }
+  }
+  &__main {
+    flex: 9;
+
+    &__wrap {
+        margin: 2rem 0 5rem;
+      @include flex(center, center);
+      position: relative;
+      & > svg {
+        font-size: 2.4rem;
+        color: #878a92;
+        cursor: pointer;
+        transition: color 0.4s ease;
+      }
+      &:hover svg,
+      &.active svg {
+        color: $primary-color;
+      }
+      &:hover .navigation__main__effect,
+      &.active .navigation__main__effect{
+        transform: translateX(0px);
+        opacity: 1;
+        height: 80%;
+      }
+    }
+    &__effect {
+      position: absolute;
+      height: 40%;
+      width: 3px;
+      background-color: $primary-color;
+      right: -36%;
+      transform: translateX(-10px);
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+  }
+  &__bottom {
+    flex: 2;
+    &__user{
+        cursor: pointer;
+        & > img{
+            border-radius: 50%;
+        }
+    }
+  }
+}

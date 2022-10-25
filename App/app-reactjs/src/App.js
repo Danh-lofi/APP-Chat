@@ -16,6 +16,7 @@ function App() {
             const Page = route.component;
             return (
               <Route
+                key={index}
                 path={route.path}
                 element={
                   <LayoutMain>
@@ -36,6 +37,7 @@ function App() {
             }
             return (
               <Route
+                key={index}
                 path={route.path}
                 element={
                   <LayoutAuth isRegister={isRegister}>
