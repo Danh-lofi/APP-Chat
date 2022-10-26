@@ -1,5 +1,6 @@
 import React from "react";
 import "./navigation.scss";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -18,7 +19,7 @@ import { useSpring, animated } from "react-spring";
 import ListTab from "../list-tab/ListTab";
 
 const listTab = [
-  { tabName: "user", icon: faCircleUser },
+  { tabName: "profile", icon: faCircleUser },
   { tabName: "chat", icon: faComment },
   { tabName: "contact", icon: faAddressBook },
   { tabName: "setting", icon: faGear },
@@ -90,30 +91,33 @@ const Navigation = () => {
             render={(attrs) => (
               <Box style={props} {...attrs}>
                 <ul>
-                  <li className="navigation__bottom__item">
+                  <Link to="/profile" className="navigation__bottom__item">
                     <span>Hồ sơ</span>
                     <div>
                       <FontAwesomeIcon icon={faCircleUser} />
                     </div>
-                  </li>
-                  <li className="navigation__bottom__item">
+                  </Link>
+                  <Link to="/setting" className="navigation__bottom__item">
                     <span>Cài đặt</span>
                     <div>
                       <FontAwesomeIcon icon={faGear} />
                     </div>
-                  </li>
-                  <li className="navigation__bottom__item">
+                  </Link>
+                  <Link
+                    to="/change-password"
+                    className="navigation__bottom__item"
+                  >
                     <span>Đổi mật khẩu</span>
                     <div>
                       <FontAwesomeIcon icon={faLock} />
                     </div>
-                  </li>
-                  <li className="navigation__bottom__item">
+                  </Link>
+                  <Link to="/logout" className="navigation__bottom__item">
                     <span>Đăng xuất</span>
                     <div>
                       <FontAwesomeIcon icon={faCircleLeft} />
                     </div>
-                  </li>
+                  </Link>
                 </ul>
               </Box>
             )}

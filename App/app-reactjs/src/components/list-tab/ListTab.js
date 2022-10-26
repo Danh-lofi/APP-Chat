@@ -12,7 +12,7 @@ const ListTab = (props) => {
 
   const activeTabHandle = (name) => {
     switch (name) {
-      case "user":
+      case "profile":
         setTabActive((active) => {
           return {
             chatActive: false,

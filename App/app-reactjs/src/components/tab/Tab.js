@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Tab = (props) => {
   const name = props.name;
@@ -9,13 +10,14 @@ const Tab = (props) => {
     props.onClick(name);
   };
   return (
-    <div
+    <Link
+      to={`/${name}`}
       className={`navigation__main__wrap ${isActive ? "active" : ""}`}
       onClick={activeTabHandle}
     >
       <FontAwesomeIcon icon={props.icon} />
       <div className="navigation__main__effect"></div>
-    </div>
+    </Link>
   );
 };
 
