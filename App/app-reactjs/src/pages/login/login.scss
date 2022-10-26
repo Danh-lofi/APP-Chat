@@ -6,6 +6,8 @@
 }
 .login__title{
     width: 100%;
+    @include flex(center, center);
+    flex-direction: column;
 }
 .login__input{
     margin: 30px 0;

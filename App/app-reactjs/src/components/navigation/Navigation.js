@@ -70,6 +70,10 @@ const Navigation = () => {
     console.log("log out");
     dispatch(userActions.logOut());
   };
+  // Change PW
+  const changePasswordHandle = () => {
+    dispatch(userActions.setLogout());
+  };
   return (
     <div className="navigation">
       <div className="navigation__container">
@@ -114,6 +118,7 @@ const Navigation = () => {
                   <Link
                     to="/change-password"
                     className="navigation__bottom__item"
+                    onClick={changePasswordHandle}
                   >
                     <span>Đổi mật khẩu</span>
                     <div>

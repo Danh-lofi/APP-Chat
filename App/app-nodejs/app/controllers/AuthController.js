@@ -208,5 +208,28 @@ const AutherController = {
       })
       .catch((err) => res.status(500).send(err));
   },
+  changePassword: async (req, res) => {
+    const username = req.body.username;
+    const oldPassword = req.body.oldPassword;
+    // Truy xuất db
+    const user = await UserModel.findOne({ username: username });
+    console.log(user);
+    if (!user) {
+      return res.status(404).send("Tên đăng nhập không tồn tại!");
+    }
+    // So sánh password
+    const isPasswordValid = bcrypt.compareSync(oldPassword, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).send("Mật khẩu không chính xác!");
+    }
+    const hashPassword = bcrypt.hashSync(req.body.password, 10);
+    UserModel.updateOne({ username }, { password: hashPassword })
+      .then(() => {
+        return res
+          .status(200)
+          .json({ message: "Cập nhật thành công", username });
+      })
+      .catch((err) => res.status(500).send(err));
+  },
 };
 export default AutherController;
