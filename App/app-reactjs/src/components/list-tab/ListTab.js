@@ -4,7 +4,7 @@ import Tab from "../tab/Tab";
 const ListTab = (props) => {
   const listTab = props.listTab;
   const [tabActive, setTabActive] = useState({
-    userActive: false,
+    profileActive: false,
     chatActive: false,
     contactActive: false,
     settingActive: false,
@@ -18,14 +18,14 @@ const ListTab = (props) => {
             chatActive: false,
             contactActive: false,
             settingActive: false,
-            userActive: true,
+            profileActive: true,
           };
         });
         break;
       case "chat":
         setTabActive((active) => {
           return {
-            userActive: false,
+            profileActive: false,
             contactActive: false,
             settingActive: false,
             chatActive: true,
@@ -35,7 +35,7 @@ const ListTab = (props) => {
       case "contact":
         setTabActive((active) => {
           return {
-            userActive: false,
+            profileActive: false,
             chatActive: false,
             settingActive: false,
             contactActive: true,
@@ -45,7 +45,7 @@ const ListTab = (props) => {
       case "setting":
         setTabActive((active) => {
           return {
-            userActive: false,
+            profileActive: false,
             chatActive: false,
             contactActive: false,
             settingActive: true,
@@ -55,7 +55,7 @@ const ListTab = (props) => {
       default:
         setTabActive((active) => {
           return {
-            userActive: false,
+            profileActive: false,
             chatActive: false,
             contactActive: false,
             settingActive: false,

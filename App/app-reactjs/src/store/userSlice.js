@@ -136,6 +136,15 @@ const userSlice = createSlice({
     //   state.user = null;
     // },
   },
+  reducers: {
+    logOut: (state, action) => {
+      console.log("ok");
+      state.isLoggedIn = false;
+      state.user = null;
+      localStorage.setItem("user", JSON.stringify(null));
+    },
+  },
 });
 
+export const userActions = userSlice.actions;
 export default userSlice;

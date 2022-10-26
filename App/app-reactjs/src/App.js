@@ -4,13 +4,14 @@ import mainRoutes, { authRoutes } from "./routes/Routes";
 import LayoutMain from "./layout/layout-main/LayoutMain";
 import LayoutAuth from "./layout/layout-auth/LayoutAuth";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 function App() {
   let isAuth = useSelector((state) => state.user.isLoggedIn);
   return (
     <div className="App">
       {/* App dùng cho router */}
-      {!isAuth ? (
+      {isAuth ? (
         <Routes>
           {mainRoutes.map((route, index) => {
             const Page = route.component;
@@ -32,7 +33,7 @@ function App() {
           {authRoutes.map((route, index) => {
             const Page = route.component;
             let isRegister = false;
-            if (route.path === "/register" || route.path === "/info") {
+            if (route.path === "/info") {
               isRegister = true;
             }
             return (

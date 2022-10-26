@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import "./navigation.scss";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,6 +18,7 @@ import styled from "styled-components";
 import { useSpring, animated } from "react-spring";
 
 import ListTab from "../list-tab/ListTab";
+import { userActions } from "../../store/userSlice";
 
 const listTab = [
   { tabName: "profile", icon: faCircleUser },
@@ -38,6 +40,8 @@ const Box = styled(animated.div)`
 `;
 
 const Navigation = () => {
+  const dispatch = useDispatch();
+
   const config = { tension: 300, friction: 30 };
   const initialStyles = {
     opacity: 0,
@@ -61,7 +65,11 @@ const Navigation = () => {
       config: { ...config, clamp: true },
     });
   }
-
+  // Log out
+  const logOutHandle = () => {
+    console.log("log out");
+    dispatch(userActions.logOut());
+  };
   return (
     <div className="navigation">
       <div className="navigation__container">
@@ -113,7 +121,7 @@ const Navigation = () => {
                     </div>
                   </Link>
                   <Link to="/logout" className="navigation__bottom__item">
-                    <span>Đăng xuất</span>
+                    <span onClick={logOutHandle}>Đăng xuất</span>
                     <div>
                       <FontAwesomeIcon icon={faCircleLeft} />
                     </div>
