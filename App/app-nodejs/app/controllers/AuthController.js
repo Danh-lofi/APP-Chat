@@ -6,6 +6,7 @@ const AutherController = {
   login: async (req, res, next) => {
     const username = req.body.username.toLowerCase();
     const password = req.body.password;
+    // const { username, password } = req.body;
     console.log("username: " + username + " password:" + password);
 
     // Truy xuất db
@@ -15,9 +16,18 @@ const AutherController = {
       return res.status(404).send("Tên đăng nhập không tồn tại!");
     }
     // So sánh password
-    const isPasswordValid = bcrypt.compareSync(password, user.password);
+    const isPasswordValid = await bcrypt.compareSync(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).send("Mật khẩu không chính xác!");
+      return res
+        .status(401)
+        .send(
+          "Mật khẩu không chính xác!" +
+            user.password +
+            " vs " +
+            password +
+            " rs: " +
+            isPasswordValid
+        );
     }
     // Tạo các biến trong khi tạo accessToken
     const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
@@ -56,72 +66,26 @@ const AutherController = {
     });
   },
 
-  // POST (username,password)
-  // Đăng kí
-  register: (req, res, next) => {
-    const username = req.body.username.toLowerCase();
-    const hashPassword = bcrypt.hashSync(req.body.password, 10);
+  checkExistAccount: async (req, res) => {
+    const username = req.body.username;
+    const user = await UserModel.findOne({ username });
+    if (!user) {
+      res.status(200).json({ username });
+    } else {
+      res
+        .status(402)
+        .send("Tai khoan nay da ton tai, vui long chon mot tai khoan khac !");
+    }
+  },
 
-    const newUser = new UserModel({
-      username: username,
-      password: hashPassword,
-    });
-    newUser.save((err) => {
-      if (err) {
-        return res.status(400).send("Có lỗi khi tạo " + err);
-      }
-      const user = { username, password: req.body.password };
-      return res.status(200).json({ user });
-    });
-  },
-  // Post (username) check username
-  verifyUsername: (req, res) => {
-    const username = req.body.username;
-    UserModel.findOne({ username }).then((user) => {
-      if (user) {
-        res.status(409).send("Tài khoản này đã tồn tại!");
-      } else {
-        res.status(200).send("Tài khoản này chưa tồn tại!");
-      }
-    });
-  },
-  existUsername: (req, res) => {
-    const username = req.body.username;
-    UserModel.findOne({ username }).then((user) => {
-      if (user) {
-        res.status(200).send({ username });
-      } else {
-        res.status(400).send("Tài khoản này chưa tồn tại!");
-      }
-    });
-  },
-  // POST (username, name, birthday, gender, bio)
-  // Thông tin chi tiết
-  registerInfomation: (req, res) => {
-    console.log(req.body);
-    const username = req.body.user.username;
-    const nameUser = req.body.user.name;
-    const birthDate = req.body.user.birthDate;
-    const gender = req.body.user.gender;
-    const introducePersonal = req.body.user.introducePersonal;
-    UserModel.updateOne(
-      { username },
-      {
-        name: nameUser,
-        birthDate,
-        gender,
-        introducePersonal,
-      }
-    )
-      .then(() => {
-        res.status(200).send({
-          message: "Cập nhật thành công",
-          user: { name: nameUser, birthDate, gender, introducePersonal },
-        });
-      })
-      .catch((error) => {
-        res.status(400).send({ message: "Cập nhật thất bại!!!", error });
-      });
+  register: async (req, res, next) => {
+    try {
+      const user = new UserModel(req.body);
+      await user.save();
+      res.status(201).json({ user });
+    } catch (error) {
+      res.status(400).send("Tao khong thanh cong voi ma loi: " + error);
+    }
   },
 
   refreshToken: async (req, res, next) => {
@@ -190,23 +154,11 @@ const AutherController = {
   },
 
   profile: function (req, res) {
-    // Nhận vào accessToken từ Header\
-    const user = req.user;
-    res.send({ user });
+    // Nhận vào accessToken từ Header
+    res.send(req.user);
   },
   me: async (req, res) => {
     res.json(req.user);
-  },
-  resetPassword: (req, res) => {
-    const username = req.body.username;
-    const hashPassword = bcrypt.hashSync(req.body.password, 10);
-    UserModel.updateOne({ username }, { password: hashPassword })
-      .then(() => {
-        return res
-          .status(200)
-          .json({ message: "Cập nhật thành công", username });
-      })
-      .catch((err) => res.status(500).send(err));
   },
 };
 export default AutherController;
