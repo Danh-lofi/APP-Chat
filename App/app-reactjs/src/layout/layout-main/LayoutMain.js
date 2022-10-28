@@ -8,8 +8,8 @@ const LayoutMain = (props) => {
       <div className="layout-main__navigation">
         <Navigation />
       </div>
-      <div className="layout-main__children container">{props.children}</div>
-      <div className="layout-main__chatbox  back_img">
+      <div className="layout-main__children ">{props.children}</div>
+      <div className="layout-main__chatbox container">
         <ChatBox />
       </div>
     </div>
