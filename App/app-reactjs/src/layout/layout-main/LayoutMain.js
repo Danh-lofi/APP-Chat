@@ -9,7 +9,7 @@ const LayoutMain = (props) => {
         <Navigation />
       </div>
       <div className="layout-main__children container">{props.children}</div>
-      <div className="layout-main__chatbox container">
+      <div className="layout-main__chatbox  back_img">
         <ChatBox />
       </div>
     </div>

@@ -1,1 +1,46 @@
+.heading_chat{
+  margin-bottom: 4rem;
 
+  .heading_top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  
+    h3{
+      font-size: 2.1rem;
+      color: #495057;
+    }
+    .icon_plus{
+      padding: 8px 8px;
+      background-color: #EDF7F0;
+      color: #7FC395;
+      border-radius: 4px;
+    }
+    .icon_plus:hover{
+      background-color: #4EAC6D;
+      color: #fff;
+    }
+  }
+  
+  .input_searchChat{
+    width: 100%;
+    padding: 14px 10px ;
+    border: none;
+    background-color: #F6F6F9;
+    border-radius: 4px;
+  }
+  
+  .input_searchChat:focus{
+    border: 1px solid #ccc;
+  }
+}
+
+.favourites{
+  p{
+    text-transform: uppercase;
+    font-size: 11px;
+    color: #797C8C;
+    margin-bottom: 15px;
+  }
+}
