@@ -4,6 +4,7 @@ import authMiddleware from "../app/middleware/authMiddleware.js";
 const routerAuth = express.Router();
 routerAuth.post("/login", UserController.login);
 routerAuth.post("/register", UserController.register);
+routerAuth.post("app/register", UserController.registerApp);
 routerAuth.post("/register/info", UserController.registerInfomation);
 routerAuth.post("/register/verify", UserController.verifyUsername);
 routerAuth.post("/refresh", UserController.refreshToken);

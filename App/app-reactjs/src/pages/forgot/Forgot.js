@@ -57,7 +57,7 @@ const Forgot = () => {
         });
     }
     // Xác thực không có có tài khoản
-    if (data.payload.status === 400) {
+    if (data.payload.status === 402) {
       console.log("Err");
       toast.error("Số điện thoại không tồn tại");
     }

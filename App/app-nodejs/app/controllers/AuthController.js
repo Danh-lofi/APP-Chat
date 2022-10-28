@@ -74,6 +74,15 @@ const AutherController = {
       return res.status(200).json({ user });
     });
   },
+  registerApp: async (req, res, next) => {
+    try {
+      const user = new UserModel(req.body);
+      await user.save();
+      res.status(201).json({ user });
+    } catch (error) {
+      res.status(400).send("Tao khong thanh cong voi ma loi: " + error);
+    }
+  },
   // Post (username) check username
   verifyUsername: (req, res) => {
     const username = req.body.username;
@@ -91,7 +100,7 @@ const AutherController = {
       if (user) {
         res.status(200).send({ username });
       } else {
-        res.status(400).send("Tài khoản này chưa tồn tại!");
+        res.status(402).send("Tài khoản này chưa tồn tại!");
       }
     });
   },
