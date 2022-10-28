@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
+import bcrypt from "bcrypt";
+
 const User = new Schema({
   username: {
     type: String,
@@ -18,22 +20,33 @@ const User = new Schema({
   },
   name: {
     type: String,
-    // required: true,
-    required: false,
+    required: true,
   },
   birthDate: {
     type: Date,
-    // required: true,
+    // required: false,
+    default: Date.now(),
   },
   gender: {
     type: String,
-    required: false,
-    // required: true,
+    required: true,
+  },
+  address: {
+    type: String,
+    required: true,
   },
   introducePersonal: {
     type: String,
-    required: false,
+    required: true,
   },
+  listFriends: [
+    {
+      sdt: {
+        type: String,
+        required: false,
+      },
+    },
+  ],
   tokens: [
     {
       token: {
@@ -47,6 +60,14 @@ const User = new Schema({
     type: String,
     required: false,
   },
+});
+
+User.pre("save", async function (next) {
+  const user = this;
+  if (user.isModified("password")) {
+    user.password = bcrypt.hashSync(user.password, 10);
+  }
+  next();
 });
 
 const UserModel = mongoose.model("User", User);

@@ -53,12 +53,12 @@ export const ApiUser = {
 
 export const ApiRegisterUser = {
   checkExistAccount: (data) => {
-    const url = `/register/verify`;
+    const url = `/checkExistAccount`;
     return ApiManager.post(url, data);
   },
 
   register: (data) => {
-    const url = `app/register`;
+    const url = `/register`;
     return ApiManager.post(url, data);
   },
 };
@@ -74,6 +74,7 @@ export const ApiProfile = {
     //   },
     // });
     return axios.create({
+      //baseURL: "http://192.168.137.214:3001/me",
       baseURL: "http://localhost:3001/me",
       headers: {
         Authorization: `Bearer ${token}`,

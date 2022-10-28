@@ -23,12 +23,14 @@ import DatePicker from "react-native-datepicker";
 import { LinearGradient } from "expo-linear-gradient";
 import { ApiRegisterUser } from "../api/ApiUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ApiUser } from "../api/ApiUser";
 
 const SC_Continue = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [date, setDate] = useState(new Date());
   const [animatePress, setAnimatePress] = useState(new Animated.Value(1));
   const [gender, setGender] = React.useState("");
+  const [address, setAddress] = React.useState("");
   const [male, setMale] = React.useState(false);
   const [female, setFemale] = React.useState(false);
   const [genderOther, setGenderOther] = React.useState(false);
@@ -42,11 +44,11 @@ const SC_Continue = ({ navigation, route }) => {
   // }, []);
 
   // for date
-  Animated.timing(animatePress, {
-    toValue: 0.5,
-    duration: 500,
-    useNativeDriver: true, // Add This line
-  }).start();
+  // Animated.timing(animatePress, {
+  //   toValue: 0.5,
+  //   duration: 500,
+  //   useNativeDriver: false, // Add This line
+  // }).start();
 
   const eventMale = () => {
     setMale(true);
@@ -73,12 +75,33 @@ const SC_Continue = ({ navigation, route }) => {
     Alert.alert(gender);
   };
 
+  const autoLogin = async () => {
+    const data = {
+      username: username,
+      password: password,
+    };
+    try {
+      await ApiUser.login(data).then(async (res) => {
+        console.log(
+          "dang nhap thanh cong voi token tra ve la: " + res.data.accessToken
+        );
+        await AsyncStorage.setItem("token", res.data.accessToken);
+        navigation.replace("BottomTabsNavigator", {
+          token: res.data.accessToken,
+        });
+      });
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+
   const handleRegister = async () => {
     const data = {
       username: username,
       password: password,
       name: name,
       gender: gender,
+      address: address,
       introducePersonal: introduceYourself,
     };
 
@@ -101,7 +124,9 @@ const SC_Continue = ({ navigation, route }) => {
             "dang ky thanh cong voi so dien thoai tra ve la: " +
               res.data.user.username
           );
-          navigation.navigate("SC_Login");
+
+          autoLogin();
+          // navigation.navigate("SC_Login");
         })
         .catch((err) => {
           console.log("Dang ky khong thanh cong" + err);
@@ -110,6 +135,14 @@ const SC_Continue = ({ navigation, route }) => {
       Alert.alert(error);
     }
   };
+
+  // useEffect(() => {
+  //   Animated.timing(date, {
+  //     toValue: 1,
+  //     duration: 2000,
+  //     useNativeDriver: false,
+  //   }).start();
+  // }, [date]);
 
   return (
     <LinearGradient
@@ -151,37 +184,45 @@ const SC_Continue = ({ navigation, route }) => {
                 <Text style={styles.notificationError}>{errMessage}</Text>
               </View>
 
+              <View style={[styles.wrapName, GlobalStyles.test3]}>
+                <TextInput
+                  style={styles.inputBorderBottom}
+                  placeholder="Nhập địa chỉ"
+                  value={address}
+                  onChangeText={setAddress}
+                />
+                <Text style={styles.notificationError}>{errMessage}</Text>
+              </View>
+
               {/* input password */}
               <View style={[styles.wrapBirthDate, GlobalStyles.test3]}>
                 <Text style={styles.txtOfInput}>Ngày tháng năm sinh</Text>
-                <Animated.View>
-                  <DatePicker
-                    style={styles.datePickerStyle}
-                    date={date} //initial date from state
-                    mode="date" //The enum of date, datetime and time
-                    placeholder="select date"
-                    format="DD-MM-YYYY"
-                    minDate="01-01-2016"
-                    maxDate="01-01-2019"
-                    confirmBtnText="Confirm"
-                    cancelBtnText="Cancel"
-                    customStyles={{
-                      dateIcon: {
-                        //display: 'none',
-                        position: "absolute",
-                        left: 0,
-                        top: 4,
-                        marginLeft: 0,
-                      },
-                      dateInput: {
-                        marginLeft: 36,
-                      },
-                    }}
-                    onDateChange={(date) => {
-                      setDate(date);
-                    }}
-                  />
-                </Animated.View>
+                {/* <Animated.View> */}
+                <DatePicker
+                  style={styles.datePickerStyle}
+                  date={date} //initial date from state
+                  mode="date" //The enum of date, datetime and time
+                  placeholder="select date"
+                  format="DD/MM/YYYY"
+                  minDate="01/01/2016"
+                  maxDate="01/01/2019"
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  customStyles={{
+                    dateIcon: {
+                      //display: 'none',
+                      position: "absolute",
+                      left: 0,
+                      top: 4,
+                      marginLeft: 0,
+                    },
+                    dateInput: {
+                      marginLeft: 36,
+                    },
+                  }}
+                  onDateChange={setDate}
+                />
+                {/* </Animated.View> */}
                 <Text style={styles.notificationError}>{errMessage}</Text>
               </View>
 
@@ -253,7 +294,7 @@ const SC_Continue = ({ navigation, route }) => {
                       textAlign: "center",
                     }}
                   >
-                    Hoàn tất {username}
+                    Hoàn tất
                   </Text>
                 </TouchableOpacity>
               </View>

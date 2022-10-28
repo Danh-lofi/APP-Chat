@@ -50,7 +50,7 @@ export const Home = ({ navigation, route }) => {
     await ApiProfile.profile2(token)
       .then((res) => {
         console.log("2: " + token);
-        console.log("Thong tin user:" + res.data);
+        console.log("Thong tin user:" + res.data.name);
       })
       .catch((err) => {
         console.log("3");
@@ -121,9 +121,9 @@ export const Home = ({ navigation, route }) => {
           // }
         />
       </View>
-      <View>
+      {/* <View>
         <Text>temp: {temp}</Text>
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };

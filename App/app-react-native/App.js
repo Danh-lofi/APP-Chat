@@ -41,7 +41,7 @@ const MainStackScreen = () => {
   Animated.timing(animatedValue, {
     toValue: 1,
     duration: 500,
-    useNativeDriver: true, // <-- Add this
+    useNativeDriver: false, // <-- Add this
   }).start();
 
   return (
