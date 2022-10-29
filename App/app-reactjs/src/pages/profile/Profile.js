@@ -5,15 +5,21 @@ import { profile, userActions } from "../../store/userSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPhone, faUser, faCalendarDay, faVenusMars } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPhone,
+  faUser,
+  faCalendarDay,
+  faVenusMars,
+} from "@fortawesome/free-solid-svg-icons";
 
-import "./profile.scss"
+import "./profile.scss";
 const Profile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   let isLogin = useSelector((state) => state.user.isLoggedIn);
 
+  console.log(user);
   useEffect(() => {
     if (user) {
       dispatch(profile(user.accessToken)).then((res) => {
@@ -50,7 +56,11 @@ const Profile = () => {
           <div className="profile__body">
             <div className="body__info_contain">
               <div className="info__bio">
-                <p>là người có công việc duy trì các hoạt động của hệ thống máy tính cũng như mạng, đảm bảo sao cho chúng luôn trong tình trạng tối ưu nhất.</p>
+                <p>
+                  là người có công việc duy trì các hoạt động của hệ thống máy
+                  tính cũng như mạng, đảm bảo sao cho chúng luôn trong tình
+                  trạng tối ưu nhất.
+                </p>
               </div>
               <div className="info__name">
                 <FontAwesomeIcon className="icon" icon={faUser} />
@@ -60,7 +70,7 @@ const Profile = () => {
               <div className="info__username">
                 <FontAwesomeIcon className="icon" icon={faPhone} />
                 <p>0335047747</p>
-              </div> 
+              </div>
               <div className="info__birthday">
                 <FontAwesomeIcon className="icon" icon={faCalendarDay} />
                 <p>05/01/2005</p>
@@ -114,11 +124,8 @@ const Profile = () => {
             <div className="body__files_contain">
               <p>Files</p>
               <div className="files__contain">
-                <div className="files__file_cotain">
-
-                </div>
+                <div className="files__file_cotain"></div>
               </div>
-
             </div>
           </div>
         </div>
