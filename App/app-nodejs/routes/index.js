@@ -1,8 +1,10 @@
 import routerAuth from "./Auth.js";
-
+import routerChat from "./Chat.js";
+import routerMessage from "./Message.js";
 function route(app) {
-  // ROUTE sử dụng đường dẫn nào
-  app.use("/", routerAuth);
+  app.use("/auth", routerAuth);
+  app.use("/chat", routerChat);
+  app.use("/message", routerMessage);
 }
 
 export default route;
