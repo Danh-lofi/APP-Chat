@@ -3,6 +3,21 @@
 .chatBox{
   box-sizing: border-box;
   position: relative;
+  width: 70%;
+  transition: width .4s ease-in-out;
+  &.full{
+    width: 100%;
+    & .footer{
+      width: 75%;
+    }
+  }
+}
+.profile-friend {
+  transition: width .4s ease-in-out;
+  width: 30%;
+  &.not-active{
+    width: 0%;
+  }
 }
 
 .heading{
@@ -95,9 +110,10 @@
 
 
 .footer{
+  transition: width .4s ease-in-out;
   background-color: #06D6A0;
   position: fixed;
-  width: 70%;
+  width: 53%;
   height: 90px;
   bottom: 0;
   display: flex;
@@ -206,3 +222,8 @@
 .modal_more.active{
   display: block;
 }
+
+.chatBox__container{
+  display: flex;
+}
+
