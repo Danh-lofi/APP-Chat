@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./ChatBox.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -23,18 +23,118 @@ import InputAuthen from "../../components/input/InputAuthen";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import ProfileFriend from "./profile-friend/ProfileFriend";
+import chatApi from "../../api/chatApi";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import messageApi from "../../api/messageApi";
+import ListChat from "../listchat/ListChat";
+import { io } from "socket.io-client";
 
 const ChatBox = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const socket = useRef();
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user")).user
+  );
+  const [chatId, setChatId] = useState();
+  const [messages, setMessgages] = useState([]);
+  const [message, setMessage] = useState("");
+  const [receivedMessage, setReceivedMessage] = useState(null);
+
   const [ariaExpanded, setAriaExpanded] = useState("");
   const [isProfileFriend, setIsProfileFriend] = useState(false);
   const clickMore = () => {
     document.querySelector(".modal_more").classList.toggle("active");
   };
 
+  // // Connect to Socket.io
+  useEffect(() => {
+    socket.current = io("ws://localhost:3001");
+    socket.current.emit("new-user-add", user._id);
+    socket.current.on("get-users", (users) => {
+      setOnlineUsers(users);
+    });
+  }, [user]);
+
+  // Send Message to socket server
+  // useEffect(() => {
+  //   if (message !== null) {
+  //     socket.current.emit("send-message", {
+  //       message: message,
+  //       receiverId: "635ba8fcfb5b0d4b6d13f53f",
+  //     });
+  //   }
+  // }, [message]);
+
+  // Get the message from socket server
+  useEffect(() => {
+    socket.current.on("recieve-message", (data) => {
+      console.log(data);
+      setMessgages((messages) => [...messages, data]);
+    });
+  }, [receivedMessage]);
+
+  // Test API
+  useEffect(() => {
+    const getChats = async () => {
+      try {
+        const chat = await chatApi.getChat(
+          "636177aafa30bca9bc79733e",
+          "635ba8fcfb5b0d4b6d13f53f"
+        );
+        setChatId(chat.data._id);
+      } catch (error) {}
+    };
+    getChats();
+  }, [user]);
+
+  // get all messages from chat id
+  useEffect(() => {
+    const getAllMessages = async (chatId) => {
+      const messagesData = await messageApi.getMessages(chatId);
+      setMessgages(messagesData.data);
+    };
+    getAllMessages(chatId);
+  }, [chatId]);
+
+  //
   const changeHideProfileFriendHandle = () => {
     setIsProfileFriend(!isProfileFriend);
   };
+  // Change Message
+  const changeMessageHandle = (e) => {
+    setMessage(e.target.value);
+  };
 
+  // Send Message
+  const sendMessageHandle = async () => {
+    // console.log(message);
+    const messageSender = {
+      chatId,
+      senderId: user._id,
+      text: message,
+    };
+    const data = await messageApi.addMessage(messageSender);
+
+    if (data.status === 200) {
+      if (message !== null) {
+        socket.current.emit("send-message", {
+          chatId,
+          senderId: user._id,
+          text: message,
+          receiverId: "635ba8fcfb5b0d4b6d13f53f",
+        });
+      }
+      console.log(messages);
+      setMessgages((messages) => [...messages, messageSender]);
+      setMessage("");
+    }
+  };
   return (
     <div className="chatBox__container">
       <div className={`chatBox ${!isProfileFriend ? "full" : ""}`}>
@@ -125,66 +225,7 @@ const ChatBox = () => {
           </div>
         </div>
 
-        <div className="content">
-          <ChatItem
-            Messenger="Alo alo"
-            time="09:13pm"
-            name="Do Thanh Danh"
-            linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
-          />
-          <ChatItem
-            isRight
-            Messenger="Tong dep trai de thuong"
-            time="09:13pm"
-            name="Tran Phuc Tong"
-            linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
-          />
-          <ChatItem
-            Messenger="OK!"
-            time="09:13pm"
-            name="Do Thanh Danh"
-            linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
-          />
-          <ChatItem
-            Messenger="OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK!"
-            time="09:13pm"
-            name="Do Thanh Danh"
-            linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
-          />
-          <ChatItem
-            isRight
-            Messenger="Tong dep trai de thuong"
-            time="09:13pm"
-            name="Tran Phuc Tong"
-            linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
-          />
-          <ChatItem
-            Messenger="OK!"
-            time="09:13pm"
-            name="Do Thanh Danh"
-            linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
-          />
-          <ChatItem
-            isRight
-            Messenger="Tong dep trai de thuong lollllllllllllllllllllllllllllllllllllllllllllllllll"
-            time="09:13pm"
-            name="Tran Phuc Tong"
-            linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
-          />
-          <ChatItem
-            Messenger="OK!"
-            time="09:13pm"
-            name="Do Thanh Danh"
-            linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
-          />
-          <ChatItem
-            Messenger="OK!"
-            time="09:13pm"
-            name="Do Thanh Danh"
-            linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
-          />
-        </div>
-
+        <ListChat messages={messages} currentUserId={user._id} />
         <div className="footer">
           <FontAwesomeIcon
             onClick={clickMore}
@@ -196,12 +237,18 @@ const ChatBox = () => {
           <div className="sender">
             <input
               className="inputSender"
+              value={message}
               type="text"
               placeholder="Nhập tin nhắn của bạn"
+              onChange={changeMessageHandle}
             />
           </div>
           <FontAwesomeIcon className="icon_fa" icon={faMicrophone} />
-          <FontAwesomeIcon className="icon_fa send" icon={faPaperPlane} />
+          <FontAwesomeIcon
+            className="icon_fa send"
+            icon={faPaperPlane}
+            onClick={sendMessageHandle}
+          />
         </div>
       </div>
 

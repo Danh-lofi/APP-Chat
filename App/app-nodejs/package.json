@@ -19,6 +19,8 @@
     "mongoose": "^6.6.1",
     "nodemon": "^2.0.20",
     "rand-token": "^1.0.1",
+    "socket.io": "^4.5.3",
+    "socket.io-client": "^4.5.3",
     "util": "^0.12.4"
   }
 }

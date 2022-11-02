@@ -19,7 +19,7 @@ const Profile = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   let isLogin = useSelector((state) => state.user.isLoggedIn);
 
-  console.log(user);
+  // console.log(user);
   useEffect(() => {
     if (user) {
       dispatch(profile(user.accessToken)).then((res) => {
