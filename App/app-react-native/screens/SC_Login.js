@@ -17,6 +17,7 @@ import {
   Alert,
   Image,
 } from "react-native";
+import axios from "axios";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import GlobalStyles from "../components/GlobalStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -81,6 +82,8 @@ const SC_Login = ({ navigation }) => {
     );
     return () => subscription?.remove();
   }, []);
+
+  console.log("-----------------");
 
   return (
     <LinearGradient

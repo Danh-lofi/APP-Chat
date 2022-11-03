@@ -16,21 +16,10 @@ import GlobalStyles from "../components/GlobalStyles";
 import { SearchICon, QRIcon, AddNewIcon } from "../components/IconBottomTabs";
 import MessageBar from "../components/MessageBar";
 import { PhoneBook } from "./PhoneBook.screen";
-import { ApiProfile } from "../api/ApiUser";
+import { ApiProfile, ApiUser } from "../api/ApiUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const size = 22;
-
-const avt = require("../assets/cute.png");
-const url = "http://localhost:3000/posts";
-
-const DATA = [
-  { id: "1", name: "Nguyen Thanh Nhan", avatar: require("../data/img/1.jpeg") },
-  { id: "2", name: "Nguyen Van A", avatar: require("../data/img/2.png") },
-  { id: "3", name: "Tran Thi B", avatar: require("../data/img/3.jpeg") },
-  { id: "4", name: "Phan Van C", avatar: require("../data/img/4.png") },
-  { id: "5", name: "Pham Thi D", avatar: require("../data/img/5.jpeg") },
-];
 
 // test Touch text search
 function alert(item) {
@@ -43,6 +32,16 @@ export const Home = ({ navigation, route }) => {
   // const { token } = route.params;
   const [temp, setTemp] = useState("");
 
+  console.log(
+    "------------------------------------------------------------------"
+  );
+
+  const handleClick = async (item) => {
+    navigation.navigate("SC_Chat");
+    await AsyncStorage.setItem("currentName", item.name);
+    await AsyncStorage.setItem("avatar", item.avatar);
+  };
+
   const callApiProfile = useCallback(async () => {
     const token = await AsyncStorage.getItem("token");
     setTemp(token);
@@ -50,7 +49,7 @@ export const Home = ({ navigation, route }) => {
     await ApiProfile.profile2(token)
       .then((res) => {
         console.log("2: " + token);
-        console.log("Thong tin user:" + res.data.name);
+        console.log(res.data);
       })
       .catch((err) => {
         console.log("3");
@@ -61,24 +60,24 @@ export const Home = ({ navigation, route }) => {
     callApiProfile();
   }, []);
 
-  function test1() {
-    Alert.alert(temp);
-  }
-
-  const handleFetchPalettes = useCallback(async () => {
-    await fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        setInfor(data);
+  const getAllUser = useCallback(async () => {
+    await ApiUser.getAllUser()
+      .then((res) => {
+        console.log(res.data.users);
+        setInfor(res.data.users);
       })
-      .catch((error) => {
-        // Alert.alert(console.error(error));
+      .catch((err) => {
+        console.log("Khong the lay tat ca thong tin user: " + err);
       });
   }, []);
 
   useEffect(() => {
-    handleFetchPalettes();
+    getAllUser();
   }, []);
+
+  function test1() {
+    Alert.alert(temp);
+  }
 
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -108,10 +107,10 @@ export const Home = ({ navigation, route }) => {
       {/* list message */}
       <View style={styles.listMess}>
         <FlatList
-          data={DATA}
-          keyExtractor={(item) => item.id}
+          data={infor}
+          keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
-            <MessageBar onPress={() => alert(item)} listInfor={item} />
+            <MessageBar onPress={() => handleClick(item)} listInfor={item} />
           )}
           // refreshControl={
           //   <RefreshControl

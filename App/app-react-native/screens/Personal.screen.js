@@ -29,6 +29,8 @@ export const Personal = ({ navigation }) => {
   const [gender, setGender] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [address, setAddress] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [coverImg, setCoverImg] = useState("");
 
   const handleLogout = () => {
     AsyncStorage.clear();
@@ -46,6 +48,8 @@ export const Personal = ({ navigation }) => {
         setGender(res.data.gender);
         setAddress(res.data.address);
         setBirthDate(res.data.birthDate);
+        setAvatar(res.data.avatar);
+        setCoverImg(res.data.coverImg);
       })
       .catch((err) => {
         console.log("3");
@@ -65,7 +69,7 @@ export const Personal = ({ navigation }) => {
           <View style={styles.coverImage}>
             <Image
               style={styles.image}
-              source={require("../assets/coverimgdefault.jpeg")}
+              source={{ uri: coverImg }}
               resizeMode={"stretch"}
             />
             <View style={styles.option}>
@@ -85,7 +89,7 @@ export const Personal = ({ navigation }) => {
                   borderWidth: 4,
                 },
               ]}
-              source={require("../assets/avatardefault.jpeg")}
+              source={{ uri: avatar }}
               resizeMode={"contain"}
             />
           </View>
