@@ -9,9 +9,9 @@ import { faFaceSmile, faTrashCan, faFolderOpen } from "@fortawesome/free-regular
 const ChatItem = (props) => {
   return (
 
-    <ul className="list_Chat">
+    <div className="list_Chat">
       {props.isRight ? (
-        <li className="chat-list right">
+        <div className="chat-list right">
           <div className="conversation-list">
 
             <div className="user_chat_content">
@@ -71,9 +71,9 @@ const ChatItem = (props) => {
               <img className="avt_chat" src={props.linkImage} alt="avtChat" />
             </div>
           </div>
-        </li>
+        </div>
       ) : (
-        <li className="chat-list">
+        <div className="chat-list">
           <div className="conversation-list">
             <div className="chat_avatar">
               <img className="avt_chat" src={props.linkImage} alt="avtChat" />
@@ -133,9 +133,9 @@ const ChatItem = (props) => {
               </div>
             </div>
           </div>
-        </li>
+        </div>
       )}
-    </ul>
+    </div>
 
   )
 };

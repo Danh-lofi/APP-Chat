@@ -1,0 +1,56 @@
+.userChat {
+  display: flex;
+  align-items: center;
+  padding: 5px 24px;
+  cursor: pointer;
+  position: relative;
+  margin-bottom: 10px;
+
+  &_boxImgUser {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    margin-right: 10px;
+
+    &_statusUserChat {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      position: absolute;
+      background-color: #06D6A0;
+      border: 2px solid #fff;
+      bottom: 0;
+      right: 0;
+    }
+  }
+
+  &_amountMess{
+    &_numberMess{
+      display: inline-block;
+      font-size: 0.75em;
+      font-weight: 500;
+      line-height: 1;
+      text-align: center;
+      background-color: #ccc;
+      border-radius: 3px;
+      padding: 0.25rem;
+      white-space: nowrap;
+      position: absolute;
+      vertical-align: baseline;
+      right: 24px;
+      bottom: 10px;
+    }
+  }
+
+  &_name{
+    &__isWait{
+      font-weight: bold;
+    }
+  }
+}
+
+
+.active_userChat {
+  background-color: #06D6A0;
+  color: #fff;
+}

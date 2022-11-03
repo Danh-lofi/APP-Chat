@@ -1,77 +1,145 @@
 @use '../../scss/' as *;
 
-.chatBox{
-  box-sizing: border-box;
-  position: relative;
-}
-
-.heading{
+.chatBox {
   width: 100%;
-  height: 100px;
-  position: absolute;
-  z-index: 999;
-  border-bottom: 1px solid #EAEAF1 ;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  backdrop-filter: blur(7px) ;
-  box-shadow: 0 0 10px  #ccc;
-}
-
-.heading_left{
-  width: 33.33333%;
-  padding: 0 25px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  cursor: pointer;
-}
-
-.image{
-  align-items: center;
-  justify-content: center;
-  margin-right: 1.6rem;
+  height: 100%;
   position: relative;
+
+  &_heading {
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    position: static;
+    height: 15%;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #F3F3F3;
+    box-shadow: 0 0 10px #ccc;
+    border-bottom: 1px solid #EAEAF1;
+
+    &_left {
+      display: flex;
+
+      &_headingImage {
+        position: relative;
+        width: 5rem;
+        height: 5rem;
+        margin-right: 1.6rem;
+
+        &_avt_heading {
+          border-radius: 50%;
+        }
+
+        &_status {
+          width: 1.2rem;
+          height: 1.2rem;
+          border-radius: 50%;
+          position: absolute;
+          background-color: #06D6A0;
+          border: 2px solid #fff;
+          right: 0;
+          bottom: 0;
+        }
+      }
+    }
+
+    &_right {
+      display: flex;
+
+      &_searchInput {
+        width: 300px;
+        padding: 8px 24px;
+        margin: 0 8px;
+        border-radius: 5px;
+        border: 2px solid #ccc;
+
+        &:focus {
+          border: 2px solid #000;
+        }
+      }
+    }
+  }
+
+  &_content {
+    padding: 0 24px;
+    width: 100%;
+    height: 70%;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  &_footer {
+    width: 100%;
+    height: 15%;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    background-color: #F3F3F3;
+    align-items: center;
+    border-top: 1px solid #EAEAF1;
+    box-shadow: 0 -5px 20px rgb(234, 231, 231);
+    z-index: 1000;
+
+    &_sender {
+      width: 84%;
+      height: auto;
+      margin-right: 1px;
+    }
+
+    &_send {
+      padding: 15px !important;
+      color: #fff !important;
+      background-color: #88C59C;
+      border-radius: 5px;
+      margin-left: 0;
+    }
+  }
+
+  &_modal {
+    background-color: #fff;
+    position: absolute;
+    width: 100%;
+    height: 16%;
+    bottom: 0;
+    z-index: -1;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+
+    &_more{
+      display: flex;
+      padding: 20px;
+      justify-content: space-between;
+      align-items: center;
+
+      & a{
+        justify-content: center;
+        align-items: center;
+      }
+
+      &_icon_fa__second{
+        padding: 16px;
+        border-radius: 50%;
+        background-color: #DCEEE2;
+        color: #4EAC6D;
+      }
+
+      &_name_icon_fa__second{
+        text-transform: uppercase;
+        font-size: 10px;
+        font-weight: bold;
+        color: #5C6369;
+        text-align: center;
+      }
+
+    }
+  }
 }
 
-.avt_heading{
-  width: 5rem;
-  height: 5rem;
-  border-radius: 50%;
-  margin-top: 10px;
-}
 
-.name,
-.active{
-  color: #495057;
-}
-.active{
-  font-size: 14px;
-}
 
-.status{
-  width: 1.2rem;
-  height: 1.2rem;
-  border-radius: 50%;
-  position: absolute;
-  background-color: #06D6A0;
-  border: 2px solid #fff;
-  right: 5px;
-  bottom: 6px;
-  left: auto;
-}
-
-.heading_right{
-  width: 66.66667%;
-  right: 0;
-  padding: 0 25px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.icon_fa{
+.icon_fa {
   font-size: 20px;
   color: #797C8C;
   padding: 10px;
@@ -79,101 +147,29 @@
   margin: 0 10px;
 }
 
-
-// Chat List
-.content{
-  padding: 0 24px;
-  width: 100%;
-  height: auto;
-  position: relative;
-  padding-top: 100px;
-  margin-bottom: 100px;
-  height: 630px;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-
-.footer{
-  background-color: #06D6A0;
-  position: fixed;
-  width: 70%;
-  height: 90px;
-  bottom: 0;
-  display: flex;
-  z-index: 2;
-  flex-direction: row;
-  background-color: #F3F3F3;
-  align-items: center;
-  border-top: 1px solid #EAEAF1;
-  box-shadow: 0 -5px 20px  rgb(234, 231, 231);
-}
-
-.sender{
-  width: 80%;
-  height: auto;
-}
-
-.inputSender{
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.inputSender:focus{
-  border: 1px solid #000;
-}
-
-.send{
-  padding: 12px;
-  color: #fff;
-  background-color: #88C59C;
-  border-radius: 5px;
-  margin-left: 0;
-}
-
-.modalOption{
-  background-color: #fff;
-}
-.header__navbar-user-menu{
-  width: 100%;
-  height: 100%;
-}
-
-
-.tippy-box[data-theme~="light-border"]{
+.tippy-box[data-theme~="light-border"] {
   background-color: #fff;
   align-items: center;
   z-index: 1000;
   pointer-events: all;
 
-  .searchInput{
-    width: 300px;
-    padding: 8px 24px;
-    margin: 0 8px;
-    border-radius: 5px;
-    border: 2px solid #ccc;
-  }
-  .searchInput:focus{
-    border: 2px solid #000;
-  }
-
-  .tippy-content{
+  .tippy-content {
     padding: 5px 0;
   }
-  a{
-   align-items: center;
-   cursor: pointer;
-   padding: 6px 20px 6px 24px;
-   display: flex;
-   width: 230px;
+
+  a {
+    align-items: center;
+    cursor: pointer;
+    padding: 6px 20px 6px 24px;
+    display: flex;
+    width: 230px;
   }
-  a:hover{
+
+  a:hover {
     background-color: rgb(237, 237, 237);
   }
 
-  p{
+  p {
     color: #000;
     font-size: 15px;
     color: #505356;
@@ -181,11 +177,11 @@
     text-align: left;
   }
 
-  .option_Chat{
+  .option_Chat {
     z-index: 1001;
   }
 
-  .optionMore_icon{
+  .optionMore_icon {
     width: 10%;
     color: #505356;
     text-align: center;
@@ -194,15 +190,20 @@
   }
 }
 
-.modal_more{
-  position: none;
-  display: flex;
-  background-color: #88C59C;
-  bottom: 100px;
-  height: 90px;
-  width: 100%;
+
+.react-input-emoji--input:focus {
+  border: 1px solid #ccc;
+  border-radius: 21px;
 }
 
-.modal_more.active{
-  display: block;
+
+.react-input-emoji--button {
+  padding: 0 28px !important;
+}
+
+
+.activeModal {
+  bottom: 15%;
+  z-index: 1;
+  transition: all 0.5s ease-in;
 }
