@@ -1,13 +1,13 @@
-import MessageModel from "../models/messageModel.js";
+import MessageModel from "../models/Message.js";
 
 const MessageController = {
+  // [POST] /message/
   addMessage: async (req, res) => {
-    const { chatId, senderId, text } = req.body;
-    console.log(text);
+    const { chatId, senderId, content } = req.body;
     const message = new MessageModel({
       chatId,
       senderId,
-      text,
+      content,
     });
     try {
       const result = await message.save();
@@ -16,6 +16,8 @@ const MessageController = {
       res.status(500).json(error);
     }
   },
+
+  // [GET] /message/:chatId
   getMessages: async (req, res) => {
     const { chatId } = req.params;
     try {
