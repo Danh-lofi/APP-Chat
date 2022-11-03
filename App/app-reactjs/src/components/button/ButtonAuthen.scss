@@ -1,6 +1,7 @@
 @use '../../scss/' as *;
 .login_btn {
     width: 100%;
+    min-width: 12rem;
     padding: 10px 16px;
     font-weight: 400;
     font-size: 1.5rem;

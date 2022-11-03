@@ -5,7 +5,7 @@ import "./layout-main.scss";
 const LayoutMain = (props) => {
   return (
     <div className="layout-main">
-      <div className="layout-main__navigation container">
+      <div className="layout-main__navigation">
         <Navigation />
       </div>
       <div className="layout-main__children ">{props.children}</div>

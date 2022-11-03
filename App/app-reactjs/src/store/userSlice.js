@@ -9,6 +9,7 @@ export const login = createAsyncThunk(
       const res = await authApi.login(username, password);
       return { data: res.data, status: res.status };
     } catch (error) {
+      console.log(error.response.status);
       return error.response;
     }
   }
@@ -55,6 +56,7 @@ export const profile = createAsyncThunk("/profile", async (accessToken) => {
     const response = await authApi.profile(accessToken);
     return { data: response.data, status: response.status };
   } catch (error) {
+    console.log(error.response.status);
     return { status: error.response.status };
   }
 });
@@ -100,7 +102,8 @@ const userSlice = createSlice({
       state.isLoggedIn = false;
     },
     [login.fulfilled]: (state, action) => {
-      if (!action.payload) return;
+      console.log(action);
+      if (!action.payload.data.user) return;
       state.isLoggedIn = true;
       state.user = action.payload.data.user;
       state = JSON.parse(JSON.stringify(state));
@@ -117,8 +120,9 @@ const userSlice = createSlice({
       }
     },
     [profile.rejected]: (state, action) => {
-      // state.isLoggedIn = true;
-      // state.user = action.payload.data.user;
+      console.log("rejected");
+      state.isLoggedIn = false;
+      state.user = null;
     },
     [existUsername.fulfilled]: (state, action) => {
       if (!action.payload) return;
@@ -136,6 +140,21 @@ const userSlice = createSlice({
     //   state.user = null;
     // },
   },
+  reducers: {
+    logOut: (state, action) => {
+      console.log("ok");
+      state.isLoggedIn = false;
+      state.user = null;
+      localStorage.setItem("user", JSON.stringify(null));
+    },
+    setLogout: (state) => {
+      state.isLoggedIn = false;
+    },
+    setLogin: (state) => {
+      state.isLoggedIn = true;
+    },
+  },
 });
 
+export const userActions = userSlice.actions;
 export default userSlice;

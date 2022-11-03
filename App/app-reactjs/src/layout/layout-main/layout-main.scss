@@ -4,6 +4,7 @@
     height: 100vh;
     width: 100%;
     position: relative;
+    overflow: hidden;
     &__navigation{
         flex: 0.5;
     }
@@ -13,8 +14,8 @@
     }
     &__chatbox{
         flex: 9;
-        background: url("https://doot-light.react.themesbrand.com/static/media/pattern-05.ffd181cd.png") fixed center #F3F3F3;
-        position: relative;
+        background-color: #f2f2f2;
+        background-image: url('../../assets/image/main/bg_main.png');
     }
 }
 

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "app-react-native",
-    "slug": "app-react-native",
+    "name": "AloApp",
+    "slug": "AloApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

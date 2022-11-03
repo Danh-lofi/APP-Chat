@@ -9,6 +9,7 @@ import ConfirmOTP from "../pages/confirmOTP/ConfirmOTP";
 import ResetPassword from "../pages/reset-pass/ResetPassword";
 import Info from "../pages/register-info/Register_info";
 import Chat from "../pages/chat/Chat";
+import ChangePassword from "../pages/change-password/ChangePassword";
 
 const mainRoutes = [
   {
@@ -27,6 +28,7 @@ export const authRoutes = [
   { path: configRoutes.confirmOTP, component: ConfirmOTP },
   { path: configRoutes.resetPassword, component: ResetPassword },
   { path: configRoutes.info, component: Info },
+  { path: configRoutes.changePassword, component: ChangePassword },
 ];
 
 export default mainRoutes;

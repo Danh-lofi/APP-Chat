@@ -74,6 +74,15 @@ const AutherController = {
       return res.status(200).json({ user });
     });
   },
+  registerApp: async (req, res, next) => {
+    try {
+      const user = new UserModel(req.body);
+      await user.save();
+      res.status(201).json({ user });
+    } catch (error) {
+      res.status(400).send("Tao khong thanh cong voi ma loi: " + error);
+    }
+  },
   // Post (username) check username
   verifyUsername: (req, res) => {
     const username = req.body.username;
@@ -91,7 +100,7 @@ const AutherController = {
       if (user) {
         res.status(200).send({ username });
       } else {
-        res.status(400).send("Tài khoản này chưa tồn tại!");
+        res.status(402).send("Tài khoản này chưa tồn tại!");
       }
     });
   },
@@ -199,6 +208,29 @@ const AutherController = {
   },
   resetPassword: (req, res) => {
     const username = req.body.username;
+    const hashPassword = bcrypt.hashSync(req.body.password, 10);
+    UserModel.updateOne({ username }, { password: hashPassword })
+      .then(() => {
+        return res
+          .status(200)
+          .json({ message: "Cập nhật thành công", username });
+      })
+      .catch((err) => res.status(500).send(err));
+  },
+  changePassword: async (req, res) => {
+    const username = req.body.username;
+    const oldPassword = req.body.oldPassword;
+    // Truy xuất db
+    const user = await UserModel.findOne({ username: username });
+    console.log(user);
+    if (!user) {
+      return res.status(404).send("Tên đăng nhập không tồn tại!");
+    }
+    // So sánh password
+    const isPasswordValid = bcrypt.compareSync(oldPassword, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).send("Mật khẩu không chính xác!");
+    }
     const hashPassword = bcrypt.hashSync(req.body.password, 10);
     UserModel.updateOne({ username }, { password: hashPassword })
       .then(() => {

@@ -28,15 +28,18 @@ const Login = (props) => {
 
   const submitHandle = () => {
     dispatch(login({ username, password })).then((res) => {
+      console.log(res);
       // Đăng nhập thành công
       if (res.payload.status === 200) {
         navigate("/profile");
       }
       // Đăng nhập thất bại
+      if (res.payload.status === 404) {
+        toast.error("Số điện thoại không tồn tại. Vui lòng đăng nhập lại!!!");
+      }
+
       if (res.payload.status === 401) {
-        toast.error(
-          "Số điện thoại hoặc mật khẩu sai. Vui lòng đăng nhập lại!!!"
-        );
+        toast.error("Mật khẩu không chính xác. Vui lòng đăng nhập lại!!!");
       }
     });
   };

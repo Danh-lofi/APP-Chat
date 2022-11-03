@@ -43,6 +43,10 @@ const authApi = {
     const url = "/forgot/reset-password";
     return axiosClient.post(url, { username, password });
   },
+  changePassword: (username, oldPassword, password) => {
+    const url = "/change-password";
+    return axiosClient.post(url, { username, oldPassword, password });
+  },
 };
 
 export default authApi;

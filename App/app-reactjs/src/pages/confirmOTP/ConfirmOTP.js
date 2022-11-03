@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+
+import { Link } from "react-router-dom";
 import ButtonAuthen from "../../components/button/ButtonAuthen";
 import InputAuthen from "../../components/input/InputAuthen";
 import "./confirmOTP.scss";
 
 const ConfirmOTP = (props) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const username = props.username;
 
   const [OTP, setOTP] = useState("");

@@ -1,19 +1,43 @@
 import "./ChatItem.scss";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
-import { faSearch, faPhone, faVideo, faCircleInfo, faEllipsisVertical, faReply, faShareNodes, faCopy, faBookmark, faMessage, faEllipsis, faPaperPlane, faMicrophone, faMicrophoneSlash } from "@fortawesome/free-solid-svg-icons";
-import { faFaceSmile, faTrashCan, faFolderOpen } from "@fortawesome/free-regular-svg-icons";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
+import {
+  faSearch,
+  faPhone,
+  faVideo,
+  faCircleInfo,
+  faEllipsisVertical,
+  faReply,
+  faShareNodes,
+  faCopy,
+  faBookmark,
+  faMessage,
+  faEllipsis,
+  faPaperPlane,
+  faMicrophone,
+  faMicrophoneSlash,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  faFaceSmile,
+  faTrashCan,
+  faFolderOpen,
+} from "@fortawesome/free-regular-svg-icons";
 
 const ChatItem = (props) => {
-  return (
+  const scroll = useRef();
+  console.log(scroll.current);
+  // Always scroll to last Message
+  useEffect(() => {
+    scroll.current?.scrollIntoView({ behavior: "smooth" });
+  }, [props.id]);
 
-    <div className="list_Chat">
+  return (
+    <div className="list_Chat" ref={scroll}>
       {props.isRight ? (
         <div className="chat-list right">
           <div className="conversation-list">
-
             <div className="user_chat_content">
               <div className="messenger">
                 <div className="messOption">
@@ -22,27 +46,45 @@ const ChatItem = (props) => {
                       <div className="option_Chat">
                         <a href="" className="more_option">
                           <p>Reply</p>
-                          <FontAwesomeIcon className="optionMore_icon" icon={faReply} />
+                          <FontAwesomeIcon
+                            className="optionMore_icon"
+                            icon={faReply}
+                          />
                         </a>
                         <a href="" className="more_option">
                           <p href="">Forward</p>
-                          <FontAwesomeIcon className="optionMore_icon" icon={faShareNodes} />
+                          <FontAwesomeIcon
+                            className="optionMore_icon"
+                            icon={faShareNodes}
+                          />
                         </a>
                         <a href="" className="more_option">
                           <p href="">Copy</p>
-                          <FontAwesomeIcon className="optionMore_icon" icon={faCopy} />
+                          <FontAwesomeIcon
+                            className="optionMore_icon"
+                            icon={faCopy}
+                          />
                         </a>
                         <a href="" className="more_option">
                           <p href="">Bookmark</p>
-                          <FontAwesomeIcon className="optionMore_icon" icon={faBookmark} />
+                          <FontAwesomeIcon
+                            className="optionMore_icon"
+                            icon={faBookmark}
+                          />
                         </a>
                         <a href="" className="more_option">
                           <p href="">Mark as Unread</p>
-                          <FontAwesomeIcon className="optionMore_icon" icon={faMessage} />
+                          <FontAwesomeIcon
+                            className="optionMore_icon"
+                            icon={faMessage}
+                          />
                         </a>
                         <a href="" className="more_option">
                           <p href="">Delete</p>
-                          <FontAwesomeIcon className="optionMore_icon" icon={faTrashCan} />
+                          <FontAwesomeIcon
+                            className="optionMore_icon"
+                            icon={faTrashCan}
+                          />
                         </a>
                       </div>
                     }
@@ -52,10 +94,13 @@ const ChatItem = (props) => {
                     theme="light-border"
                     trigger="click"
                     appendTo="parent"
-                  // onMount={() => setAriaExpanded('true')}
-                  // onHide={() => setAriaExpanded('false')}
+                    // onMount={() => setAriaExpanded('true')}
+                    // onHide={() => setAriaExpanded('false')}
                   >
-                    <FontAwesomeIcon className="icon_messOption" icon={faEllipsisVertical} />
+                    <FontAwesomeIcon
+                      className="icon_messOption"
+                      icon={faEllipsisVertical}
+                    />
                   </Tippy>
                 </div>
                 <div className="content_messenger">
@@ -89,27 +134,45 @@ const ChatItem = (props) => {
                       <div className="option_Chat">
                         <a href="" className="more_option">
                           <p>Reply</p>
-                          <FontAwesomeIcon className="optionMore_icon" icon={faReply} />
+                          <FontAwesomeIcon
+                            className="optionMore_icon"
+                            icon={faReply}
+                          />
                         </a>
                         <a href="" className="more_option">
                           <p href="">Forward</p>
-                          <FontAwesomeIcon className="optionMore_icon" icon={faShareNodes} />
+                          <FontAwesomeIcon
+                            className="optionMore_icon"
+                            icon={faShareNodes}
+                          />
                         </a>
                         <a href="" className="more_option">
                           <p href="">Copy</p>
-                          <FontAwesomeIcon className="optionMore_icon" icon={faCopy} />
+                          <FontAwesomeIcon
+                            className="optionMore_icon"
+                            icon={faCopy}
+                          />
                         </a>
                         <a href="" className="more_option">
                           <p href="">Bookmark</p>
-                          <FontAwesomeIcon className="optionMore_icon" icon={faBookmark} />
+                          <FontAwesomeIcon
+                            className="optionMore_icon"
+                            icon={faBookmark}
+                          />
                         </a>
                         <a href="" className="more_option">
                           <p href="">Mark as Unread</p>
-                          <FontAwesomeIcon className="optionMore_icon" icon={faMessage} />
+                          <FontAwesomeIcon
+                            className="optionMore_icon"
+                            icon={faMessage}
+                          />
                         </a>
                         <a href="" className="more_option">
                           <p href="">Delete</p>
-                          <FontAwesomeIcon className="optionMore_icon" icon={faTrashCan} />
+                          <FontAwesomeIcon
+                            className="optionMore_icon"
+                            icon={faTrashCan}
+                          />
                         </a>
                       </div>
                     }
@@ -119,12 +182,14 @@ const ChatItem = (props) => {
                     theme="light-border"
                     trigger="click"
                     appendTo="parent"
-                  // onMount={() => setAriaExpanded('true')}
-                  // onHide={() => setAriaExpanded('false')}
+                    // onMount={() => setAriaExpanded('true')}
+                    // onHide={() => setAriaExpanded('false')}
                   >
-                    <FontAwesomeIcon className="icon_messOption" icon={faEllipsisVertical} />
+                    <FontAwesomeIcon
+                      className="icon_messOption"
+                      icon={faEllipsisVertical}
+                    />
                   </Tippy>
-
                 </div>
               </div>
               <div className="conversation-name">
@@ -136,8 +201,7 @@ const ChatItem = (props) => {
         </div>
       )}
     </div>
-
-  )
+  );
 };
 
 export default ChatItem;
