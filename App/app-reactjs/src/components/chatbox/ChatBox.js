@@ -41,6 +41,8 @@ import ProfileFriend from "./profile-friend/ProfileFriend";
 import NonChatBox from "./non-chat-box/NonChatBox";
 
 const ChatBox = () => {
+  const fileRef = useRef();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -155,7 +157,10 @@ const ChatBox = () => {
     }
   };
 
-  //
+  // Chagne file
+  const changeFileHandle = (e) => {
+    console.log(e.target.value);
+  };
 
   return (
     <div className="chatBox__container">
@@ -296,16 +301,26 @@ const ChatBox = () => {
             className={`chatBox_modal ${more === true ? "activeModal" : " "}`}
           >
             <div className="chatBox_modal_more">
-              <a href="#">
+              <div className="chatBox__modal__container">
+                <div style={{ height: 0, width: 0, overflow: "hidden" }}>
+                  <input
+                    type="file"
+                    ref={fileRef}
+                    onChange={changeFileHandle}
+                  />
+                </div>
                 <FontAwesomeIcon
                   className="chatBox_modal_more_icon_fa__second"
                   icon={faLink}
+                  onClick={() => {
+                    fileRef.current.click();
+                  }}
                 />
                 <p className="chatBox_modal_more_name_icon_fa__second">
                   attached
                 </p>
-              </a>
-              <a href="#">
+              </div>
+              <div className="chatBox__modal__container">
                 <FontAwesomeIcon
                   className="chatBox_modal_more_icon_fa__second"
                   icon={faCamera}
@@ -313,8 +328,8 @@ const ChatBox = () => {
                 <p className="chatBox_modal_more_name_icon_fa__second">
                   camera
                 </p>
-              </a>
-              <a href="#">
+              </div>
+              <div className="chatBox__modal__container">
                 <FontAwesomeIcon
                   className="chatBox_modal_more_icon_fa__second"
                   icon={faPhotoFilm}
@@ -322,15 +337,15 @@ const ChatBox = () => {
                 <p className="chatBox_modal_more_name_icon_fa__second">
                   gallery
                 </p>
-              </a>
-              <a href="#">
+              </div>
+              <div>
                 <FontAwesomeIcon
                   className="chatBox_modal_more_icon_fa__second"
                   icon={faFileAudio}
                 />
                 <p className="chatBox_modal_more_name_icon_fa__second">audio</p>
-              </a>
-              <a href="#">
+              </div>
+              <div className="chatBox__modal__container">
                 <FontAwesomeIcon
                   className="chatBox_modal_more_icon_fa__second"
                   icon={faLocation}
@@ -338,8 +353,8 @@ const ChatBox = () => {
                 <p className="chatBox_modal_more_name_icon_fa__second">
                   location
                 </p>
-              </a>
-              <a href="#">
+              </div>
+              <div className="chatBox__modal__container">
                 <FontAwesomeIcon
                   className="chatBox_modal_more_icon_fa__second"
                   icon={faContactBook}
@@ -347,7 +362,7 @@ const ChatBox = () => {
                 <p className="chatBox_modal_more_name_icon_fa__second">
                   contact
                 </p>
-              </a>
+              </div>
             </div>
           </div>
         </div>
