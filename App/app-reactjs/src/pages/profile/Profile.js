@@ -10,6 +10,9 @@ import {
   faUser,
   faCalendarDay,
   faVenusMars,
+  faDownload,
+  faTrash,
+  faWrench,
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./profile.scss";
@@ -34,6 +37,17 @@ const Profile = () => {
     }
   }, []);
 
+
+  const [ariaExpanded, setAriaExpanded] = useState("");
+  // const [isProfileFriend, setIsProfileFriend] = useState(false);
+  // const clickMore = () => {
+  //   document.querySelector(".modal_more").classList.toggle("active");
+  // };
+
+  // const changeHideProfileFriendHandle = () => {
+  //   setIsProfileFriend(!isProfileFriend);
+  // };
+
   // useEffect(() => {
   //   toast.success("Đăng nhập thành công");
   // });
@@ -44,13 +58,16 @@ const Profile = () => {
         <div className="profile__container">
           <div className="profile__header">
             <div className="header__img_contain">
-              <img src="https://genk.mediacdn.vn/139269124445442048/2022/6/7/how-hackers-use-social-media-and-emails-to-hack-virtual-crypto-wallets-1654589109166-16545891098641636949174.png"></img>
+              <img src="https://assets.ey.com/content/dam/ey-sites/ey-com/en_gl/topics/global-review/2019/ey-staff-at-event.jpg"></img>
             </div>
             <div className="header__info_and_avt_contain">
               <div className="header__avt_contain">
-                <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-1/275000620_3352877038272999_6281116958568140244_n.jpg?stp=dst-jpg_p320x320&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=SQMj4piqytQAX8_9Jax&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT8N-m4aWijCA01RMvACYSstuM--wmt6J_D6e_ZrIiAupg&oe=635D7C8F"></img>
+                <img src="https://assets.ey.com/content/dam/ey-sites/ey-com/en_gl/topics/global-review/2019/ey-staff-at-event.jpg"></img>
               </div>
               <p>Nguyễn Hoàng Vũ</p>
+              <div className="update_info">
+                <p>Sửa thông tin</p>
+              </div>
             </div>
           </div>
           <div className="profile__body">
@@ -89,42 +106,33 @@ const Profile = () => {
                 <div className="media__img_contain">
                   <img src="https://assets.ey.com/content/dam/ey-sites/ey-com/en_gl/topics/global-review/2019/ey-staff-at-event.jpg"></img>
                 </div>
-                <div className="media__img_contain">
-                  <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-1/275000620_3352877038272999_6281116958568140244_n.jpg?stp=dst-jpg_p320x320&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=SQMj4piqytQAX8_9Jax&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT8N-m4aWijCA01RMvACYSstuM--wmt6J_D6e_ZrIiAupg&oe=635D7C8F"></img>
-                </div>
-                <div className="media__img_contain">
-                  <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-1/275000620_3352877038272999_6281116958568140244_n.jpg?stp=dst-jpg_p320x320&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=SQMj4piqytQAX8_9Jax&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT8N-m4aWijCA01RMvACYSstuM--wmt6J_D6e_ZrIiAupg&oe=635D7C8F"></img>
-                </div>
-                <div className="media__img_contain">
-                  <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-1/275000620_3352877038272999_6281116958568140244_n.jpg?stp=dst-jpg_p320x320&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=SQMj4piqytQAX8_9Jax&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT8N-m4aWijCA01RMvACYSstuM--wmt6J_D6e_ZrIiAupg&oe=635D7C8F"></img>
-                </div>
-                <div className="media__img_contain">
-                  <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-1/275000620_3352877038272999_6281116958568140244_n.jpg?stp=dst-jpg_p320x320&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=SQMj4piqytQAX8_9Jax&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT8N-m4aWijCA01RMvACYSstuM--wmt6J_D6e_ZrIiAupg&oe=635D7C8F"></img>
-                </div>
-                <div className="media__img_contain">
-                  <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-1/275000620_3352877038272999_6281116958568140244_n.jpg?stp=dst-jpg_p320x320&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=SQMj4piqytQAX8_9Jax&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT8N-m4aWijCA01RMvACYSstuM--wmt6J_D6e_ZrIiAupg&oe=635D7C8F"></img>
-                </div>
-                <div className="media__img_contain">
-                  <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-1/275000620_3352877038272999_6281116958568140244_n.jpg?stp=dst-jpg_p320x320&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=SQMj4piqytQAX8_9Jax&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT8N-m4aWijCA01RMvACYSstuM--wmt6J_D6e_ZrIiAupg&oe=635D7C8F"></img>
-                </div>
-                <div className="media__img_contain">
-                  <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-1/275000620_3352877038272999_6281116958568140244_n.jpg?stp=dst-jpg_p320x320&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=SQMj4piqytQAX8_9Jax&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT8N-m4aWijCA01RMvACYSstuM--wmt6J_D6e_ZrIiAupg&oe=635D7C8F"></img>
-                </div>
-                <div className="media__img_contain">
-                  <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-1/275000620_3352877038272999_6281116958568140244_n.jpg?stp=dst-jpg_p320x320&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=SQMj4piqytQAX8_9Jax&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT8N-m4aWijCA01RMvACYSstuM--wmt6J_D6e_ZrIiAupg&oe=635D7C8F"></img>
-                </div>
-                <div className="media__img_contain">
-                  <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-1/275000620_3352877038272999_6281116958568140244_n.jpg?stp=dst-jpg_p320x320&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=SQMj4piqytQAX8_9Jax&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT8N-m4aWijCA01RMvACYSstuM--wmt6J_D6e_ZrIiAupg&oe=635D7C8F"></img>
-                </div>
-                <div className="media__img_contain">
-                  <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-1/275000620_3352877038272999_6281116958568140244_n.jpg?stp=dst-jpg_p320x320&_nc_cat=110&ccb=1-7&_nc_sid=7206a8&_nc_ohc=SQMj4piqytQAX8_9Jax&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT8N-m4aWijCA01RMvACYSstuM--wmt6J_D6e_ZrIiAupg&oe=635D7C8F"></img>
-                </div>
               </div>
             </div>
             <div className="body__files_contain">
               <p>Files</p>
               <div className="files__contain">
-                <div className="files__file_cotain"></div>
+                <div className="files__file_cotain">
+                  <div className="file_infor">
+                    <p className="file_name">tailieu.docs</p>
+                    <p className="size_name">1.50MB</p>
+                  </div>
+                  <div className="file_action">
+                    <FontAwesomeIcon className="icon" icon={faDownload} />
+                    <FontAwesomeIcon className="icon" icon={faTrash} />
+                  </div>
+                </div>
+              </div>
+              <div className="files__contain">
+                <div className="files__file_cotain">
+                  <div className="file_infor">
+                    <p className="file_name">tailieu.docs</p>
+                    <p className="size_name">1.50MB</p>
+                  </div>
+                  <div className="file_action">
+                    <FontAwesomeIcon className="icon" icon={faDownload} />
+                    <FontAwesomeIcon className="icon" icon={faTrash} />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

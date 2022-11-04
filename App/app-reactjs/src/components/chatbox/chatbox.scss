@@ -1,39 +1,46 @@
 @use '../../scss/' as *;
 
-.chatBox{
+.chatBox {
   box-sizing: border-box;
   position: relative;
   width: 70%;
   transition: width .4s ease-in-out;
-  &.full{
+
+  &.full {
     width: 100%;
-    & .footer{
+
+    & .footer {
       width: 75%;
     }
   }
 }
+
 .profile-friend {
-  transition: width .4s ease-in-out;
+  transition: transform .4s ease-in-out, width .4s ease-in-out;
   width: 30%;
-  &.not-active{
+  transform: translateX(0%);
+
+  &.not-active {
+    transition: transform .4s .4s ease-in-out;
     width: 0%;
+    transform: translateX(100%);
   }
 }
 
-.heading{
+.heading {
   width: 100%;
   height: 100px;
   position: absolute;
   z-index: 999;
-  border-bottom: 1px solid #EAEAF1 ;
+  border-bottom: 1px solid #EAEAF1;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  backdrop-filter: blur(7px) ;
-  box-shadow: 0 0 10px  #ccc;
+  backdrop-filter: blur(7px);
+  box-shadow: 0 0 10px #ccc;
 }
 
-.heading_left{
+.heading_left {
   width: 33.33333%;
   padding: 0 25px;
   display: flex;
@@ -42,14 +49,14 @@
   cursor: pointer;
 }
 
-.image{
+.image {
   align-items: center;
   justify-content: center;
   margin-right: 1.6rem;
   position: relative;
 }
 
-.avt_heading{
+.avt_heading {
   width: 5rem;
   height: 5rem;
   border-radius: 50%;
@@ -57,14 +64,15 @@
 }
 
 .name,
-.active{
+.active {
   color: #495057;
 }
-.active{
+
+.active {
   font-size: 14px;
 }
 
-.status{
+.status {
   width: 1.2rem;
   height: 1.2rem;
   border-radius: 50%;
@@ -76,7 +84,7 @@
   left: auto;
 }
 
-.heading_right{
+.heading_right {
   width: 66.66667%;
   right: 0;
   padding: 0 25px;
@@ -86,7 +94,7 @@
   align-items: center;
 }
 
-.icon_fa{
+.icon_fa {
   font-size: 20px;
   color: #797C8C;
   padding: 10px;
@@ -96,7 +104,7 @@
 
 
 // Chat List
-.content{
+.content {
   padding: 0 24px;
   width: 100%;
   height: auto;
@@ -109,7 +117,7 @@
 }
 
 
-.footer{
+.footer {
   transition: width .4s ease-in-out;
   background-color: #06D6A0;
   position: fixed;
@@ -122,26 +130,26 @@
   background-color: #F3F3F3;
   align-items: center;
   border-top: 1px solid #EAEAF1;
-  box-shadow: 0 -5px 20px  rgb(234, 231, 231);
+  box-shadow: 0 -5px 20px rgb(234, 231, 231);
 }
 
-.sender{
+.sender {
   width: 80%;
   height: auto;
 }
 
-.inputSender{
+.inputSender {
   width: 100%;
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
 
-.inputSender:focus{
+.inputSender:focus {
   border: 1px solid #000;
 }
 
-.send{
+.send {
   padding: 12px;
   color: #fff;
   background-color: #88C59C;
@@ -149,47 +157,51 @@
   margin-left: 0;
 }
 
-.modalOption{
+.modalOption {
   background-color: #fff;
 }
-.header__navbar-user-menu{
+
+.header__navbar-user-menu {
   width: 100%;
   height: 100%;
 }
 
 
-.tippy-box[data-theme~="light-border"]{
+.tippy-box[data-theme~="light-border"] {
   background-color: #fff;
   align-items: center;
   z-index: 1000;
   pointer-events: all;
 
-  .searchInput{
+  .searchInput {
     width: 300px;
     padding: 8px 24px;
     margin: 0 8px;
     border-radius: 5px;
     border: 2px solid #ccc;
   }
-  .searchInput:focus{
+
+  .searchInput:focus {
     border: 2px solid #000;
   }
 
-  .tippy-content{
+  .tippy-content {
     padding: 5px 0;
   }
-  a{
-   align-items: center;
-   cursor: pointer;
-   padding: 6px 20px 6px 24px;
-   display: flex;
-   width: 230px;
+
+  a {
+    align-items: center;
+    cursor: pointer;
+    padding: 6px 20px 6px 24px;
+    display: flex;
+    width: 230px;
   }
-  a:hover{
+
+  a:hover {
     background-color: rgb(237, 237, 237);
   }
 
-  p{
+  p {
     color: #000;
     font-size: 15px;
     color: #505356;
@@ -197,11 +209,11 @@
     text-align: left;
   }
 
-  .option_Chat{
+  .option_Chat {
     z-index: 1001;
   }
 
-  .optionMore_icon{
+  .optionMore_icon {
     width: 10%;
     color: #505356;
     text-align: center;
@@ -210,7 +222,7 @@
   }
 }
 
-.modal_more{
+.modal_more {
   position: none;
   display: flex;
   background-color: #88C59C;
@@ -219,11 +231,10 @@
   width: 100%;
 }
 
-.modal_more.active{
+.modal_more.active {
   display: block;
 }
 
-.chatBox__container{
+.chatBox__container {
   display: flex;
 }
-
