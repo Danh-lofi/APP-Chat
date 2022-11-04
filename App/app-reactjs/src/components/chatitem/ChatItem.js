@@ -27,7 +27,7 @@ import {
 
 const ChatItem = (props) => {
   const scroll = useRef();
-  console.log(scroll.current);
+
   // Always scroll to last Message
   useEffect(() => {
     scroll.current?.scrollIntoView({ behavior: "smooth" });

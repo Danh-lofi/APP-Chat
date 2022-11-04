@@ -1,4 +1,44 @@
 @use '../../scss/' as *;
+.chatbox {
+    height: 100vh;
+    width: 100%;
+
+    &__container {
+        height: 100vh;
+        width: 100%;
+        @include flex(center, center);
+        flex-direction: column;
+    }
+
+    &__logo {
+        margin-bottom: 4rem;
+        padding: 3rem;
+        background-color: rgba($primary-color, 0.2);
+        border-radius: 50%;
+
+        & svg {
+            @include flex(center, center);
+            fill: $primary-color;
+            height: 6rem;
+            width: 6rem;
+        }
+    }
+
+    &__slogan {
+        & h3 {
+            color: $text-color;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        & span {
+            display: block;
+            color: $text-color;
+            opacity: 0.8;
+            text-align: center;
+        }
+    }
+}
 
 .chatBox {
     &__container {

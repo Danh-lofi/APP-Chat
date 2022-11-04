@@ -1,12 +1,12 @@
 import axiosClient from "./axiosClient";
 
 const chatApi = {
-  createChat: (senderId, receiveId) => {
+  createChat: (senderId, receiverId) => {
     const url = "/chat";
-    return axiosClient.post(url, { senderId, receiveId });
+    return axiosClient.post(url, { senderId, receiverId });
   },
-  getChat: (senderId, receiveId) => {
-    const url = `/chat/${senderId}.${receiveId}`;
+  getChat: (senderId, receiverId) => {
+    const url = `/chat/${senderId}.${receiverId}`;
     return axiosClient.get(url, {});
   },
 };

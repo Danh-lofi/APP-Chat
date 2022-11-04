@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authApi from "../api/authApi";
+import friendApi from "../api/friendApi";
 const user = JSON.parse(localStorage.getItem("user"));
 
 export const login = createAsyncThunk(
@@ -152,6 +153,10 @@ const userSlice = createSlice({
     },
     setLogin: (state) => {
       state.isLoggedIn = true;
+    },
+    setFriend: (state, action) => {
+      console.log(action);
+      state.friend = action.payload;
     },
   },
 });

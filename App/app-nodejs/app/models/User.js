@@ -47,6 +47,7 @@ const User = new Schema({
     type: String,
     required: false,
   },
+  friends: [],
 });
 
 const UserModel = mongoose.model("User", User);
