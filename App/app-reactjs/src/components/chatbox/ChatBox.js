@@ -5,6 +5,8 @@ import { faContactBook, faLocation, faFileAudio, faSearch, faPhone, faVideo, faC
 import { faFaceSmile, faTrashCan, faFolderOpen } from "@fortawesome/free-regular-svg-icons";
 
 import ChatItem from "../chatitem/ChatItem";
+import FileChatItem from "../chatitem/fileChatItem/FileChatItem";
+import ImageChatItem from "../chatitem/imageChatItem/ImageChatItem";
 import { UncontrolledTooltip } from "reactstrap";
 import InputAuthen from "../../components/input/InputAuthen";
 import Tippy from '@tippyjs/react';
@@ -17,10 +19,10 @@ const ChatBox = () => {
   const [more, setMore] = useState(false);
 
   const clickMore = () => {
-    if(more === false) { 
-      setMore(true) 
-    } else { 
-      setMore(false) 
+    if (more === false) {
+      setMore(true)
+    } else {
+      setMore(false)
     }
   }
 
@@ -136,6 +138,12 @@ const ChatBox = () => {
           name="Tran Phuc Tong"
           linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3" />
         <ChatItem
+          isRight
+          Messenger="Tong dep trai de thuong lollllllllllllllllllllllllllllllllllllllllllllllllll"
+          time="09:13pm"
+          name="Tran Phuc Tong"
+          linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3" />
+        <ChatItem
           Messenger="OK!"
           time="09:13pm"
           name="Do Thanh Danh"
@@ -145,6 +153,36 @@ const ChatBox = () => {
           Messenger="OK!"
           time="09:13pm"
           name="Do Thanh Danh"
+          linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
+        />
+        <FileChatItem
+          fileName="ALT.pdf"
+          size="100MB"
+          time="09:13pm"
+          name="Tran Phuc Tong"
+          linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
+        />
+        <FileChatItem
+          isRightFile
+          fileName="KhoahoclaptrinhtrenF8.pdf"
+          size="100MB"
+          time="09:13pm"
+          name="Tran Phuc Tong"
+          linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
+        />
+
+        <ImageChatItem
+          time="09:13pm"
+          imgChatItem ="https://scontent.fsgn8-4.fna.fbcdn.net/v/t1.6435-9/94495420_2811370619090313_1019681169429495808_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=174925&_nc_ohc=co5ZXgVK_n4AX8D-u-A&_nc_ht=scontent.fsgn8-4.fna&oh=00_AfCmCGu4Mg5sHK_vHP7pyXHaU_mz0xFnkcZFIb88zbvD6Q&oe=638C34B8"
+          name="Tran Phuc Tong"
+          linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
+        />
+
+        <ImageChatItem
+          isRightImage
+          imgChatItem ="https://scontent.fsgn8-4.fna.fbcdn.net/v/t1.6435-9/94495420_2811370619090313_1019681169429495808_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=174925&_nc_ohc=co5ZXgVK_n4AX8D-u-A&_nc_ht=scontent.fsgn8-4.fna&oh=00_AfCmCGu4Mg5sHK_vHP7pyXHaU_mz0xFnkcZFIb88zbvD6Q&oe=638C34B8"
+          time="09:13pm"
+          name="Tran Phuc Tong"
           linkImage="https://scontent.fsgn13-4.fna.fbcdn.net/v/t39.30808-6/309785858_125822560240032_5676468177324313419_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kbKO-puc1XgAX_oi49v&_nc_ht=scontent.fsgn13-4.fna&oh=00_AT-55QIg_rqEinEG6v3_c0eMMG9WGHl_5xhlEp0PdZqnpQ&oe=635D3BC3"
         />
       </div>

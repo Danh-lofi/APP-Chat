@@ -1,0 +1,33 @@
+@use '../../../scss/' as *;
+
+.messengerUpload {
+  padding: 10px 10px;
+  border-radius: 5px;
+  background-color: $white;
+  &_file {
+    display: flex;
+    margin: 12px 20px;
+    padding: 12px 20px;
+    border: 1px solid #000;
+    border-radius: 6px;
+    justify-content: space-between;
+
+    &__contentFile{
+      margin-left: 10px;
+      text-align: left;
+      &__name{
+        font-weight: bold;
+        color: $text-muted;
+      }
+      &__capacity{
+        color: $text-muted;
+      }
+    }
+  }
+}
+
+.chat-list.right{
+  .messengerUpload {
+    background-color: #CCE2D3;
+  }
+}
