@@ -4,9 +4,6 @@ import ChatModel from "../models/chatModel.js";
 const ChatController = {
   // POST
   createChat: async (req, res) => {
-    console.log(req.body);
-    console.log(req.body.senderId);
-    console.log(req.body.receiverId);
     if (!req.body.senderId || !req.body.receiverId) {
       return;
     }

@@ -2,9 +2,10 @@ import React, { useRef } from "react";
 import ChatItem from "../chatitem/ChatItem";
 
 const ListChat = (props) => {
-  const messages = props.messages;
-  const currentUser = props.currentUser;
+  // const messages = props.messages;
+  // const currentUser = props.currentUser;
   const friend = props.friendUser;
+  const { messages, currentUser } = props;
   //Current user
   const currentUserId = currentUser._id;
   const name = currentUser.name ? currentUser.name : currentUser.username;
@@ -31,6 +32,7 @@ const ListChat = (props) => {
       <ChatItem
         key={message._id}
         id={message._id}
+        isImg={message.isImg}
         isRight={isUser}
         Messenger={message.text}
         time={time}

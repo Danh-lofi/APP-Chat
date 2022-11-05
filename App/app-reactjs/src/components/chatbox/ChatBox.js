@@ -39,6 +39,7 @@ import chatApi from "../../api/chatApi";
 import messageApi from "../../api/messageApi";
 import ProfileFriend from "./profile-friend/ProfileFriend";
 import NonChatBox from "./non-chat-box/NonChatBox";
+import cloudinaryApi from "../../api/cloudinaryApi";
 
 const ChatBox = () => {
   const fileRef = useRef();
@@ -52,6 +53,9 @@ const ChatBox = () => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")).user
   );
+  const [accessToken, setAccessToken] = useState(
+    JSON.parse(localStorage.getItem("user")).accessToken
+  );
 
   const friend = useSelector((state) => state.user.friend);
 
@@ -59,6 +63,10 @@ const ChatBox = () => {
   const [messages, setMessgages] = useState([]);
   const [message, setMessage] = useState("");
   const [receivedMessage, setReceivedMessage] = useState(null);
+
+  // img
+  const [img, setImg] = useState("");
+  //
 
   const [ariaExpanded, setAriaExpanded] = useState("");
   const [more, setMore] = useState(false);
@@ -116,6 +124,7 @@ const ChatBox = () => {
         return;
       }
       const messagesData = await messageApi.getMessages(chatId);
+      console.log(messagesData.data);
       setMessgages(messagesData.data);
     };
     getAllMessages(chatId);
@@ -158,8 +167,56 @@ const ChatBox = () => {
   };
 
   // Chagne file
-  const changeFileHandle = (e) => {
-    console.log(e.target.value);
+  const changeFileHandle = async (e) => {
+    // const reader = new FileReader();
+    // reader.readAsDataURL(e.target.files[0]);
+    // reader.onloadend = async () => {
+    //   const data = await cloudinaryApi.cloudinaryUpload(
+    //     reader.result,
+    //     accessToken
+    //   );
+    //   console.log(data);
+    // };
+
+    //
+
+    const messageSender = {
+      chatId,
+      senderId: user._id,
+      text: message,
+      isImg: true,
+    };
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onloadend = async () => {
+      const data = await cloudinaryApi.cloudinaryUpload(
+        reader.result,
+        accessToken,
+        chatId
+      );
+      console.log(data);
+      console.log(data);
+      const date = new Date();
+      const time = `${date.getHours()}:${
+        date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+      }`;
+      if (data.status === 200) {
+        socket.current.emit("send-message", {
+          chatId,
+          senderId: user._id,
+          text: data.data.result.text,
+          receiverId: friend._id,
+          isImg: true,
+          time,
+        });
+      }
+      // console.log(messages);
+      setMessgages((messages) => [
+        ...messages,
+        { ...messageSender, time, text: data.data.result.text },
+      ]);
+      setMessage("");
+    };
   };
 
   return (

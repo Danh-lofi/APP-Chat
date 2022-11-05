@@ -103,8 +103,14 @@ const ChatItem = (props) => {
                     />
                   </Tippy>
                 </div>
-                <div className="content_messenger">
-                  <p>{props.Messenger}</p>
+                <div className="messenger">
+                  <div className="content_messenger">
+                    {props.isImg ? (
+                      <img src={props.Messenger} />
+                    ) : (
+                      <p>{props.Messenger}</p>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="conversation-name">
@@ -126,7 +132,11 @@ const ChatItem = (props) => {
             <div className="user_chat_content">
               <div className="messenger">
                 <div className="content_messenger">
-                  <p>{props.Messenger}</p>
+                  {props.isImg ? (
+                    <img src={props.Messenger} />
+                  ) : (
+                    <p>{props.Messenger}</p>
+                  )}
                 </div>
                 <div className="messOption">
                   <Tippy
