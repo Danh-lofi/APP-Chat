@@ -4,13 +4,20 @@ import mainRoutes, { authRoutes } from "./routes/Routes";
 import LayoutMain from "./layout/layout-main/LayoutMain";
 import LayoutAuth from "./layout/layout-auth/LayoutAuth";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import PreviewImage from "./components/modals/preview-image/PreviewImage";
+import { imageAction } from "./store/imageSlice";
+import ChangeInfo from "./components/modals/change-info/ChangeInfo";
 
 function App() {
   let isAuth = useSelector((state) => state.user.isLoggedIn);
+  const isSelected = useSelector((state) => state.image.isSelected);
+
   return (
     <div className="App">
+      {isSelected ? <PreviewImage /> : ""}
       {/* App dùng cho router */}
+      <ChangeInfo />
       {isAuth ? (
         <Routes>
           {mainRoutes.map((route, index) => {

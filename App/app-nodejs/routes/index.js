@@ -3,13 +3,17 @@ import routerChat from "./ChatRoute.js";
 import routerCloudinary from "./Cloudinary.js";
 import routerFriend from "./FriendRoute.js";
 import routerMessage from "./MessageRoute.js";
+import routerRequestFriend from "./RequestFriendRoute.js";
+import routerUser from "./UserRoute.js";
 
 function route(app) {
   // ROUTE sử dụng đường dẫn nào
   app.use("/", routerAuth);
+  app.use("/user", routerUser);
   app.use("/messages", routerMessage);
   app.use("/chat", routerChat);
   app.use("/friend", routerFriend);
+  app.use("/request-friend", routerRequestFriend);
   app.use("/cloudinary", routerCloudinary);
 }
 

@@ -1,0 +1,46 @@
+@use '../../../scss/' as *;
+.preview__image{
+    &__container {
+        height: 100vh;
+        width: 100vw;
+        position: absolute;
+        z-index: 10;
+        overflow: hidden;
+    }
+    &__close{
+        position: absolute;
+        height: 4rem;
+        width: 4rem;
+        background-color: #f9f9f9;
+        @include flex(center, center);
+        border-radius:50%;
+        right:5%;
+        top: 5%;
+        transition: all .4s linear;
+        &:hover{
+            cursor: pointer;
+            background-color: $primary-color;
+        }
+        &:hover span{
+            color: #f9f9f9
+        }
+        & span{
+            font-weight: 600;
+            font-size: 1.8rem;
+            color: $primary-color;
+
+        }
+    }
+    &__overlay {
+        height: 100vh;
+        width: 100vw;
+        background: #333;
+    }
+    &__wrap {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 10;
+        transform: translate(-50%,-50%);
+    }
+}

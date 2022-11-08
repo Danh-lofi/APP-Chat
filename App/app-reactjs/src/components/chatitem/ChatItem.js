@@ -24,10 +24,17 @@ import {
   faTrashCan,
   faFolderOpen,
 } from "@fortawesome/free-regular-svg-icons";
+import { useDispatch } from "react-redux";
+import { imageAction } from "../../store/imageSlice";
 
 const ChatItem = (props) => {
   const scroll = useRef();
-
+  const dispatch = useDispatch();
+  // Handle Preview Image
+  const previewModalImageHandle = () => {
+    console.log(props.Messenger);
+    dispatch(imageAction.setImage(props.Messenger));
+  };
   // Always scroll to last Message
   useEffect(() => {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
@@ -106,7 +113,10 @@ const ChatItem = (props) => {
                 <div className="messenger">
                   <div className="content_messenger">
                     {props.isImg ? (
-                      <img src={props.Messenger} />
+                      <img
+                        src={props.Messenger}
+                        onClick={previewModalImageHandle}
+                      />
                     ) : (
                       <p>{props.Messenger}</p>
                     )}
@@ -133,7 +143,10 @@ const ChatItem = (props) => {
               <div className="messenger">
                 <div className="content_messenger">
                   {props.isImg ? (
-                    <img src={props.Messenger} />
+                    <img
+                      src={props.Messenger}
+                      onClick={previewModalImageHandle}
+                    />
                   ) : (
                     <p>{props.Messenger}</p>
                   )}

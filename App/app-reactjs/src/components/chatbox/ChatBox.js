@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import "./ChatBox.scss";
+import "./chatbox.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faContactBook,
@@ -43,6 +43,7 @@ import cloudinaryApi from "../../api/cloudinaryApi";
 
 const ChatBox = () => {
   const fileRef = useRef();
+  const imgRef = useRef();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -80,7 +81,7 @@ const ChatBox = () => {
   };
 
   function handleOnEnter(text) {
-    console.log("enter", text);
+    sendMessageHandle();
   }
 
   // Handle Event
@@ -168,34 +169,33 @@ const ChatBox = () => {
 
   // Chagne file
   const changeFileHandle = async (e) => {
-    // const reader = new FileReader();
-    // reader.readAsDataURL(e.target.files[0]);
-    // reader.onloadend = async () => {
-    //   const data = await cloudinaryApi.cloudinaryUpload(
-    //     reader.result,
-    //     accessToken
-    //   );
-    //   console.log(data);
-    // };
+    const name = e.target.files[0].name;
+    const lastDot = name.lastIndexOf(".");
 
-    //
+    const fileName = name.substring(0, lastDot);
+    const type = name.substring(lastDot + 1);
 
+    const isImg = type == "png" || type == "jpg" ? true : false;
     const messageSender = {
       chatId,
       senderId: user._id,
       text: message,
-      isImg: true,
+      isImg,
     };
+    setMore(false);
     const reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
+
     reader.onloadend = async () => {
       const data = await cloudinaryApi.cloudinaryUpload(
         reader.result,
         accessToken,
-        chatId
+        chatId,
+        type,
+        fileName
       );
       console.log(data);
-      console.log(data);
+
       const date = new Date();
       const time = `${date.getHours()}:${
         date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
@@ -206,7 +206,7 @@ const ChatBox = () => {
           senderId: user._id,
           text: data.data.result.text,
           receiverId: friend._id,
-          isImg: true,
+          isImg,
           time,
         });
       }
@@ -219,6 +219,56 @@ const ChatBox = () => {
     };
   };
 
+  const changeImgHandle = (e) => {
+    const name = e.target.files[0].name;
+    const lastDot = name.lastIndexOf(".");
+
+    const fileName = name.substring(0, lastDot);
+    const type = name.substring(lastDot + 1);
+
+    const isImg = type == "png" || type == "jpg" ? true : false;
+    const messageSender = {
+      chatId,
+      senderId: user._id,
+      text: message,
+      isImg,
+    };
+    setMore(false);
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+
+    reader.onloadend = async () => {
+      const data = await cloudinaryApi.cloudinaryUpload(
+        reader.result,
+        accessToken,
+        chatId,
+        type,
+        fileName
+      );
+      console.log(data);
+
+      const date = new Date();
+      const time = `${date.getHours()}:${
+        date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+      }`;
+      if (data.status === 200) {
+        socket.current.emit("send-message", {
+          chatId,
+          senderId: user._id,
+          text: data.data.result.text,
+          receiverId: friend._id,
+          isImg,
+          time,
+        });
+      }
+      // console.log(messages);
+      setMessgages((messages) => [
+        ...messages,
+        { ...messageSender, time, text: data.data.result.text },
+      ]);
+      setMessage("");
+    };
+  };
   return (
     <div className="chatBox__container">
       {chatId ? (
@@ -359,7 +409,7 @@ const ChatBox = () => {
           >
             <div className="chatBox_modal_more">
               <div className="chatBox__modal__container">
-                <div style={{ height: 0, width: 0, overflow: "hidden" }}>
+                <div className="chatBox__modal__hidden">
                   <input
                     type="file"
                     ref={fileRef}
@@ -386,7 +436,15 @@ const ChatBox = () => {
                   camera
                 </p>
               </div>
-              <div className="chatBox__modal__container">
+              <div
+                className="chatBox__modal__container"
+                onClick={() => {
+                  imgRef.current.click();
+                }}
+              >
+                <div className="chatBox__modal__hidden">
+                  <input type="file" ref={imgRef} onChange={changeImgHandle} />
+                </div>
                 <FontAwesomeIcon
                   className="chatBox_modal_more_icon_fa__second"
                   icon={faPhotoFilm}

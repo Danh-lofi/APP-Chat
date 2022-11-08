@@ -47,6 +47,14 @@ const User = new Schema({
     type: String,
     required: false,
   },
+  avatar: {
+    type: String,
+    required: false,
+  },
+  coverImg: {
+    type: String,
+    required: false,
+  },
   friends: [],
 });
 
