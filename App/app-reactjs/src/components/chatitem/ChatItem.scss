@@ -22,7 +22,7 @@
   margin-bottom: 10px;
 }
 .content_messenger{
-  width: auto;
+  max-width: 600px;
   height: auto;
   padding: 12px 20px;
   border-radius: 5px;
@@ -32,6 +32,15 @@
   p{
     font-size: 15px;
     color: #000;
+    word-wrap: break-word;
+    text-align: left;
+  }
+
+  &_image {
+    width: 300px;
+    height: 250px;
+    border-radius: 5px;
+    object-fit: cover;
   }
 }
 

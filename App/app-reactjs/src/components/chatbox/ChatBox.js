@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import "./ChatBox.scss";
+import './chatbox.scss';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faContactBook,

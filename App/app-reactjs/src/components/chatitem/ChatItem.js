@@ -94,8 +94,8 @@ const ChatItem = (props) => {
                     theme="light-border"
                     trigger="click"
                     appendTo="parent"
-                    // onMount={() => setAriaExpanded('true')}
-                    // onHide={() => setAriaExpanded('false')}
+                  // onMount={() => setAriaExpanded('true')}
+                  // onHide={() => setAriaExpanded('false')}
                   >
                     <FontAwesomeIcon
                       className="icon_messOption"
@@ -103,15 +103,12 @@ const ChatItem = (props) => {
                     />
                   </Tippy>
                 </div>
-                <div className="messenger">
-                  <div className="content_messenger">
-                    {props.isImg ? (
-                      <img src={props.Messenger} />
-                    ) : (
+                {props.isImg ? (<img className="content_messenger_image" src={props.Messenger} />) :
+                  (
+                    <div className="content_messenger">
                       <p>{props.Messenger}</p>
-                    )}
-                  </div>
-                </div>
+                    </div>
+                  )}
               </div>
               <div className="conversation-name">
                 <small>{props.time}</small>
@@ -131,13 +128,12 @@ const ChatItem = (props) => {
             </div>
             <div className="user_chat_content">
               <div className="messenger">
-                <div className="content_messenger">
-                  {props.isImg ? (
-                    <img src={props.Messenger} />
-                  ) : (
-                    <p>{props.Messenger}</p>
+                {props.isImg ? (<img className="content_messenger_image" src={props.Messenger} />) :
+                  (
+                    <div className="content_messenger">
+                      <p>{props.Messenger}</p>
+                    </div>
                   )}
-                </div>
                 <div className="messOption">
                   <Tippy
                     content={
@@ -192,8 +188,8 @@ const ChatItem = (props) => {
                     theme="light-border"
                     trigger="click"
                     appendTo="parent"
-                    // onMount={() => setAriaExpanded('true')}
-                    // onHide={() => setAriaExpanded('false')}
+                  // onMount={() => setAriaExpanded('true')}
+                  // onHide={() => setAriaExpanded('false')}
                   >
                     <FontAwesomeIcon
                       className="icon_messOption"
