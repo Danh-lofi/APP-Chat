@@ -6,4 +6,5 @@ const routerFriend = express.Router();
 
 routerFriend.get("/", authMiddleware.isAuth, FriendController.getAllFriend);
 
+
 export default routerFriend;

@@ -1,5 +1,6 @@
 import UserModel from "../models/User.js";
 import mongoose from "mongoose";
+
 const FriendController = {
   findUser: async (req, res) => {
     const { friendId } = req.params;
@@ -25,6 +26,7 @@ const FriendController = {
     }
     res.status(200).json({ listFriend });
   },
+
 };
 
 export default FriendController;
