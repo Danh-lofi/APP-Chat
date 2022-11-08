@@ -47,14 +47,8 @@ const User = new Schema({
     type: String,
     default: "",
   },
-  listFriends: [
-    {
-      sdt: {
-        type: String,
-        required: false,
-      },
-    },
-  ],
+  friends: [],
+  groups: [],
   tokens: [
     {
       token: {

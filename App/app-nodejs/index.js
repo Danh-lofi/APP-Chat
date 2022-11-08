@@ -5,6 +5,10 @@ import mongoose from "mongoose";
 import ConnectDB from "./config/db/index.js";
 import route from "./routes/index.js";
 
+import socket from "./app/socket/socket.js";
+
+import { Server } from "socket.io";
+
 const app = express();
 // CONFIG
 dotenv.config();
@@ -17,6 +21,14 @@ ConnectDB();
 // CONFIG ROUTE
 route(app);
 
-app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT, () => {
   console.log("started");
 });
+
+// Socket IO
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3005",
+  },
+});
+socket(io);

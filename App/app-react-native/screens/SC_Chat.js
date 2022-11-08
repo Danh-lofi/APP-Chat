@@ -8,21 +8,33 @@ import {
   Image,
   SafeAreaView,
   Alert,
+  FlatList,
+  TextInput,
 } from "react-native";
 import { BackIcon, PhoneIcon, VideoIcon } from "../components/IconBottomTabs";
 import { GiftedChat } from "react-native-gifted-chat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ApiProfile, ApiUser } from "../api/ApiUser";
+import { chatApi } from "../api/ApiChat";
+import { messageApi } from "../api/ApiMessage";
 import axios from "axios";
+import MessageComponent from "../components/MessageComponent";
+
+import socket from "../utils/socket";
 
 const size = 24;
 
 const SC_Chat = (navigation, route) => {
-  const [messages, setMessages] = useState([]);
   const [currentName, setCurrentName] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [idUser, setIdUser] = useState("");
+  const [idFriend, setIdFriend] = useState("");
+  const [chatId, setChatId] = useState("");
+  const [receivedMessage, setReceivedMessage] = useState(null);
 
   const getId = useCallback(async () => {
+    setIdUser(await AsyncStorage.getItem("idUser"));
+    setIdFriend(await AsyncStorage.getItem("idFriend"));
     setCurrentName(await AsyncStorage.getItem("currentName"));
     setAvatar(await AsyncStorage.getItem("avatar"));
   }, []);
@@ -31,26 +43,91 @@ const SC_Chat = (navigation, route) => {
     getId();
   }, []);
 
-  useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: "Hello developer",
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "React Native",
-          avatar: "https://placeimg.com/140/140/any",
-        },
-      },
-    ]);
-  }, []);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  const [user, setUser] = useState("");
 
-  const onSend = useCallback((messages = []) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, messages)
-    );
-  }, []);
+  const handleNewMessage = async () => {
+    const messageSender = {
+      chatId,
+      senderId: idUser,
+      text: message,
+    };
+
+    const data = await messageApi.addMessage(messageSender);
+    console.log("200----------");
+
+    const hour =
+      new Date().getHours() < 10
+        ? `0${new Date().getHours()}`
+        : `${new Date().getHours()}`;
+
+    const mins =
+      new Date().getMinutes() < 10
+        ? `0${new Date().getMinutes()}`
+        : `${new Date().getMinutes()}`;
+
+    const time = `${hour}:${mins}`;
+
+    if (data.status === 200) {
+      console.log("--------200----------");
+      if (message !== null) {
+        socket.emit("send-message", {
+          chatId,
+          senderId: idUser,
+          text: message,
+          receiverId: idFriend,
+          time,
+        });
+      }
+
+      setChatMessages((chatMessages) => [
+        ...chatMessages,
+        { ...messageSender, time },
+      ]);
+      setMessage("");
+    }
+
+    console.log({
+      message,
+      user,
+      timestamp: { hour, mins },
+    });
+  };
+
+  // get id room chat
+  useEffect(() => {
+    const idRoomChat = async () => {
+      const roomChat = await chatApi.getChat(idUser, idFriend);
+      console.log("id room chat: ");
+      console.log(roomChat.data);
+      setChatId(roomChat.data._id);
+    };
+    idRoomChat();
+  }, [idUser, idFriend]);
+
+  // get all messages from chat id
+  useEffect(() => {
+    const getAllMessages = async (chatId) => {
+      if (!chatId) {
+        setChatId(null);
+        return;
+      }
+      const messagesData = await messageApi.getMessages(chatId);
+      console.log("message: ");
+      console.log(messagesData.data);
+      setChatMessages(messagesData.data);
+    };
+    getAllMessages(chatId);
+  }, [chatId]);
+
+  // Get the message from socket server
+  useEffect(() => {
+    socket.on("recieve-message", (data) => {
+      console.log(data);
+      setChatMessages((chatMessages) => [...chatMessages, data]);
+    });
+  }, [receivedMessage]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -81,13 +158,48 @@ const SC_Chat = (navigation, route) => {
       </View>
 
       <View style={styles.contentChat}>
-        <GiftedChat
+        {/* <GiftedChat
           messages={messages}
           onSend={(messages) => onSend(messages)}
           user={{
             _id: 1,
           }}
-        />
+        /> */}
+        <View style={styles.messagingscreen}>
+          <View
+            style={[
+              styles.messagingscreen,
+              { paddingVertical: 15, paddingHorizontal: 10 },
+            ]}
+          >
+            {chatMessages[0] ? (
+              <FlatList
+                data={chatMessages}
+                renderItem={({ item }) => (
+                  <MessageComponent item={item} user={user} />
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            ) : (
+              ""
+            )}
+          </View>
+
+          <View style={styles.messaginginputContainer}>
+            <TextInput
+              style={styles.messaginginput}
+              onChangeText={(value) => setMessage(value)}
+            />
+            <TouchableOpacity
+              style={styles.messagingbuttonContainer}
+              onPress={handleNewMessage}
+            >
+              <View>
+                <Text style={{ color: "#f2f0f1", fontSize: 20 }}>SEND</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -138,6 +250,8 @@ const styles = StyleSheet.create({
   },
 
   wrapIconPhoneVideoCall: {
+    position: "absolute",
+    right: 10,
     flexDirection: "row",
     justifyContent: "space-around",
   },
@@ -145,6 +259,37 @@ const styles = StyleSheet.create({
   contentChat: {
     flex: 1,
     marginTop: 1,
+  },
+
+  // new
+  messagingscreen: {
+    flex: 1,
+  },
+
+  messaginginputContainer: {
+    width: "100%",
+    minHeight: 100,
+    backgroundColor: "white",
+    paddingVertical: 30,
+    paddingHorizontal: 15,
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+
+  messaginginput: {
+    borderWidth: 1,
+    padding: 15,
+    flex: 1,
+    marginRight: 10,
+    borderRadius: 20,
+  },
+  messagingbuttonContainer: {
+    width: "30%",
+    backgroundColor: "green",
+    borderRadius: 3,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 50,
   },
 });
 
