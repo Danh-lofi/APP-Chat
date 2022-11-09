@@ -14,12 +14,12 @@ const MessageBar = ({ listInfor, onPress }) => {
   return (
     <TouchableOpacity style={styles.aMess} onPress={onPress}>
       <View style={styles.aMess_avt}>
-        <Image source={listInfor.avatar} style={styles.wrapAvatarZL} />
+        <Image source={{ uri: listInfor.avatar }} style={styles.wrapAvatarZL} />
       </View>
       <View style={styles.aMess_right}>
         <View style={styles.name_and_disMess}>
           <Text style={styles.txtNameMess}>{listInfor.name}</Text>
-          <Text style={styles.txtDisMess}>{listInfor.id}</Text>
+          <Text style={styles.txtDisMess}>{listInfor._id}</Text>
         </View>
         <View style={styles.xxxDiff}>
           <Text style={styles.txtTimeMess}>9: 10</Text>

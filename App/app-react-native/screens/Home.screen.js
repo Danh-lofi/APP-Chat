@@ -16,21 +16,14 @@ import GlobalStyles from "../components/GlobalStyles";
 import { SearchICon, QRIcon, AddNewIcon } from "../components/IconBottomTabs";
 import MessageBar from "../components/MessageBar";
 import { PhoneBook } from "./PhoneBook.screen";
-import { ApiProfile } from "../api/ApiUser";
+import { ApiProfile, ApiUser } from "../api/ApiUser";
+import ApiLoadFriend from "../api/ApiLoadFriend";
+import ApiLoadGroupChat from "../api/LoadGroupChat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CreateGroupChat from "../components/CreateGroupChat";
+import socket from "../utils/socket";
 
 const size = 22;
-
-const avt = require("../assets/cute.png");
-const url = "http://localhost:3000/posts";
-
-const DATA = [
-  { id: "1", name: "Nguyen Thanh Nhan", avatar: require("../data/img/1.jpeg") },
-  { id: "2", name: "Nguyen Van A", avatar: require("../data/img/2.png") },
-  { id: "3", name: "Tran Thi B", avatar: require("../data/img/3.jpeg") },
-  { id: "4", name: "Phan Van C", avatar: require("../data/img/4.png") },
-  { id: "5", name: "Pham Thi D", avatar: require("../data/img/5.jpeg") },
-];
 
 // test Touch text search
 function alert(item) {
@@ -39,9 +32,27 @@ function alert(item) {
 
 export const Home = ({ navigation, route }) => {
   const [infor, setInfor] = useState([]);
+  const [listGroup, setListGroup] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   // const { token } = route.params;
   const [temp, setTemp] = useState("");
+  const [user, setUser] = useState();
+  const [visible, setVisible] = useState(false);
+  let temp1 = useState([]);
+
+  console.log(
+    "------------------------------------------------------------------"
+  );
+
+  const handleCreateGroupChat = () => setVisible(true);
+
+  const handleClick = async (item) => {
+    navigation.navigate("SC_Chat");
+    await AsyncStorage.setItem("idUser", user._id);
+    await AsyncStorage.setItem("idFriend", item._id);
+    await AsyncStorage.setItem("currentName", item.name);
+    await AsyncStorage.setItem("avatar", item.avatar);
+  };
 
   const callApiProfile = useCallback(async () => {
     const token = await AsyncStorage.getItem("token");
@@ -50,7 +61,8 @@ export const Home = ({ navigation, route }) => {
     await ApiProfile.profile2(token)
       .then((res) => {
         console.log("2: " + token);
-        console.log("Thong tin user:" + res.data);
+        console.log(res.data);
+        setUser(res.data);
       })
       .catch((err) => {
         console.log("3");
@@ -61,24 +73,36 @@ export const Home = ({ navigation, route }) => {
     callApiProfile();
   }, []);
 
-  function test1() {
-    Alert.alert(temp);
-  }
-
-  const handleFetchPalettes = useCallback(async () => {
-    await fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        setInfor(data);
+  const getFriend = useCallback(async () => {
+    const token = await AsyncStorage.getItem("token");
+    await ApiLoadFriend.getFriend(token)
+      .then((res) => {
+        console.log("get friend");
+        console.log(res.data.listFriend);
+        setInfor(res.data.listFriend);
       })
-      .catch((error) => {
-        // Alert.alert(console.error(error));
+      .catch((err) => {
+        console.log("405");
+      });
+
+    await ApiLoadGroupChat.getGroupChat(token)
+      .then((res) => {
+        console.log("get group chat");
+        console.log(res.data.listGroup);
+        setListGroup(res.data.listGroup);
+      })
+      .catch((err) => {
+        console.log("406: " + err);
       });
   }, []);
 
   useEffect(() => {
-    handleFetchPalettes();
+    getFriend();
   }, []);
+
+  function test1() {
+    Alert.alert(temp);
+  }
 
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -100,7 +124,7 @@ export const Home = ({ navigation, route }) => {
         <TouchableOpacity style={styles.icon}>
           <QRIcon color="white" size={size} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.icon}>
+        <TouchableOpacity style={styles.icon} onPress={handleCreateGroupChat}>
           <AddNewIcon color="white" size={size} />
         </TouchableOpacity>
       </View>
@@ -108,10 +132,10 @@ export const Home = ({ navigation, route }) => {
       {/* list message */}
       <View style={styles.listMess}>
         <FlatList
-          data={DATA}
-          keyExtractor={(item) => item.id}
+          data={infor}
+          keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
-            <MessageBar onPress={() => alert(item)} listInfor={item} />
+            <MessageBar onPress={() => handleClick(item)} listInfor={item} />
           )}
           // refreshControl={
           //   <RefreshControl
@@ -121,9 +145,10 @@ export const Home = ({ navigation, route }) => {
           // }
         />
       </View>
-      <View>
+      {visible ? <CreateGroupChat setVisible={setVisible} /> : ""}
+      {/* <View>
         <Text>temp: {temp}</Text>
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };

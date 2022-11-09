@@ -29,17 +29,17 @@ export const HiddenTextInput = styled.TextInput`
 `;
 
 export const CodeInputsContainer = styled.Pressable`
-  width: 70%;
+  width: 80%;
   flex-direction: row;
   justify-content: space-between;
 `;
 
 export const CodeInput = styled.View`
   border-color: green;
-  min-width: 15%;
+  min-width: 12%;
   border-width: 2px;
   border-radius: 5px;
-  padding: 12px;
+  padding: 10px;
 `;
 
 export const CodeInputText = styled.Text`

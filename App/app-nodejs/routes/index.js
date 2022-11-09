@@ -5,6 +5,7 @@ import routerFriend from "./FriendRoute.js";
 import routerMessage from "./MessageRoute.js";
 import routerRequestFriend from "./RequestFriendRoute.js";
 import routerUser from "./UserRoute.js";
+import routerGroupChat from "./GroupChatRouter.js";
 
 function route(app) {
   // ROUTE sử dụng đường dẫn nào
@@ -12,9 +13,10 @@ function route(app) {
   app.use("/user", routerUser);
   app.use("/messages", routerMessage);
   app.use("/chat", routerChat);
-  app.use("/friend", routerFriend);
   app.use("/request-friend", routerRequestFriend);
   app.use("/cloudinary", routerCloudinary);
+  app.use("/friend", routerFriend);
+  app.use("/groupChat", routerGroupChat);
 }
 
 export default route;

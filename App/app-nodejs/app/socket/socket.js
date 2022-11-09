@@ -1,6 +1,14 @@
 const socket = (io) => {
   let activeUsers = [];
   io.on("connection", (socket) => {
+    // create group chat
+    socket.on("createGroupChat", (data) => {
+      console.log("create group chat data socket: ");
+      console.log(data);
+      const { nameGroupChat } = data;
+      socket.emit("listGroup", data);
+    });
+
     // add new User
     socket.on("new-user-add", (newUserId) => {
       // if user is not added previously

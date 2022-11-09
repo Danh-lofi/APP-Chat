@@ -28,7 +28,11 @@ const server = app.listen(process.env.PORT, () => {
 // Socket IO
 const io = new Server(server, {
   cors: {
+<<<<<<< HEAD
     origin: "http://localhost:3000",
+=======
+    origin: "http://localhost:3005",
+>>>>>>> Nhan-new-update
   },
 });
 socket(io);

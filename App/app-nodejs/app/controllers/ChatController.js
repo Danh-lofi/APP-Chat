@@ -1,4 +1,4 @@
-import { log } from "util";
+
 import ChatModel from "../models/chatModel.js";
 
 const ChatController = {
@@ -12,11 +12,8 @@ const ChatController = {
     });
     try {
       const result = await newChat.save();
-      console.log("Success");
-
-      res.status(200).send("Success");
+      res.status(200).json(result);
     } catch (error) {
-      console.log("Fail");
       res.status(500).json(error);
     }
   },
