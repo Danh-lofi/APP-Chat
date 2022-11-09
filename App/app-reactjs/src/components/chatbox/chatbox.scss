@@ -1,278 +1,279 @@
-@use "../../scss/" as *;
+@use '../../scss/' as *;
 .chatbox {
-  height: 100vh;
-  width: 100%;
-
-  &__container {
     height: 100vh;
     width: 100%;
-    @include flex(center, center);
-    flex-direction: column;
-  }
 
-  &__logo {
-    margin-bottom: 4rem;
-    padding: 3rem;
-    background-color: rgba($primary-color, 0.2);
-    border-radius: 50%;
-
-    & svg {
-      @include flex(center, center);
-      fill: $primary-color;
-      height: 6rem;
-      width: 6rem;
-    }
-  }
-
-  &__slogan {
-    & h3 {
-      color: $text-color;
-      font-size: 2rem;
-      margin-bottom: 1rem;
+    &__container {
+        height: 100vh;
+        width: 100%;
+        @include flex(center, center);
+        flex-direction: column;
     }
 
-    & span {
-      display: block;
-      color: $text-color;
-      opacity: 0.8;
-      text-align: center;
+    &__logo {
+        margin-bottom: 4rem;
+        padding: 3rem;
+        background-color: rgba($primary-color, 0.2);
+        border-radius: 50%;
+
+        & svg {
+            @include flex(center, center);
+            fill: $primary-color;
+            height: 6rem;
+            width: 6rem;
+        }
     }
-  }
+
+    &__slogan {
+        & h3 {
+            color: $text-color;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        & span {
+            display: block;
+            color: $text-color;
+            opacity: 0.8;
+            text-align: center;
+        }
+    }
 }
 
 .chatBox {
-  &__container {
-    display: flex;
-    height: 100vh;
-  }
-
-  width: 70%;
-  height: 100%;
-  position: relative;
-  flex-direction: column;
-  display: flex;
-  justify-content: space-between;
-
-  &.full {
-    width: 100%;
-
-    & &_right {
-      width: 75%;
-    }
-  }
-
-  &_heading {
-    display: flex;
-    width: 100%;
-    padding: 20px;
-    position: static;
-    height: 15%;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f3f3f3;
-    box-shadow: 0 0 10px #ccc;
-    border-bottom: 1px solid #eaeaf1;
-
-    &_left {
-      display: flex;
-
-      &_headingImage {
-        position: relative;
-        width: 5rem;
-        height: 5rem;
-        margin-right: 1.6rem;
-
-        &_avt_heading {
-          border-radius: 50%;
-        }
-
-        &_status {
-          width: 1.2rem;
-          height: 1.2rem;
-          border-radius: 50%;
-          position: absolute;
-          background-color: #06d6a0;
-          border: 2px solid #fff;
-          right: 0;
-          bottom: 0;
-        }
-      }
+    &__container {
+        display: flex;
+        height: 100vh;
     }
 
-    &_right {
-      display: flex;
-
-      &_searchInput {
-        width: 300px;
-        padding: 8px 24px;
-        margin: 0 8px;
-        border-radius: 5px;
-        border: 2px solid #ccc;
-
-        &:focus {
-          border: 2px solid #000;
-        }
-      }
-    }
-  }
-
-  &_content {
-    padding: 0 24px;
-    width: 100%;
-    height: 70%;
+    width: 70%;
+    height: 100%;
     position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-
-  &_footer {
-    width: 100%;
-    height: 15%;
-    bottom: 0;
+    flex-direction: column;
     display: flex;
-    flex-direction: row;
-    background-color: #f3f3f3;
-    align-items: center;
-    border-top: 1px solid #eaeaf1;
-    box-shadow: 0 -5px 20px rgb(234, 231, 231);
-    z-index: 1;
+    justify-content: space-between;
 
-    &_sender {
-      width: 84%;
-      height: auto;
-      margin-right: 1px;
+    &.full {
+        width: 100%;
+
+        & &_right {
+            width: 75%;
+        }
     }
 
-    &_send {
-      padding: 15px !important;
-      color: #fff !important;
-      background-color: #88c59c;
-      border-radius: 5px;
-      margin-left: 0;
+    &_heading {
+        display: flex;
+        width: 100%;
+        padding: 20px;
+        position: static;
+        height: 15%;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #F3F3F3;
+        box-shadow: 0 0 10px #ccc;
+        border-bottom: 1px solid #EAEAF1;
+
+        &_left {
+            display: flex;
+
+            &_headingImage {
+                position: relative;
+                width: 5rem;
+                height: 5rem;
+                margin-right: 1.6rem;
+
+                &_avt_heading {
+                    border-radius: 50%;
+                }
+
+                &_status {
+                    width: 1.2rem;
+                    height: 1.2rem;
+                    border-radius: 50%;
+                    position: absolute;
+                    background-color: #06D6A0;
+                    border: 2px solid #fff;
+                    right: 0;
+                    bottom: 0;
+                }
+            }
+        }
+
+        &_right {
+            display: flex;
+
+            &_searchInput {
+                width: 300px;
+                padding: 8px 24px;
+                margin: 0 8px;
+                border-radius: 5px;
+                border: 2px solid #ccc;
+
+                &:focus {
+                    border: 2px solid #000;
+                }
+            }
+        }
     }
-  }
 
-  &_modal {
-    background-color: #fff;
-    position: absolute;
-    width: 100%;
-    height: 16%;
-    bottom: 0;
-    z-index: -1;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease-in-out;
+    &_content {
+        padding: 0 24px;
+        width: 100%;
+        height: 70%;
+        position: relative;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
 
-    &_more {
-      display: flex;
-      padding: 20px;
-      justify-content: space-between;
-      align-items: center;
+    &_footer {
+        width: 100%;
+        height: 15%;
+        bottom: 0;
+        display: flex;
+        flex-direction: row;
+        background-color: #F3F3F3;
+        align-items: center;
+        border-top: 1px solid #EAEAF1;
+        box-shadow: 0 -5px 20px rgb(234, 231, 231);
+        z-index: 1000;
 
-      & a {
+        &_sender {
+            width: 84%;
+            height: auto;
+            margin-right: 1px;
+        }
+
+        &_send {
+            padding: 15px !important;
+            color: #fff !important;
+            background-color: #88C59C;
+            border-radius: 5px;
+            margin-left: 0;
+        }
+    }
+
+    &_modal {
+        background-color: #fff;
+        position: absolute;
+        width: 100%;
+        height: 16%;
+        bottom: 0;
+        z-index: -1;
         justify-content: center;
         align-items: center;
-      }
+        transition: all 0.3s ease-in-out;
 
-      &_icon_fa__second {
-        padding: 16px;
-        border-radius: 50%;
-        background-color: #dceee2;
-        color: #4eac6d;
-      }
+        &_more {
+            display: flex;
+            padding: 20px;
+            justify-content: space-between;
+            align-items: center;
 
-      &_name_icon_fa__second {
-        text-transform: uppercase;
-        font-size: 10px;
-        font-weight: bold;
-        color: #5c6369;
-        text-align: center;
-      }
+            & a {
+                justify-content: center;
+                align-items: center;
+            }
+
+            &_icon_fa__second {
+                padding: 16px;
+                border-radius: 50%;
+                background-color: #DCEEE2;
+                color: #4EAC6D;
+            }
+
+            &_name_icon_fa__second {
+                text-transform: uppercase;
+                font-size: 10px;
+                font-weight: bold;
+                color: #5C6369;
+                text-align: center;
+            }
+
+        }
     }
-  }
 }
 
+
+
 .icon_fa {
-  font-size: 20px;
-  color: #797c8c;
-  padding: 10px;
-  cursor: pointer;
-  margin: 0 10px;
+    font-size: 20px;
+    color: #797C8C;
+    padding: 10px;
+    cursor: pointer;
+    margin: 0 10px;
 }
 
 .tippy-box[data-theme~="light-border"] {
-  background-color: #fff;
-  align-items: center;
-  z-index: 1000;
-  pointer-events: all;
-
-  .tippy-content {
-    padding: 5px 0;
-  }
-
-  a {
+    background-color: #fff;
     align-items: center;
-    cursor: pointer;
-    padding: 6px 20px 6px 24px;
-    display: flex;
-    width: 230px;
-  }
+    z-index: 1000;
+    pointer-events: all;
 
-  a:hover {
-    background-color: rgb(237, 237, 237);
-  }
+    .tippy-content {
+        padding: 5px 0;
+    }
 
-  p {
-    color: #000;
-    font-size: 15px;
-    color: #505356;
-    width: 90%;
-    text-align: left;
-  }
+    a {
+        align-items: center;
+        cursor: pointer;
+        padding: 6px 20px 6px 24px;
+        display: flex;
+        width: 230px;
+    }
 
-  .option_Chat {
-    z-index: 1001;
-  }
+    a:hover {
+        background-color: rgb(237, 237, 237);
+    }
 
-  .optionMore_icon {
-    width: 10%;
-    color: #505356;
-    text-align: center;
-    margin-left: 50px;
-    justify-content: flex-end;
-  }
+    p {
+        color: #000;
+        font-size: 15px;
+        color: #505356;
+        width: 90%;
+        text-align: left;
+    }
+
+    .option_Chat {
+        z-index: 1001;
+    }
+
+    .optionMore_icon {
+        width: 10%;
+        color: #505356;
+        text-align: center;
+        margin-left: 50px;
+        justify-content: flex-end;
+    }
 }
+
 
 .react-input-emoji--input:focus {
-  border: 1px solid #ccc;
-  border-radius: 21px;
+    border: 1px solid #ccc;
+    border-radius: 21px;
 }
+
 
 .react-input-emoji--button {
-  padding: 0 28px !important;
+    padding: 0 28px !important;
 }
+
 
 .activeModal {
-  bottom: 15%;
-  z-index: 1;
-  transition: all 0.5s ease-in;
+    bottom: 15%;
+    z-index: 1;
+    transition: all 0.5s ease-in;
 }
+
 
 .profile-friend {
-  transition: width 0.4s ease-in-out;
-  width: 30%;
+    transition: width .4s ease-in-out;
+    width: 30%;
 
-  &.not-active {
-    width: 0%;
-  }
+    &.not-active {
+        width: 0%;
+    }
 }
 
-.chatBox__modal__container {
-  cursor: pointer;
-}
-
-.chatBox__modal__hidden {
-  height: 0;
-  width: 0;
-  overflow: hidden;
+.chatBox__modal__container{
+    cursor: pointer;
 }
