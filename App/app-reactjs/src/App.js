@@ -17,7 +17,7 @@ function App() {
     <div className="App">
       {isSelected ? <PreviewImage /> : ""}
       {/* App dùng cho router */}
-      <ChangeInfo />
+      {/* <ChangeInfo /> */}
       {isAuth ? (
         <Routes>
           {mainRoutes.map((route, index) => {

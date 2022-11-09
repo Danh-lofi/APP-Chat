@@ -3,12 +3,10 @@ import GroupChatModel from "../models/GroupChat.js";
 import UserModel from "../models/User.js";
 
 const GroupChatController = {
-  createGroupChat: async (req, res) => {
+  createGroupChat: async (req, res, next) => {
     const nameGroupChat = req.body.nameGroupChat;
     const adminGroup = req.body.adminGroup;
     const memberChat = req.body.memberChat;
-    console.log("memberChat");
-    console.log(memberChat);
 
     if (memberChat.length < 3) {
       return res.status(400).send("Nhóm chat phải từ từ3 thành viên trở lên!");
@@ -20,18 +18,11 @@ const GroupChatController = {
       memberChat: memberChat,
     });
 
-    // groupChat.save((err) => {
-    //   if (err) {
-    //     return res.status(406).send("Khong tao duoc group " + err);
-    //   }
-
-    //   const rs = { nameGroupChat, adminGroup, memberChat };
-    //   res.status(200).json({ rs });
-    // });
-
     try {
       const rs = await groupChat.save();
-      res.status(200).json(rs);
+      req.body.idGroupChat = rs._id;
+      req.body.listIdUser = rs.memberChat;
+      next();
     } catch (error) {
       res.status(406).json(error);
     }
@@ -50,19 +41,24 @@ const GroupChatController = {
   },
 
   updateGroupChatInUser: async (req, res) => {
+    const listIdUser = req.body.listIdUser;
     const idGroupChat = req.body.idGroupChat;
+    console.log(idGroupChat);
+    console.log(listIdUser);
     const oGroups = { id: idGroupChat };
-    const idUser = req.body.idUser;
+    // const idUser = req.body.idUser;
+    for (const idUser of listIdUser) {
+      try {
+        const rs = await UserModel.findOneAndUpdate(
+          { _id: idUser.id },
+          { $push: { groups: oGroups } }
+        );
 
-    try {
-      const rs = await UserModel.findOneAndUpdate(
-        { _id: idUser },
-        { $push: { groups: oGroups } }
-      );
-
-      res.status(200).json({ rs, message: "Thanh cong" });
-    } catch (error) {
-      res.status(407).json({ error, message: "Khong thanh cong" });
+        // res.status(200).json({ rs, message: "Thanh cong" });
+      } catch (error) {
+        res.status(407).json({ error, message: "Khong thanh cong" });
+      }
+      res.status(200).json({ message: "Thanh cong" });
     }
 
     // UserModel.findOneAndUpdate(

@@ -4,10 +4,19 @@ import authMiddleware from "../app/middleware/authMiddleware.js";
 
 const routerGroupChat = express.Router();
 
-routerGroupChat.post("/createGroup", GroupChatController.createGroupChat);
+routerGroupChat.post(
+  "/createGroup",
+  GroupChatController.createGroupChat,
+  GroupChatController.updateGroupChatInUser
+);
 routerGroupChat.get(
   "/getGroupChat",
   authMiddleware.authApp,
+  GroupChatController.getGroupChat
+);
+routerGroupChat.get(
+  "/getAllGroup",
+  authMiddleware.isAuth,
   GroupChatController.getGroupChat
 );
 routerGroupChat.put(

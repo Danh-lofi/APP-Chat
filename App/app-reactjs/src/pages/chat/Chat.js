@@ -10,11 +10,11 @@ import { useDispatch } from "react-redux";
 import { profileFriend } from "../../store/userSlice";
 import friendApi from "../../api/friendApi";
 import ListFriend from "../../components/list-friend/ListFriend";
+import ListGroup from "../../components/list-group/ListGroup";
 
 const Chat = () => {
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")).user
-  );
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  console.log(user);
 
   const [loading, setLoading] = useState(false);
   // Get All Friends
@@ -47,63 +47,12 @@ const Chat = () => {
         <div className="box_favour">
           <ListFriend user={user} changeLoading={changeLoadingHandle} />
         </div>
-      </div>
-
-      {/* <div className="direct">
-        <div className="heading_direct">
-          <p className="text_direct">DIRECT MESSAGES</p>
-          <FontAwesomeIcon className="icon_plus" icon={faPlus} />
-        </div>
+        <p className="chat_favourites_text">Tất cả nhóm</p>
 
         <div className="box_favour">
-          <ul>
-            {listDerect.map((course, index) => (
-              <li key={index} className={`${index === activeChatDirect ? "active_userChat" : ""}` }onClick={()=>{
-                setActiveChatDirect(index);
-              }}>
-              <UserChat
-                isOnline
-                isWaitMess
-                numberWaitMess={course.numberWaitMess}
-                linkImage= {course.linkImage}
-                nameImage={course.nameImage}
-              />
-              </li>
-            ))}
-          </ul>
+          <ListGroup user={user} changeLoading={changeLoadingHandle} />
         </div>
-
       </div>
-
-      <div className="channels">
-        <div className="heading_direct">
-          <p className="text_direct">channels</p>
-          <FontAwesomeIcon className="icon_plus" icon={faPlus} />
-        </div>
-
-        <div className="box_favour">
-          <ul>
-            <li>
-              <UserChat
-               isChannels
-                nameImage="Tran Phuc Tong"
-              />
-              <UserChat
-                isChannels
-                nameImage="Tran Phuc Tong"
-              />
-              <UserChat
-               isChannels
-                nameImage="Tran Phuc Tong"
-              />
-              <UserChat
-                isChannels
-                nameImage="Tran Phuc Tong"
-              />
-            </li>
-          </ul>
-        </div>
-      </div> */}
     </div>
   );
 };

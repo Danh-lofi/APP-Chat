@@ -21,7 +21,7 @@ const AutherController = {
   },
 
   login: async (req, res, next) => {
-    const username = req.body.username.toLowerCase();
+    const username = req.body.username;
     const password = req.body.password;
     console.log("username: " + username + " password:" + password);
 
