@@ -6,5 +6,12 @@ const routerFriend = express.Router();
 
 routerFriend.get("/web", authMiddleware.isAuth, FriendController.getAllFriend);
 routerFriend.get("/", authMiddleware.authApp, FriendController.getAllFriend);
+routerFriend.get("/", authMiddleware.isAuth, FriendController.getAllFriend);
+routerFriend.get("/:username", FriendController.getUserByUsername);
+routerFriend.post(
+  "/deleteFriend",
+  authMiddleware.isAuth,
+  FriendController.deleteFriend
+);
 
 export default routerFriend;

@@ -1,5 +1,6 @@
 import UserModel from "../models/User.js";
 import mongoose from "mongoose";
+
 const FriendController = {
   findUser: async (req, res) => {
     const { friendId } = req.params;
@@ -24,6 +25,26 @@ const FriendController = {
       listFriend.push(data);
     }
     res.status(200).json({ listFriend });
+  },
+  deleteFriend: async (req,res) => {
+    const user = req.user;
+    const meId = user._id
+    const friendId = req.body.friendId;
+    try {
+       await UserModel.findOneAndUpdate({_id: meId},{ $pull: { friends: {id: friendId} } });
+       await UserModel.findOneAndUpdate({_id: friendId},{ $pull: { friends: {id: meId} } });
+    } catch (error) {
+      console.log("loi");
+    }
+  },
+  getUserByUsername: async (req,res) =>{
+    const username = req.params.username;
+    try {
+      const user = await UserModel.findOne({username: username});
+      res.send(user)
+    } catch (error) {
+      res.send("khong tim thay user nay")
+    }
   },
 };
 
