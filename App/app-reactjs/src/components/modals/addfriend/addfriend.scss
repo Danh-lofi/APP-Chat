@@ -1,0 +1,142 @@
+@use '../../../scss/' as *;
+
+@keyframes fadeModal {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.overlay {
+    animation: fadeModal 0.3s ease-in-out;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+
+}
+
+.modalContainer {
+    animation: fadeModal 0.3s ease-in-out;
+    z-index: 2;
+    width: 400px;
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    // height: 400px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 18px 0px rgba(0, 0, 0, 0.75);
+    border-radius: 8px;
+}
+
+.headerModal {
+    border-bottom: 1px gainsboro solid;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title {
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.closeBtn {
+    padding: 4px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #4EAC6D;
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #EDF7F0;
+    transition: ease-in-out 0.2s;
+
+    &:hover {
+        color: #EDF7F0;
+        background-color: #4EAC6D;
+    }
+}
+
+.inputRangeModal {
+    padding: 20px;
+    border-bottom: 1px gainsboro solid;
+
+}
+
+.fakeFindBtn {
+    width: 100%;
+    padding: 7px 0;
+    text-align: center;
+    color: white;
+    background-color: #4EAC6D;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.friendFoundRangeModal {
+    padding: 20px;
+
+}
+
+.tabFriend {
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid gainsboro;
+    padding: 5px 10px;
+}
+
+.imageFriendContain {
+    width: 60px;
+    height: 60px;
+}
+
+.imageFriendContain img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.nameFriend {
+    color: rgb(81, 81, 81);
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.BirthDayFriend {
+    color: rgb(81, 81, 81);
+    line-height: 13px;
+    font-size: 14px;
+}
+
+
+.left {
+    width: 39%;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+}
+
+.btnContain {
+    display: flex;
+
+    .icon {
+        cursor: pointer;
+        margin-right: 10px;
+        font-size: 20px;
+        color: gray;
+
+        :hover {
+            color: #4EAC6D;
+        }
+    }
+}

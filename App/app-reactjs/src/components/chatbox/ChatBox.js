@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
-import "./ChatBox.scss";
+import "./chatbox.scss";
+// import "./chat_box.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faContactBook,
@@ -138,9 +139,8 @@ const ChatBox = () => {
     const data = await messageApi.addMessage(messageSender);
 
     const date = new Date();
-    const time = `${date.getHours()}:${
-      date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
-    }`;
+    const time = `${date.getHours()}:${date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+      }`;
     if (data.status === 200) {
       if (message !== null) {
         socket.current.emit("send-message", {

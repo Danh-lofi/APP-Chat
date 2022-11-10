@@ -4,12 +4,17 @@ import mainRoutes, { authRoutes } from "./routes/Routes";
 import LayoutMain from "./layout/layout-main/LayoutMain";
 import LayoutAuth from "./layout/layout-auth/LayoutAuth";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import AddFriend from "./components/modals/addfriend/AddFriend";
 
 function App() {
+  const [openModal, setOpenModal] = useState(false)
+  console.log(openModal);
   let isAuth = useSelector((state) => state.user.isLoggedIn);
   return (
     <div className="App">
+
+      {openModal ? <AddFriend onClose={() => setOpenModal(false)}></AddFriend> : ''}
       {/* App dùng cho router */}
       {isAuth ? (
         <Routes>
@@ -21,7 +26,7 @@ function App() {
                 path={route.path}
                 element={
                   <LayoutMain>
-                    <Page />
+                    <Page onClick={() => setOpenModal(true)} />
                   </LayoutMain>
                 }
               ></Route>

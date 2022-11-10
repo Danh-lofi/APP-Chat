@@ -11,7 +11,7 @@ import { profileFriend } from "../../store/userSlice";
 import friendApi from "../../api/friendApi";
 import ListFriend from "../../components/list-friend/ListFriend";
 
-const Chat = () => {
+const Chat = (props) => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")).user
   );
@@ -29,6 +29,7 @@ const Chat = () => {
         <div className="chat_heading_top">
           <h3>Trò chuyện</h3>
           <FontAwesomeIcon
+            onClick={props.onClick}
             className="chat_heading_top_iconPlus"
             icon={faPlus}
           />
