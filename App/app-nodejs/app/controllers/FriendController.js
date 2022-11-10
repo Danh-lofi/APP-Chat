@@ -17,6 +17,7 @@ const FriendController = {
   getAllFriend: async (req, res) => {
     // const { friendId } = req.params;
     const user = req.user;
+    console.log(user);
     const listFriend = [];
     for (const friend of user.friends) {
       const id = mongoose.Types.ObjectId(friend.id);

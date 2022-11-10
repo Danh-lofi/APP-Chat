@@ -59,6 +59,7 @@ const SC_Login = ({ navigation }) => {
             "dang nhap thanh cong voi token tra ve la: " + res.data.accessToken
           );
           await AsyncStorage.setItem("token", res.data.accessToken);
+          await AsyncStorage.setItem("idUser", res.data.user._id);
           navigation.replace("BottomTabsNavigator", {
             token: res.data.accessToken,
           });

@@ -2,8 +2,8 @@ import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function MessageComponent({ item, user }) {
-  const status = item.user !== user;
+export default function MessageComponent({ item, idUser }) {
+  const status = item.senderId !== idUser;
 
   return (
     <View>

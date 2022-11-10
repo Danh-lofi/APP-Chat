@@ -78,8 +78,8 @@ export const ApiProfile = {
     //   },
     // });
     return axios.create({
-      //baseURL: "http://192.168.1.2:3001/me",
-      baseURL: "http://localhost:3001/me",
+      baseURL: "http://192.168.1.12:3001/me",
+      // baseURL: "http://localhost:3001/me",
       headers: {
         Authorization: `Bearer ${token}`,
       },

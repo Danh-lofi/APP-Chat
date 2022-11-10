@@ -3,15 +3,15 @@ import axios from "axios";
 import queryString from "query-string";
 
 const ApiManager = axios.create({
-  baseURL: "http://localhost:3001", ///api/users
-  // baseURL: "http://192.168.137.214:3001",
+  //baseURL: "http://localhost:3001", ///api/users
+  baseURL: "http://192.168.1.12:3001",
   responseType: "json",
   withCredentials: true,
 });
 
 export const apiGet = axios.create({
-  baseURL: "http://localhost:3001",
-  // baseURL: "http://192.168.137.214:3001",
+  // baseURL: "http://localhost:3001",
+  baseURL: "http://192.168.1.12:3001",
   headers: {
     "content-type": "application/json",
   },

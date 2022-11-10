@@ -15,6 +15,7 @@ import {
 import GlobalStyles from "../components/GlobalStyles";
 import { SearchICon, QRIcon, AddNewIcon } from "../components/IconBottomTabs";
 import MessageBar from "../components/MessageBar";
+import GroupBar from "../components/GroupBar";
 import { PhoneBook } from "./PhoneBook.screen";
 import { ApiProfile, ApiUser } from "../api/ApiUser";
 import ApiLoadFriend from "../api/ApiLoadFriend";
@@ -54,6 +55,15 @@ export const Home = ({ navigation, route }) => {
     await AsyncStorage.setItem("avatar", item.avatar);
   };
 
+  const handleClick2 = async (item) => {
+    navigation.navigate("SC_Chat");
+    await AsyncStorage.setItem("idUser", user._id);
+    await AsyncStorage.setItem("idFriend", item._id);
+    await AsyncStorage.setItem("currentName", item.nameGroupChat);
+    await AsyncStorage.setItem("avatar", item.imgGroupChat);
+    console.log(item._id);
+  };
+
   const callApiProfile = useCallback(async () => {
     const token = await AsyncStorage.getItem("token");
     setTemp(token);
@@ -79,7 +89,11 @@ export const Home = ({ navigation, route }) => {
       .then((res) => {
         console.log("get friend");
         console.log(res.data.listFriend);
-        setInfor(res.data.listFriend);
+        setInfor(
+          res.data.listFriend.filter((element) => {
+            return element !== null;
+          })
+        );
       })
       .catch((err) => {
         console.log("405");
@@ -88,8 +102,16 @@ export const Home = ({ navigation, route }) => {
     await ApiLoadGroupChat.getGroupChat(token)
       .then((res) => {
         console.log("get group chat");
-        console.log(res.data.listGroup);
-        setListGroup(res.data.listGroup);
+        console.log(
+          res.data.listGroup.filter((element) => {
+            return element !== null;
+          })
+        );
+        setListGroup(
+          res.data.listGroup.filter((element) => {
+            return element !== null;
+          })
+        );
       })
       .catch((err) => {
         console.log("406: " + err);
@@ -111,6 +133,21 @@ export const Home = ({ navigation, route }) => {
       setIsRefreshing(false);
     }, 1000);
   });
+
+  useEffect(() => {
+    socket.on("listGroup", (data) => {
+      setListGroup((listGroup) => [
+        ...listGroup,
+        {
+          nameGroupChat: data.nameGroupChat,
+          adminGroup: data.adminGroup,
+          memberChat: data.memberChat,
+        },
+      ]);
+      console.log("socket group: ");
+      console.log(data);
+    });
+  }, [socket]);
 
   return (
     <SafeAreaView style={[styles.container, GlobalStyles.droidSafeArea]}>
@@ -136,6 +173,21 @@ export const Home = ({ navigation, route }) => {
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <MessageBar onPress={() => handleClick(item)} listInfor={item} />
+          )}
+          // refreshControl={
+          //   <RefreshControl
+          //     refreshing={isRefreshing}
+          //     onRefresh={handleRefresh}
+          //   />
+          // }
+        />
+      </View>
+      <View style={styles.listMess}>
+        <FlatList
+          data={listGroup}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <GroupBar onPress={() => handleClick2(item)} listInfor={item} />
           )}
           // refreshControl={
           //   <RefreshControl
