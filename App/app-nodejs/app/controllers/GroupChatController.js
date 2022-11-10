@@ -58,8 +58,9 @@ const GroupChatController = {
       } catch (error) {
         res.status(407).json({ error, message: "Khong thanh cong" });
       }
-      res.status(200).json({ message: "Thanh cong" });
+      
     }
+    res.status(200).json({ message: "Thanh cong" });
 
     // UserModel.findOneAndUpdate(
     //   { _id: idUser },
@@ -73,6 +74,26 @@ const GroupChatController = {
     //   }
     // );
   },
+  deleteGroupChat: async (req,res) =>{
+    const user = req.user;
+    const meId = user._id;
+    const groupId = req.body.groupId;
+    const groupChat = await GroupChatModel.findOne({_id : groupId});
+    const _groupId = groupChat._id
+    const groupChatAdminId = groupChat.adminGroup;
+    const userDeleteId = req.body.userDeleteId;
+    try {
+      if(meId == groupChatAdminId){
+        await GroupChatModel.findOneAndUpdate({_id: groupId},{ $pull: { memberChat: {id: userDeleteId} } });
+        await UserModel.findOneAndUpdate({_id: userDeleteId},{ $pull: { groups: {id: _groupId} } });
+        res.status(200).send("groupId: " + groupId + "+" + "admin: " +  groupChatAdminId + "+" + "id bi xoa: " + userDeleteId)
+      }else{
+        res.send("ban khong phai admin")
+      }
+    } catch (error) {
+      console.log("loi");
+    }
+  }
 };
 
 export default GroupChatController;
