@@ -1,4 +1,5 @@
 @use '../../scss/' as *;
+
 .chatbox {
     height: 100vh;
     width: 100%;
@@ -135,7 +136,7 @@
         align-items: center;
         border-top: 1px solid #EAEAF1;
         box-shadow: 0 -5px 20px rgb(234, 231, 231);
-        z-index: 1000;
+        z-index: 1;
 
         &_sender {
             width: 84%;
@@ -274,6 +275,6 @@
     }
 }
 
-.chatBox__modal__container{
+.chatBox__modal__container {
     cursor: pointer;
 }

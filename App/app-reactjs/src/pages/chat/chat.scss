@@ -6,13 +6,14 @@
 
     &_top {
       display: flex;
-      justify-content: space-between;
+      position: relative;
       align-items: center;
       margin-bottom: 16px;
 
       & h3 {
         font-size: 2.1rem;
         color: #495057;
+        margin-right: 68px;
       }
 
       &_iconPlus {
@@ -20,6 +21,9 @@
         background-color: #EDF7F0;
         color: #7FC395;
         border-radius: 4px;
+        margin-left: 10px;
+        cursor: pointer;
+        
 
         &:hover {
           background-color: #4EAC6D;

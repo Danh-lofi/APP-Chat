@@ -111,11 +111,12 @@ const ChatItem = (props) => {
                   </Tippy>
                 </div>
                 <div className="messenger">
-                  <div className="content_messenger">
+                  <div>
                     {props.isImg ? (
                       <img
                         src={props.Messenger}
                         onClick={previewModalImageHandle}
+                        class="content_messenger_image"
                       />
                     ) : (
                       <p>{props.Messenger}</p>
@@ -146,6 +147,7 @@ const ChatItem = (props) => {
                     <img
                       src={props.Messenger}
                       onClick={previewModalImageHandle}
+                      className="content_messenger_image"
                     />
                   ) : (
                     <p>{props.Messenger}</p>

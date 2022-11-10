@@ -8,9 +8,18 @@ import { useEffect, useState } from "react";
 import PreviewImage from "./components/modals/preview-image/PreviewImage";
 import { imageAction } from "./store/imageSlice";
 import ChangeInfo from "./components/modals/change-info/ChangeInfo";
+import { faXmark, faCamera, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ListFriend from "./components/list-friend/ListFriend";
+import UserChat from "./components/userchat/UserChat";
+import ModalGroup from "./components/modalGroup/ModalGroup";
 
 function App() {
   let isAuth = useSelector((state) => state.user.isLoggedIn);
+  const [isModal, setIsModal] = useState(false);
+  const hideModalHandle = () => {
+    setIsModal(!isModal);
+  };
   const isSelected = useSelector((state) => state.image.isSelected);
 
   return (
@@ -18,6 +27,7 @@ function App() {
       {isSelected ? <PreviewImage /> : ""}
       {/* App dùng cho router */}
       {/* <ChangeInfo /> */}
+      {isModal ? <ModalGroup onClose={() => setIsModal(false)} /> : ""}
       {isAuth ? (
         <Routes>
           {mainRoutes.map((route, index) => {
@@ -28,7 +38,7 @@ function App() {
                 path={route.path}
                 element={
                   <LayoutMain>
-                    <Page />
+                    <Page onClick={hideModalHandle} />
                   </LayoutMain>
                 }
               ></Route>

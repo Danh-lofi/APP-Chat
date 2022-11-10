@@ -5,7 +5,9 @@
   margin: 0;
   box-sizing: border-box;
 }
-
+.App{
+  position: relative;
+}
 html {
   font-size: 62.5%;
 
@@ -38,6 +40,7 @@ input {
 
 img {
   max-width: 100%;
+  object-fit: cover;
 }
 
 // Scroll bar
@@ -77,3 +80,8 @@ html *::-webkit-scrollbar-track {
 .App{
   position: relative;
 }
+
+
+
+
+

@@ -3,7 +3,7 @@ import "./chat.scss";
 import UserChat from "../../components/userchat/UserChat";
 import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faPeopleGroup } from "@fortawesome/free-solid-svg-icons";
 import InputAuthen from "../../components/input/InputAuthen";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -12,9 +12,10 @@ import friendApi from "../../api/friendApi";
 import ListFriend from "../../components/list-friend/ListFriend";
 import ListGroup from "../../components/list-group/ListGroup";
 
-const Chat = () => {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-  console.log(user);
+const Chat = (props) => {
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user")).user
+  );
 
   const [loading, setLoading] = useState(false);
   // Get All Friends
@@ -31,6 +32,11 @@ const Chat = () => {
           <FontAwesomeIcon
             className="chat_heading_top_iconPlus"
             icon={faPlus}
+          />
+          <FontAwesomeIcon
+            className="chat_heading_top_iconPlus"
+            icon={faPeopleGroup}
+            onClick={props.onClick}
           />
         </div>
         <div className="chat_heading_bottom">
