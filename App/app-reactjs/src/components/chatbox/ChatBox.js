@@ -45,9 +45,6 @@ const ChatBox = () => {
   const fileRef = useRef();
   const imgRef = useRef();
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const socket = useRef();
   const [onlineUsers, setOnlineUsers] = useState([]);
 
@@ -59,16 +56,12 @@ const ChatBox = () => {
   );
 
   const friend = useSelector((state) => state.user.friend);
+  console.log(friend);
 
   const [chatId, setChatId] = useState();
   const [messages, setMessgages] = useState([]);
   const [message, setMessage] = useState("");
   const [receivedMessage, setReceivedMessage] = useState(null);
-
-  // img
-  const [img, setImg] = useState("");
-  //
-
   const [ariaExpanded, setAriaExpanded] = useState("");
   const [more, setMore] = useState(false);
 
@@ -104,10 +97,14 @@ const ChatBox = () => {
     });
   }, [receivedMessage]);
 
-  // Test API
+  // Get room chat
   useEffect(() => {
     const getChats = async () => {
       try {
+        // Là group thì không cần setChatId
+        if (friend.memberChat) {
+          return;
+        }
         const chat = await chatApi.getChat(user._id, friend._id);
         setChatId(chat.data._id);
       } catch (error) {
@@ -115,6 +112,7 @@ const ChatBox = () => {
       }
     };
     getChats();
+    if (friend) setChatId(friend._id);
   }, [user, friend]);
 
   // get all messages from chat id
@@ -152,12 +150,17 @@ const ChatBox = () => {
       date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
     }`;
     if (data.status === 200) {
+      let members;
+      if (friend.memberChat) {
+        members = friend.memberChat.filter((member) => member.id !== user._id);
+      }
+
       if (message !== null) {
         socket.current.emit("send-message", {
           chatId,
           senderId: user._id,
           text: message,
-          receiverId: friend._id,
+          receiverId: friend.memberChat ? members : friend._id,
           time,
         });
       }
@@ -201,11 +204,18 @@ const ChatBox = () => {
         date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
       }`;
       if (data.status === 200) {
+        let members;
+        if (friend.memberChat) {
+          members = friend.memberChat.filter(
+            (member) => member.id !== user._id
+          );
+        }
+
         socket.current.emit("send-message", {
           chatId,
           senderId: user._id,
           text: data.data.result.text,
-          receiverId: friend._id,
+          receiverId: friend.memberChat ? members : friend._id,
           isImg,
           time,
         });

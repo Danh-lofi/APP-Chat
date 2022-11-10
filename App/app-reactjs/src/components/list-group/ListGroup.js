@@ -16,7 +16,10 @@ const ListGroup = (props) => {
 
   const changeActiveFriendHandle = (index) => {
     setActiveChatFavou(index);
-    const groupActive = listGroup.find((group) => group._id === index);
+    const groupActive = listGroup.find((group) => {
+      if (!group) return;
+      return group._id === index;
+    });
     dispatch(userActions.setFriend(groupActive));
   };
 
@@ -34,7 +37,9 @@ const ListGroup = (props) => {
   }, []);
 
   // Render list
+
   const List = listGroup.map((group, index) => {
+    if (!group) return;
     return (
       <div
         key={index}

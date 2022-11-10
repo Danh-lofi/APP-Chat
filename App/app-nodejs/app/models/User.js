@@ -20,7 +20,7 @@ const User = new Schema({
   },
   name: {
     type: String,
-    required: true,
+    // required: true,
   },
   birthDate: {
     type: Date,
@@ -29,15 +29,15 @@ const User = new Schema({
   },
   gender: {
     type: String,
-    required: true,
+    // required: true,
   },
   address: {
     type: String,
-    required: true,
+    // required: true,
   },
   introducePersonal: {
     type: String,
-    required: true,
+    // required: true,
   },
   avatar: {
     type: String,

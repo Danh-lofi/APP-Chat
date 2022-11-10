@@ -21,8 +21,10 @@ const MessageController = {
   },
   getMessages: async (req, res) => {
     const { chatId } = req.params;
+    console.log(chatId);
     try {
       const result = await MessageModel.find({ chatId });
+      console.log(result);
       res.status(200).json(result);
     } catch (error) {
       res.status(500).json(error);

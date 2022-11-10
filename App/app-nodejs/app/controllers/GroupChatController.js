@@ -53,25 +53,11 @@ const GroupChatController = {
           { _id: idUser.id },
           { $push: { groups: oGroups } }
         );
-
-        // res.status(200).json({ rs, message: "Thanh cong" });
       } catch (error) {
         res.status(407).json({ error, message: "Khong thanh cong" });
       }
-      res.status(200).json({ message: "Thanh cong" });
     }
-
-    // UserModel.findOneAndUpdate(
-    //   { _id: idUser },
-    //   { $push: { groups: oGroups } },
-    //   function (error, success) {
-    //     if (error) {
-    //       console.log("Khong thanh cong: " + error);
-    //     } else {
-    //       console.log("Thanh cong " + success);
-    //     }
-    //   }
-    // );
+    res.status(200).json({ message: "Thanh cong" });
   },
 };
 

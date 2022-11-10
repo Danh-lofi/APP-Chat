@@ -2,7 +2,7 @@ import axiosClient from "./axiosClient";
 
 const friendApi = {
   getFriend: (accessToken) => {
-    const url = `/friend`;
+    const url = `/friend/get-all-friend`;
     return axiosClient
       .get(url, {
         headers: {
