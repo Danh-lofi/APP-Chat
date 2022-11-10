@@ -41,6 +41,11 @@ const AddFriend = ({ onClose }) => {
                     {/* <div className="fakeFindBtn">Tìm</div> */}
                 </div>
                 <div className="friendFoundRangeModal">
+
+                    {/* Này hong tìm thấy nha */}
+                    {/* <div className="">Không tìm thấy nha! </div> */}
+
+                    {/* Còn nếu cóa thì ra cái này <3  */}
                     <div className="tabFriend">
                         <div className="left">
                             <div className="imageFriendContain">

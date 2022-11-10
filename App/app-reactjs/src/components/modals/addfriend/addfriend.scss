@@ -86,41 +86,42 @@
 }
 
 .tabFriend {
+    background-color: #EDF7F0;
     border-radius: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid gainsboro;
-    padding: 5px 10px;
+    // border: 1px solid gainsboro;
+    padding: 10px 20px;
 }
 
 .imageFriendContain {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
 }
 
 .imageFriendContain img {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     object-fit: cover;
 }
 
 .nameFriend {
     color: rgb(81, 81, 81);
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
 }
 
 .BirthDayFriend {
     color: rgb(81, 81, 81);
-    line-height: 13px;
+    line-height: 12px;
     font-size: 14px;
 }
 
 
 .left {
-    width: 39%;
+    width: 38%;
     justify-content: space-between;
     align-items: center;
     display: flex;
@@ -139,4 +140,8 @@
             color: #4EAC6D;
         }
     }
+}
+
+.notFound {
+    text-align: center;
 }
