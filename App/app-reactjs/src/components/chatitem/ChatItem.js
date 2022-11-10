@@ -103,12 +103,28 @@ const ChatItem = (props) => {
                     />
                   </Tippy>
                 </div>
-                {props.isImg ? (<img className="content_messenger_image" src={props.Messenger} />) :
-                  (
-                    <div className="content_messenger">
-                      <p>{props.Messenger}</p>
-                    </div>
-                  )}
+                {props.isFile ?
+                  (<a href={props.Messenger} className="messengerUpload_file__contentFile">
+                    <p className="messengerUpload_file__contentFile__name">
+                      {props.fileName}
+                    </p>
+                    <small className='messengerUpload_file__contentFile__capacity'>
+                      {props.size}
+                    </small>
+                  </a>)
+                  :
+                  (<>
+                    {props.isImg ?
+                      (<img className="content_messenger_image" src={props.Messenger} />)
+                      :
+                      (
+                        <div className="content_messenger">
+                          <p>{props.Messenger}</p>
+                        </div>
+                      )}
+                  </>)
+                }
+
               </div>
               <div className="conversation-name">
                 <small>{props.time}</small>

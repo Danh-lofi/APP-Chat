@@ -5,23 +5,24 @@ import LayoutMain from "./layout/layout-main/LayoutMain";
 import LayoutAuth from "./layout/layout-auth/LayoutAuth";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import {
+  faXmark, faCamera, faSearch
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ListFriend from "./components/list-friend/ListFriend";
+import UserChat from "./components/userchat/UserChat";
+import ModalGroup from "./components/modalGroup/ModalGroup";
 
 function App() {
   let isAuth = useSelector((state) => state.user.isLoggedIn);
   const [isModal, setIsModal] = useState(false);
-  const hideModalHandle = ()=>{
+  const hideModalHandle = () => {
     setIsModal(!isModal)
   }
   return (
     <div className="App">
-
-      {isModal ? (
-      <div style={{background: 'rgba(0, 0, 0, 0.3)',height: "100vh" , width: "100vw"}}>
-        Modal
-      </div>
-      ) : ("")}
-      
       {/* App dùng cho router */}
+      {isModal ? <ModalGroup onClose={() => setIsModal(false)}/> : ""}
       {isAuth ? (
         <Routes>
           {mainRoutes.map((route, index) => {

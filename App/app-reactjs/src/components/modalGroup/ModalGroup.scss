@@ -1,0 +1,169 @@
+@use '../../scss/' as *;
+.modalGroup{
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  animation: fadeIn linear 0.5s;
+  z-index: 1001;
+  
+}
+.modalGroup__overlay{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+ 
+}
+.modalGroup__body{
+  --growth-from:0.7;
+  --growth-to:0.1;
+  width: auto;
+  height: auto;
+  animation: growth linear 0.1s;
+  margin: auto;
+  position: relative;
+  z-index: 1;
+
+  &__form{
+    width: 500px;
+    background-color: $white;
+    border-radius: 5px;
+    overflow: hidden;
+
+    &__heading{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+
+      &__icon {
+        padding: 8px 8px;
+        background-color: #EDF7F0;
+        color: #7FC395;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover{
+          background-color: #4EAC6D;
+          color: #fff;
+        }
+      }
+    }
+    &__container{
+      padding: 10px 10px 0;
+      
+
+      &__nameGroup{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+
+        &__icon{
+          padding: 10px;
+          font-size: 25px;
+          background-color: transparent;
+          color: #ccc;
+          border-radius: 50%;
+          border: 1px solid #ccc;
+        }
+        &__input{
+          width: 85%;
+          padding: 10px 10px 10px 0;
+          border: none;
+          border-bottom: 1px solid #ccc;
+
+          &:focus{
+            border-bottom: 1px solid $primary-color;
+          }
+        }
+      }
+      &__searchPhone{
+        width: 100%;
+        margin-bottom: 10px;
+
+        & p{
+          color: $text-muted;
+        }
+        &__groupSearch{
+          display: flex;
+          width: 100%;
+          padding: 10px;
+          border-radius: 20px;
+          border: 1px solid #ccc;
+          &__icon{
+            font-size: 20px;
+            color: $text-color;
+            margin-right: 8px;
+          }
+          &__iconExit{
+            opacity: 0;
+          }
+          &__input{
+            border: none;
+            width: 100%;
+          }
+          &:focus-within  {
+            border-color: $primary-color;
+          }     
+        }
+      }
+      &__listFriend{
+        height: 300px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border-top: 2px solid #ccc;
+        margin-top: 15px;
+      }
+    }
+    &__footer{
+      padding: 20px 10px ;
+      border-top: 2px solid #ccc;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      &__cancle{
+        padding: 10px;
+        background-color: #ccc;
+        border-radius: 5px;
+        margin-right: 20px;
+        cursor: pointer;
+      }
+      &__createGroup{
+        padding: 10px;
+        background-color: $primary-color;
+        border-radius: 5px;
+        color: #fff;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  0%{
+      opacity: 0;
+  }
+  100%{
+      opacity: 1;
+  }
+}
+
+@keyframes growth{
+  from{
+      transform: scale(var(--growth-from));
+  }
+  to{
+      transform: scale(var(--growth-to));
+  }
+}
+
+.iconExitDisplay{
+  opacity: 1;
+}
