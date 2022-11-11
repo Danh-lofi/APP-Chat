@@ -14,6 +14,18 @@ const MessageSchema = new mongoose.Schema(
     isImg: {
       type: Boolean,
     },
+    isFileWord: {
+      type: Boolean,
+    },
+    isFilePdf: {
+      type: Boolean,
+    },
+    isFilePowP: {
+      type: Boolean,
+    },
+    isFileExel: {
+      type: Boolean,
+    },
     type: {
       type: String,
     },

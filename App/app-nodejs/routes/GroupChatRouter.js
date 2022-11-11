@@ -17,15 +17,23 @@ routerGroupChat.get(
 );
 routerGroupChat.get(
   "/getAllGroup",
-  authMiddleware.authApp,
+  authMiddleware.isAuth,
   GroupChatController.getGroupChat
 );
 routerGroupChat.put(
   "/updateGroupChatInUser",
   GroupChatController.updateGroupChatInUser
 );
-routerGroupChat.post("/deleteMember",authMiddleware.isAuth,GroupChatController.deleteGroupChat);
-routerGroupChat.post("/leaveGroup",authMiddleware.isAuth,GroupChatController.leaveGroup);
+routerGroupChat.post(
+  "/deleteMember",
+  authMiddleware.isAuth,
+  GroupChatController.deleteGroupChat
+);
+routerGroupChat.post(
+  "/leaveGroup",
+  authMiddleware.isAuth,
+  GroupChatController.leaveGroup
+);
 
 routerGroupChat.put("/renameGroupChat", GroupChatController.renameGroupChat);
 

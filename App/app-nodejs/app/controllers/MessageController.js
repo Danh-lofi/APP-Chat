@@ -2,7 +2,18 @@ import MessageModel from "../models/messageModel.js";
 
 const MessageController = {
   addMessage: async (req, res) => {
-    const { chatId, senderId, text, isImg, type, fileName } = req.body;
+    const {
+      chatId,
+      senderId,
+      text,
+      isImg,
+      type,
+      fileName,
+      isFileWord,
+      isFilePdf,
+      isFilePowP,
+      isFileExel,
+    } = req.body;
 
     const message = new MessageModel({
       chatId,
@@ -11,6 +22,10 @@ const MessageController = {
       isImg,
       type,
       fileName,
+      isFileWord,
+      isFilePdf,
+      isFilePowP,
+      isFileExel,
     });
     try {
       const result = await message.save();

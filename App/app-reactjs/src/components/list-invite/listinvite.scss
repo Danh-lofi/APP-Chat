@@ -1,0 +1,17 @@
+@use '../../scss/' as *;
+.list__invite{
+    @include flex(center,space-between);
+    margin-right: 25px;
+    &__icon{
+        & svg{
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        &__agree{
+            color: $primary-color;
+        }
+        &__denied{
+            color: #FF2E2E;
+        }
+    }
+}

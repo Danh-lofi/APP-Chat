@@ -10,6 +10,7 @@ const configRoutes = {
   changePassword: "/change-password",
   info: "/register/info",
   chat: "/chat",
+  contact: "/contact",
 };
 
 export default configRoutes;

@@ -10,6 +10,7 @@ import ResetPassword from "../pages/reset-pass/ResetPassword";
 import Info from "../pages/register-info/Register_info";
 import Chat from "../pages/chat/Chat";
 import ChangePassword from "../pages/change-password/ChangePassword";
+import Contact from "../pages/contact/Contact";
 
 const mainRoutes = [
   {
@@ -21,6 +22,7 @@ const mainRoutes = [
     component: Chat,
   },
   { path: configRoutes.profile, component: Profile },
+  { path: configRoutes.contact, component: Contact },
 ];
 
 export const authRoutes = [

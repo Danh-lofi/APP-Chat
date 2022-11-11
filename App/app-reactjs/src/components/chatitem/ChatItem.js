@@ -45,7 +45,6 @@ const ChatItem = (props) => {
   useEffect(() => {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
   }, [props.id]);
-  console.log(props);
 
   return (
     <div className="list_Chat" ref={scroll}>
@@ -108,8 +107,8 @@ const ChatItem = (props) => {
                     theme="light-border"
                     trigger="click"
                     appendTo="parent"
-                  // onMount={() => setAriaExpanded('true')}
-                  // onHide={() => setAriaExpanded('false')}
+                    // onMount={() => setAriaExpanded('true')}
+                    // onHide={() => setAriaExpanded('false')}
                   >
                     <FontAwesomeIcon
                       className="icon_messOption"
@@ -118,11 +117,13 @@ const ChatItem = (props) => {
                   </Tippy>
                 </div>
 
-
                 {props.isFileWord ? (
                   <a href={props.Messenger} className="messengerUpload">
                     <div className="messengerUpload_file">
-                      <FontAwesomeIcon className="chatBox_modal_more_icon_fa__second" icon={faFileWord} />
+                      <FontAwesomeIcon
+                        className="chatBox_modal_more_icon_fa__second"
+                        icon={faFileWord}
+                      />
                       <div className="messengerUpload_file__contentFile">
                         <div className="messengerUpload_file__contentFile__name">
                           {props.fileName}.{props.type}
@@ -134,43 +135,70 @@ const ChatItem = (props) => {
                 ) : (
                   <>
                     {props.isFilePdf ? (
-                      <a href={props.Messenger} className="messengerUpload isFilePdf">
+                      <a
+                        href={props.Messenger}
+                        className="messengerUpload isFilePdf"
+                      >
                         <div className="messengerUpload_file">
-                          <FontAwesomeIcon className="chatBox_modal_more_icon_fa__second iconIsPdf" icon={faFilePdf} />
+                          <FontAwesomeIcon
+                            className="chatBox_modal_more_icon_fa__second iconIsPdf"
+                            icon={faFilePdf}
+                          />
                           <div className="messengerUpload_file__contentFile">
                             <div className="messengerUpload_file__contentFile__name">
                               {props.fileName}.{props.type}
                             </div>
                           </div>
-                          <FontAwesomeIcon className="icon_fa" icon={faDownload} />
+                          <FontAwesomeIcon
+                            className="icon_fa"
+                            icon={faDownload}
+                          />
                         </div>
                       </a>
                     ) : (
                       <>
                         {props.isFilePowP ? (
-                          <a href={props.Messenger} className="messengerUpload isFilePowP">
+                          <a
+                            href={props.Messenger}
+                            className="messengerUpload isFilePowP"
+                          >
                             <div className="messengerUpload_file">
-                              <FontAwesomeIcon className="chatBox_modal_more_icon_fa__second iconIsPowP" icon={faFilePowerpoint} />
+                              <FontAwesomeIcon
+                                className="chatBox_modal_more_icon_fa__second iconIsPowP"
+                                icon={faFilePowerpoint}
+                              />
                               <div className="messengerUpload_file__contentFile">
                                 <div className="messengerUpload_file__contentFile__name">
                                   {props.fileName}.{props.type}
                                 </div>
                               </div>
-                              <FontAwesomeIcon className="icon_fa" icon={faDownload} />
+                              <FontAwesomeIcon
+                                className="icon_fa"
+                                icon={faDownload}
+                              />
                             </div>
                           </a>
                         ) : (
                           <>
                             {props.isFileExel ? (
-                              <a href={props.Messenger} className="messengerUpload isFileExel ">
+                              <a
+                                href={props.Messenger}
+                                className="messengerUpload isFileExel "
+                              >
                                 <div className="messengerUpload_file">
-                                  <FontAwesomeIcon className="chatBox_modal_more_icon_fa__second iconIsExel" icon={faFileExcel} />
+                                  <FontAwesomeIcon
+                                    className="chatBox_modal_more_icon_fa__second iconIsExel"
+                                    icon={faFileExcel}
+                                  />
                                   <div className="messengerUpload_file__contentFile">
                                     <div className="messengerUpload_file__contentFile__name">
                                       {props.fileName}.{props.type}
                                     </div>
                                   </div>
-                                  <FontAwesomeIcon className="icon_fa" icon={faDownload} />
+                                  <FontAwesomeIcon
+                                    className="icon_fa"
+                                    icon={faDownload}
+                                  />
                                 </div>
                               </a>
                             ) : (
@@ -191,14 +219,9 @@ const ChatItem = (props) => {
                           </>
                         )}
                       </>
-
                     )}
-
                   </>
-
                 )}
-
-
               </div>
               <div className="conversation-name">
                 <small>{props.time}</small>
@@ -218,10 +241,13 @@ const ChatItem = (props) => {
             </div>
             <div className="user_chat_content">
               <div className="messenger">
-              {props.isFileWord ? (
+                {props.isFileWord ? (
                   <a href={props.Messenger} className="messengerUpload">
                     <div className="messengerUpload_file">
-                      <FontAwesomeIcon className="chatBox_modal_more_icon_fa__second" icon={faFileWord} />
+                      <FontAwesomeIcon
+                        className="chatBox_modal_more_icon_fa__second"
+                        icon={faFileWord}
+                      />
                       <div className="messengerUpload_file__contentFile">
                         <div className="messengerUpload_file__contentFile__name">
                           {props.fileName}.{props.type}
@@ -233,43 +259,70 @@ const ChatItem = (props) => {
                 ) : (
                   <>
                     {props.isFilePdf ? (
-                      <a href={props.Messenger} className="messengerUpload isFilePdf">
+                      <a
+                        href={props.Messenger}
+                        className="messengerUpload isFilePdf"
+                      >
                         <div className="messengerUpload_file">
-                          <FontAwesomeIcon className="chatBox_modal_more_icon_fa__second iconIsPdf" icon={faFilePdf} />
+                          <FontAwesomeIcon
+                            className="chatBox_modal_more_icon_fa__second iconIsPdf"
+                            icon={faFilePdf}
+                          />
                           <div className="messengerUpload_file__contentFile">
                             <div className="messengerUpload_file__contentFile__name">
                               {props.fileName}.{props.type}
                             </div>
                           </div>
-                          <FontAwesomeIcon className="icon_fa" icon={faDownload} />
+                          <FontAwesomeIcon
+                            className="icon_fa"
+                            icon={faDownload}
+                          />
                         </div>
                       </a>
                     ) : (
                       <>
                         {props.isFilePowP ? (
-                          <a href={props.Messenger} className="messengerUpload isFilePowP">
+                          <a
+                            href={props.Messenger}
+                            className="messengerUpload isFilePowP"
+                          >
                             <div className="messengerUpload_file">
-                              <FontAwesomeIcon className="chatBox_modal_more_icon_fa__second iconIsPowP" icon={faFilePowerpoint} />
+                              <FontAwesomeIcon
+                                className="chatBox_modal_more_icon_fa__second iconIsPowP"
+                                icon={faFilePowerpoint}
+                              />
                               <div className="messengerUpload_file__contentFile">
                                 <div className="messengerUpload_file__contentFile__name">
                                   {props.fileName}.{props.type}
                                 </div>
                               </div>
-                              <FontAwesomeIcon className="icon_fa" icon={faDownload} />
+                              <FontAwesomeIcon
+                                className="icon_fa"
+                                icon={faDownload}
+                              />
                             </div>
                           </a>
                         ) : (
                           <>
                             {props.isFileExel ? (
-                              <a href={props.Messenger} className="messengerUpload isFileExel ">
+                              <a
+                                href={props.Messenger}
+                                className="messengerUpload isFileExel "
+                              >
                                 <div className="messengerUpload_file">
-                                  <FontAwesomeIcon className="chatBox_modal_more_icon_fa__second iconIsExel" icon={faFileExcel} />
+                                  <FontAwesomeIcon
+                                    className="chatBox_modal_more_icon_fa__second iconIsExel"
+                                    icon={faFileExcel}
+                                  />
                                   <div className="messengerUpload_file__contentFile">
                                     <div className="messengerUpload_file__contentFile__name">
                                       {props.fileName}.{props.type}
                                     </div>
                                   </div>
-                                  <FontAwesomeIcon className="icon_fa" icon={faDownload} />
+                                  <FontAwesomeIcon
+                                    className="icon_fa"
+                                    icon={faDownload}
+                                  />
                                 </div>
                               </a>
                             ) : (
@@ -290,13 +343,9 @@ const ChatItem = (props) => {
                           </>
                         )}
                       </>
-
                     )}
-
                   </>
-
                 )}
-
 
                 <div className="messOption">
                   <Tippy
@@ -352,8 +401,8 @@ const ChatItem = (props) => {
                     theme="light-border"
                     trigger="click"
                     appendTo="parent"
-                  // onMount={() => setAriaExpanded('true')}
-                  // onHide={() => setAriaExpanded('false')}
+                    // onMount={() => setAriaExpanded('true')}
+                    // onHide={() => setAriaExpanded('false')}
                   >
                     <FontAwesomeIcon
                       className="icon_messOption"

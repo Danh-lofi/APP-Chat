@@ -119,12 +119,12 @@
     font-size: 14px;
 }
 
-
+.infoFriendContain{
+    margin-left: 10px;
+}
 .left {
-    width: 38%;
-    justify-content: space-between;
-    align-items: center;
-    display: flex;
+    @include flex(center, none);
+    flex: 1;
 }
 
 .btnContain {
