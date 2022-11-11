@@ -60,6 +60,83 @@ const GroupChatController = {
     }
     res.status(200).json({ message: "Thanh cong" });
   },
+  deleteGroupChat: async (req, res) => {
+    const user = req.user;
+    const meId = user._id;
+    const groupId = req.body.groupId;
+    const groupChat = await GroupChatModel.findOne({ _id: groupId });
+    const _groupId = groupChat._id;
+    const groupChatAdminId = groupChat.adminGroup;
+    const userDeleteId = req.body.userDeleteId;
+    try {
+      if (meId == groupChatAdminId) {
+        await GroupChatModel.findOneAndUpdate(
+          { _id: groupId },
+          { $pull: { memberChat: { id: userDeleteId } } }
+        );
+        await UserModel.findOneAndUpdate(
+          { _id: userDeleteId },
+          { $pull: { groups: { id: _groupId } } }
+        );
+        res
+          .status(200)
+          .send(
+            "groupId: " +
+              groupId +
+              "+" +
+              "admin: " +
+              groupChatAdminId +
+              "+" +
+              "id bi xoa: " +
+              userDeleteId
+          );
+      } else {
+        res.send("ban khong phai admin");
+      }
+    } catch (error) {
+      console.log("loi");
+    }
+  },
+  leaveGroup: async (req, res) => {
+    const user = req.user;
+    const meId = user._id;
+    const groupId = req.body.groupId;
+    const groupChat = await GroupChatModel.findOne({ _id: groupId });
+    const _groupId = groupChat._id;
+    const groupChatAdminId = groupChat.adminGroup;
+    const newAdminId = req.body.newAdminId;
+    try {
+      if (meId == groupChatAdminId) {
+        await GroupChatModel.findOneAndUpdate(
+          { _id: groupId },
+          { $pull: { memberChat: { id: meId } } }
+        );
+        await UserModel.findOneAndUpdate(
+          { _id: meId },
+          { $pull: { groups: { id: _groupId } } }
+        );
+        await GroupChatModel.findOneAndUpdate(
+          { _id: groupId },
+          { adminGroup: newAdminId }
+        );
+        res
+          .status(200)
+          .send("admin da roi khoi nhom va admin moi la: " + "newAdminId");
+      }
+      if (meId != groupChatAdminId) {
+        await GroupChatModel.findOneAndUpdate(
+          { _id: groupId },
+          { $pull: { memberChat: { id: meId } } }
+        );
+        await UserModel.findOneAndUpdate(
+          { _id: meId },
+          { $pull: { groups: { id: _groupId } } }
+        );
+      }
+    } catch (error) {
+      console.log("loi");
+    }
+  },
 };
 
 export default GroupChatController;

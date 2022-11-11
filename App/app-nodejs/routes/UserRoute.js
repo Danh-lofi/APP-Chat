@@ -6,4 +6,6 @@ const routerUser = express.Router();
 
 routerUser.post("/update", authMiddleware.isAuth, UserController.update);
 
+
+
 export default routerUser;

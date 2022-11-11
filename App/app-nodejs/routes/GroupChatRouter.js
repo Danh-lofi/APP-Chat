@@ -24,5 +24,7 @@ routerGroupChat.put(
   "/updateGroupChatInUser",
   GroupChatController.updateGroupChatInUser
 );
+routerGroupChat.post("/deleteMember",authMiddleware.isAuth,GroupChatController.deleteGroupChat);
+routerGroupChat.post("/leaveGroup",authMiddleware.isAuth,GroupChatController.leaveGroup);
 
 export default routerGroupChat;
