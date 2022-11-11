@@ -39,6 +39,14 @@ const Profile = () => {
 
   const [ariaExpanded, setAriaExpanded] = useState("");
 
+  // const changeHideProfileFriendHandle = () => {
+  //   setIsProfileFriend(!isProfileFriend);
+  // };
+
+  // useEffect(() => {
+  //   toast.success("Đăng nhập thành công");
+  // });
+
   return (
     <>
       <div className="profile">

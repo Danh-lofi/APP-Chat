@@ -34,13 +34,14 @@ const Chat = (props) => {
         <div className="chat_heading_top">
           <h3>Trò chuyện</h3>
           <FontAwesomeIcon
+            onClick={props.onOpenFriend}
             className="chat_heading_top_iconPlus"
             icon={faPlus}
           />
           <FontAwesomeIcon
             className="chat_heading_top_iconPlus"
             icon={faPeopleGroup}
-            onClick={props.onClick}
+            onClick={props.onOpenGroup}
           />
         </div>
         <div className="chat_heading_bottom">

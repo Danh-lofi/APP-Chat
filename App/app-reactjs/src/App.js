@@ -13,19 +13,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ListFriend from "./components/list-friend/ListFriend";
 import UserChat from "./components/userchat/UserChat";
 import ModalGroup from "./components/modalGroup/ModalGroup";
+import AddFriend from "./components/modals/addfriend/AddFriend";
 
 function App() {
   const [loading, setLoading] = useState(false);
-  let isAuth = useSelector((state) => state.user.isLoggedIn);
+
+  const [openModal, setOpenModal] = useState(false);
   const [isModal, setIsModal] = useState(false);
+  let isAuth = useSelector((state) => state.user.isLoggedIn);
   const hideModalHandle = () => {
     setIsModal(!isModal);
+  };
+  const hideModalFriendHandle = () => {
+    setOpenModal(!openModal);
   };
   const isSelected = useSelector((state) => state.image.isSelected);
 
   return (
     <div className="App">
       {isSelected ? <PreviewImage /> : ""}
+
+      {openModal ? (
+        <AddFriend onClose={() => setOpenModal(false)}></AddFriend>
+      ) : (
+        ""
+      )}
       {/* App dùng cho router */}
       {/* <ChangeInfo /> */}
       {isModal ? <ModalGroup onClose={() => setIsModal(false)} /> : ""}
@@ -40,10 +52,12 @@ function App() {
                 element={
                   <LayoutMain>
                     <Page
-                      onClick={hideModalHandle}
+                      onOpenGroup={hideModalHandle}
+                      onOpenFriend={hideModalFriendHandle}
                       onLoading={() => setLoading(!loading)}
                       isModal={isModal}
                     />
+                    {/* <Page onClick={() => setOpenModal(true)} /> */}
                   </LayoutMain>
                 }
               ></Route>
