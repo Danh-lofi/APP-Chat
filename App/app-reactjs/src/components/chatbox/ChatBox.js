@@ -146,9 +146,8 @@ const ChatBox = () => {
     const data = await messageApi.addMessage(messageSender);
 
     const date = new Date();
-    const time = `${date.getHours()}:${
-      date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
-    }`;
+    const time = `${date.getHours()}:${date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+      }`;
     if (data.status === 200) {
       let members;
       if (friend.memberChat) {
@@ -178,12 +177,22 @@ const ChatBox = () => {
     const fileName = name.substring(0, lastDot);
     const type = name.substring(lastDot + 1);
 
-    const isImg = type == "png" || type == "jpg" ? true : false;
+    const isImg = type == "png" || type == "jpg" || type == "PNG" || type == "JPG"  ? true : false;
+    const isFileWord = type == "docx" ? true : false;
+    const isFilePdf = type == "pdf" ? true : false;
+    const isFilePowP = type == "pptx" ? true : false;
+    const isFileExel = type == "xlsx" || type == "csv" || type == "xls" ? true : false;
     const messageSender = {
       chatId,
       senderId: user._id,
       text: message,
       isImg,
+      isFileWord,
+      isFilePdf,
+      type,
+      isFilePowP,
+      isFileExel,
+      fileName
     };
     setMore(false);
     const reader = new FileReader();
@@ -200,9 +209,8 @@ const ChatBox = () => {
       console.log(data);
 
       const date = new Date();
-      const time = `${date.getHours()}:${
-        date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
-      }`;
+      const time = `${date.getHours()}:${date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+        }`;
       if (data.status === 200) {
         let members;
         if (friend.memberChat) {
@@ -216,8 +224,14 @@ const ChatBox = () => {
           senderId: user._id,
           text: data.data.result.text,
           receiverId: friend.memberChat ? members : friend._id,
+          isFileWord,
           isImg,
+          type,
+          isFilePdf,
+          isFilePowP,
+          isFileExel,
           time,
+          fileName
         });
       }
       // console.log(messages);
@@ -234,14 +248,15 @@ const ChatBox = () => {
     const lastDot = name.lastIndexOf(".");
 
     const fileName = name.substring(0, lastDot);
-    const type = name.substring(lastDot + 1);
-
-    const isImg = type == "png" || type == "jpg" ? true : false;
+    const type = name.substring(lastDot + 1).toLowerCase();
+    const isImg = type == "png" || type == "jpg" || type == "JPG" || type == "PNG" ? true : false;
+    const isFile = type == "docx" || type == "ptxx" || type == "pdf" ? true : false;
     const messageSender = {
       chatId,
       senderId: user._id,
       text: message,
       isImg,
+      isFile
     };
     setMore(false);
     const reader = new FileReader();
@@ -255,12 +270,11 @@ const ChatBox = () => {
         type,
         fileName
       );
-      console.log(data);
+
 
       const date = new Date();
-      const time = `${date.getHours()}:${
-        date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
-      }`;
+      const time = `${date.getHours()}:${date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+        }`;
       if (data.status === 200) {
         socket.current.emit("send-message", {
           chatId,
@@ -268,10 +282,11 @@ const ChatBox = () => {
           text: data.data.result.text,
           receiverId: friend._id,
           isImg,
+          isFile,
           time,
         });
       }
-      // console.log(messages);
+      console.log(fileName);
       setMessgages((messages) => [
         ...messages,
         { ...messageSender, time, text: data.data.result.text },
@@ -421,6 +436,7 @@ const ChatBox = () => {
               <div className="chatBox__modal__container">
                 <div className="chatBox__modal__hidden">
                   <input
+                    style={{ display: 'none' }}
                     type="file"
                     ref={fileRef}
                     onChange={changeFileHandle}
@@ -453,7 +469,7 @@ const ChatBox = () => {
                 }}
               >
                 <div className="chatBox__modal__hidden">
-                  <input type="file" ref={imgRef} onChange={changeImgHandle} />
+                  <input style={{ display: 'none' }} type="file" ref={imgRef} onChange={changeImgHandle} />
                 </div>
                 <FontAwesomeIcon
                   className="chatBox_modal_more_icon_fa__second"
