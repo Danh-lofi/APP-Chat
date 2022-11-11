@@ -5,7 +5,8 @@ import UserModel from "../models/User.js";
 const GroupChatController = {
   createGroupChat: async (req, res, next) => {
     const nameGroupChat = req.body.nameGroupChat;
-    const adminGroup = req.body.adminGroup;
+    console.log(req.user._id);
+    const adminGroup = req.user._id;
     const memberChat = req.body.memberChat;
 
     if (memberChat.length < 3) {

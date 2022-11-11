@@ -15,6 +15,7 @@ import UserChat from "./components/userchat/UserChat";
 import ModalGroup from "./components/modalGroup/ModalGroup";
 
 function App() {
+  const [loading, setLoading] = useState(false);
   let isAuth = useSelector((state) => state.user.isLoggedIn);
   const [isModal, setIsModal] = useState(false);
   const hideModalHandle = () => {
@@ -38,7 +39,11 @@ function App() {
                 path={route.path}
                 element={
                   <LayoutMain>
-                    <Page onClick={hideModalHandle} />
+                    <Page
+                      onClick={hideModalHandle}
+                      onLoading={() => setLoading(!loading)}
+                      isModal={isModal}
+                    />
                   </LayoutMain>
                 }
               ></Route>

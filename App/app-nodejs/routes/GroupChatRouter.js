@@ -6,6 +6,7 @@ const routerGroupChat = express.Router();
 
 routerGroupChat.post(
   "/createGroup",
+  authMiddleware.isAuth,
   GroupChatController.createGroupChat,
   GroupChatController.updateGroupChatInUser
 );

@@ -25,10 +25,8 @@ const ListGroup = (props) => {
 
   useEffect(() => {
     props.changeLoading();
-
     const getListFriends = async () => {
       const data = await groupApi.getGroups(accessToken);
-      console.log(data);
       props.changeLoading();
       setListGroup(data.data.listGroup);
     };

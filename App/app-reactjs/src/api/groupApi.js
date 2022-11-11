@@ -13,6 +13,21 @@ const groupApi = {
         return response;
       });
   },
+  createGroup: (accessToken, nameGroupChat, memberChat) => {
+    const url = `/groupChat/createGroup`;
+    return axiosClient.post(
+      url,
+      {
+        nameGroupChat,
+        memberChat,
+      },
+      {
+        headers: {
+          x_authorization: accessToken,
+        },
+      }
+    );
+  },
 };
 
 export default groupApi;

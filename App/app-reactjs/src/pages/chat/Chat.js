@@ -13,6 +13,7 @@ import ListFriend from "../../components/list-friend/ListFriend";
 import ListGroup from "../../components/list-group/ListGroup";
 
 const Chat = (props) => {
+  const { isModal, onLoading } = props;
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")).user
   );
@@ -24,6 +25,9 @@ const Chat = (props) => {
     setLoading((prev) => !loading);
   };
 
+  useEffect(() => {
+    onLoading();
+  }, [isModal]);
   return (
     <div className="chat">
       <div className="chat_heading">
