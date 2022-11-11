@@ -13,6 +13,7 @@ const MessageService = {
     return this.updateWhenHasNewMessage(saveMessage, conversationId, userId);
   },
   
+
   async updateWhenHasNewMessage(saveMessage, conversationId, userId) {
     const { _id } = saveMessage;
 

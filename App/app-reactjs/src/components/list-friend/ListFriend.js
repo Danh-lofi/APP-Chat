@@ -8,7 +8,6 @@ const ListFriend = (props) => {
   const { user } = props;
   const [listFriend, setListFriend] = useState([]);
   const [activeChatFavou, setActiveChatFavou] = useState("");
-  const [activeChatDirect, setActiveChatDirect] = useState("");
   const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
 
   const dispatch = useDispatch();
@@ -21,7 +20,6 @@ const ListFriend = (props) => {
 
   useEffect(() => {
     props.changeLoading();
-
     const getListFriends = async () => {
       const data = await friendApi.getFriend(accessToken);
       props.changeLoading();

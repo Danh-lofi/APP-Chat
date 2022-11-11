@@ -2,9 +2,10 @@ import React, { useRef } from "react";
 import ChatItem from "../chatitem/ChatItem";
 
 const ListChat = (props) => {
-  const messages = props.messages;
-  const currentUser = props.currentUser;
+  // const messages = props.messages;
+  // const currentUser = props.currentUser;
   const friend = props.friendUser;
+  const { messages, currentUser } = props;
   //Current user
   const currentUserId = currentUser._id;
   const name = currentUser.name ? currentUser.name : currentUser.username;
@@ -19,6 +20,7 @@ const ListChat = (props) => {
     : "https://placeimg.com/640/480/any";
 
   const Chat = messages.map((message) => {
+    console.log(message);
     const isUser = message.senderId === currentUserId;
     const date = new Date(message.createdAt);
     let time = `${date.getHours()}:${
@@ -31,9 +33,16 @@ const ListChat = (props) => {
       <ChatItem
         key={message._id}
         id={message._id}
+        isImg={message.isImg}
+        isFileWord = {message.isFileWord}
+        isFilePdf = {message.isFilePdf}
+        isFileExel = {message.isFileExel}
+        isFilePowP = {message.isFilePowP}
+        type = {message.type}
         isRight={isUser}
         Messenger={message.text}
         time={time}
+        fileName = {message.fileName}
         name={isUser ? name : friendName}
         linkImage={isUser ? avatar : friendAvatar}
       />

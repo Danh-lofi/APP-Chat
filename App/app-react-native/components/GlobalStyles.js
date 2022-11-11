@@ -24,8 +24,8 @@ export default StyleSheet.create({
   test4: {
     height:
       Dimensions.get("window").height > 800
-        ? Dimensions.get("window").width * 1.8
-        : Dimensions.get("window").width * 1.65,
+        ? Dimensions.get("window").width * 2.05
+        : Dimensions.get("window").width * 1.9,
   },
 
   test3: {

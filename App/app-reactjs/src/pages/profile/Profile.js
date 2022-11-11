@@ -23,7 +23,6 @@ const Profile = () => {
   let isLogin = useSelector((state) => state.user.isLoggedIn);
   console.log(user);
   const { name, avatar, gender, birthDate, bio, username } = user;
-  // console.log(user);
   useEffect(() => {
     if (user) {
       dispatch(profile(user.accessToken)).then((res) => {
@@ -39,10 +38,6 @@ const Profile = () => {
   }, []);
 
   const [ariaExpanded, setAriaExpanded] = useState("");
-  // const [isProfileFriend, setIsProfileFriend] = useState(false);
-  // const clickMore = () => {
-  //   document.querySelector(".modal_more").classList.toggle("active");
-  // };
 
   // const changeHideProfileFriendHandle = () => {
   //   setIsProfileFriend(!isProfileFriend);
@@ -51,14 +46,14 @@ const Profile = () => {
   // useEffect(() => {
   //   toast.success("Đăng nhập thành công");
   // });
+
   return (
     <>
-      {/* <div>{<h3>{user.username}</h3>}</div> */}
       <div className="profile">
         <div className="profile__container">
           <div className="profile__header">
             <div className="header__img_contain">
-              <img src="https://assets.ey.com/content/dam/ey-sites/ey-com/en_gl/topics/global-review/2019/ey-staff-at-event.jpg"></img>
+              <img src={avatar}></img>
             </div>
             <div className="header__info_and_avt_contain">
               <div className="header__avt_contain">

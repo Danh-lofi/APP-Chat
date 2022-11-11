@@ -13,6 +13,10 @@ import ChangePassword from "../pages/change-password/ChangePassword";
 
 const mainRoutes = [
   {
+    path: configRoutes.home,
+    component: Profile,
+  },
+  {
     path: configRoutes.chat,
     component: Chat,
   },

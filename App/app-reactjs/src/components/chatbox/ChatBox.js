@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import "./ChatBox.scss";
+import "./chatbox.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faContactBook,
@@ -39,12 +39,11 @@ import chatApi from "../../api/chatApi";
 import messageApi from "../../api/messageApi";
 import ProfileFriend from "./profile-friend/ProfileFriend";
 import NonChatBox from "./non-chat-box/NonChatBox";
+import cloudinaryApi from "../../api/cloudinaryApi";
 
 const ChatBox = () => {
   const fileRef = useRef();
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const imgRef = useRef();
 
   const socket = useRef();
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -52,14 +51,17 @@ const ChatBox = () => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")).user
   );
+  const [accessToken, setAccessToken] = useState(
+    JSON.parse(localStorage.getItem("user")).accessToken
+  );
 
   const friend = useSelector((state) => state.user.friend);
+  console.log(friend);
 
   const [chatId, setChatId] = useState();
   const [messages, setMessgages] = useState([]);
   const [message, setMessage] = useState("");
   const [receivedMessage, setReceivedMessage] = useState(null);
-
   const [ariaExpanded, setAriaExpanded] = useState("");
   const [more, setMore] = useState(false);
 
@@ -72,7 +74,7 @@ const ChatBox = () => {
   };
 
   function handleOnEnter(text) {
-    console.log("enter", text);
+    sendMessageHandle();
   }
 
   // Handle Event
@@ -95,10 +97,14 @@ const ChatBox = () => {
     });
   }, [receivedMessage]);
 
-  // Test API
+  // Get room chat
   useEffect(() => {
     const getChats = async () => {
       try {
+        // Là group thì không cần setChatId
+        if (friend.memberChat) {
+          return;
+        }
         const chat = await chatApi.getChat(user._id, friend._id);
         setChatId(chat.data._id);
       } catch (error) {
@@ -106,6 +112,7 @@ const ChatBox = () => {
       }
     };
     getChats();
+    if (friend) setChatId(friend._id);
   }, [user, friend]);
 
   // get all messages from chat id
@@ -116,6 +123,7 @@ const ChatBox = () => {
         return;
       }
       const messagesData = await messageApi.getMessages(chatId);
+      console.log(messagesData.data);
       setMessgages(messagesData.data);
     };
     getAllMessages(chatId);
@@ -138,16 +146,20 @@ const ChatBox = () => {
     const data = await messageApi.addMessage(messageSender);
 
     const date = new Date();
-    const time = `${date.getHours()}:${
-      date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
-    }`;
+    const time = `${date.getHours()}:${date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+      }`;
     if (data.status === 200) {
+      let members;
+      if (friend.memberChat) {
+        members = friend.memberChat.filter((member) => member.id !== user._id);
+      }
+
       if (message !== null) {
         socket.current.emit("send-message", {
           chatId,
           senderId: user._id,
           text: message,
-          receiverId: friend._id,
+          receiverId: friend.memberChat ? members : friend._id,
           time,
         });
       }
@@ -158,10 +170,130 @@ const ChatBox = () => {
   };
 
   // Chagne file
-  const changeFileHandle = (e) => {
-    console.log(e.target.value);
+  const changeFileHandle = async (e) => {
+    const name = e.target.files[0].name;
+    const lastDot = name.lastIndexOf(".");
+
+    const fileName = name.substring(0, lastDot);
+    const type = name.substring(lastDot + 1);
+
+    const isImg = type == "png" || type == "jpg" || type == "PNG" || type == "JPG"  ? true : false;
+    const isFileWord = type == "docx" ? true : false;
+    const isFilePdf = type == "pdf" ? true : false;
+    const isFilePowP = type == "pptx" ? true : false;
+    const isFileExel = type == "xlsx" || type == "csv" || type == "xls" ? true : false;
+    const messageSender = {
+      chatId,
+      senderId: user._id,
+      text: message,
+      isImg,
+      isFileWord,
+      isFilePdf,
+      type,
+      isFilePowP,
+      isFileExel,
+      fileName
+    };
+    setMore(false);
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+
+    reader.onloadend = async () => {
+      const data = await cloudinaryApi.cloudinaryUpload(
+        reader.result,
+        accessToken,
+        chatId,
+        type,
+        fileName
+      );
+      console.log(data);
+
+      const date = new Date();
+      const time = `${date.getHours()}:${date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+        }`;
+      if (data.status === 200) {
+        let members;
+        if (friend.memberChat) {
+          members = friend.memberChat.filter(
+            (member) => member.id !== user._id
+          );
+        }
+
+        socket.current.emit("send-message", {
+          chatId,
+          senderId: user._id,
+          text: data.data.result.text,
+          receiverId: friend.memberChat ? members : friend._id,
+          isFileWord,
+          isImg,
+          type,
+          isFilePdf,
+          isFilePowP,
+          isFileExel,
+          time,
+          fileName
+        });
+      }
+      // console.log(messages);
+      setMessgages((messages) => [
+        ...messages,
+        { ...messageSender, time, text: data.data.result.text },
+      ]);
+      setMessage("");
+    };
   };
 
+  const changeImgHandle = (e) => {
+    const name = e.target.files[0].name;
+    const lastDot = name.lastIndexOf(".");
+
+    const fileName = name.substring(0, lastDot);
+    const type = name.substring(lastDot + 1).toLowerCase();
+    const isImg = type == "png" || type == "jpg" || type == "JPG" || type == "PNG" ? true : false;
+    const isFile = type == "docx" || type == "ptxx" || type == "pdf" ? true : false;
+    const messageSender = {
+      chatId,
+      senderId: user._id,
+      text: message,
+      isImg,
+      isFile
+    };
+    setMore(false);
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+
+    reader.onloadend = async () => {
+      const data = await cloudinaryApi.cloudinaryUpload(
+        reader.result,
+        accessToken,
+        chatId,
+        type,
+        fileName
+      );
+
+
+      const date = new Date();
+      const time = `${date.getHours()}:${date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+        }`;
+      if (data.status === 200) {
+        socket.current.emit("send-message", {
+          chatId,
+          senderId: user._id,
+          text: data.data.result.text,
+          receiverId: friend._id,
+          isImg,
+          isFile,
+          time,
+        });
+      }
+      console.log(fileName);
+      setMessgages((messages) => [
+        ...messages,
+        { ...messageSender, time, text: data.data.result.text },
+      ]);
+      setMessage("");
+    };
+  };
   return (
     <div className="chatBox__container">
       {chatId ? (
@@ -302,8 +434,9 @@ const ChatBox = () => {
           >
             <div className="chatBox_modal_more">
               <div className="chatBox__modal__container">
-                <div style={{ height: 0, width: 0, overflow: "hidden" }}>
+                <div className="chatBox__modal__hidden">
                   <input
+                    style={{ display: 'none' }}
                     type="file"
                     ref={fileRef}
                     onChange={changeFileHandle}
@@ -329,7 +462,15 @@ const ChatBox = () => {
                   camera
                 </p>
               </div>
-              <div className="chatBox__modal__container">
+              <div
+                className="chatBox__modal__container"
+                onClick={() => {
+                  imgRef.current.click();
+                }}
+              >
+                <div className="chatBox__modal__hidden">
+                  <input style={{ display: 'none' }} type="file" ref={imgRef} onChange={changeImgHandle} />
+                </div>
                 <FontAwesomeIcon
                   className="chatBox_modal_more_icon_fa__second"
                   icon={faPhotoFilm}

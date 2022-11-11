@@ -10,8 +10,10 @@ import SC_Login from "./screens/SC_Login";
 import SC_Register from "./screens/SC_Register";
 import SC_Continue from "./screens/SC_Continue";
 import SC_OTP from "./screens/SC_OTP";
+import SC_Search from "./screens/SC_Search";
 import { color } from "react-native-reanimated";
 import Animated from "react-native-reanimated";
+import SC_Chat from "./screens/SC_Chat";
 
 // npm install @react-navigation/stack
 // npx expo install react-native-gesture-handler or npm install react-native-gesture-handler
@@ -31,6 +33,7 @@ import Animated from "react-native-reanimated";
 // expo install expo-linear-gradient
 // npm install local-storage --save
 // npm install --save styled-components or yarn add styled-components
+// yarn add react-native-gifted-chat or npm install react-native-gifted-chat --save
 
 const MainStack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -41,7 +44,7 @@ const MainStackScreen = () => {
   Animated.timing(animatedValue, {
     toValue: 1,
     duration: 500,
-    useNativeDriver: true, // <-- Add this
+    useNativeDriver: false, // <-- Add this
   }).start();
 
   return (
@@ -111,6 +114,16 @@ const App = () => {
           name="SC_Continue"
           component={SC_Continue}
           options={{ title: "Xác thực thông tin" }}
+        />
+        <RootStack.Screen
+          name="SC_Search"
+          component={SC_Search}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="SC_Chat"
+          component={SC_Chat}
+          options={{ headerShown: true }}
         />
       </RootStack.Navigator>
       {/* <BottomTabsNavigator /> */}

@@ -11,6 +11,15 @@ const MessageSchema = new mongoose.Schema(
     text: {
       type: String,
     },
+    isImg: {
+      type: Boolean,
+    },
+    type: {
+      type: String,
+    },
+    fileName: {
+      type: String,
+    },
   },
   {
     timestamps: true,

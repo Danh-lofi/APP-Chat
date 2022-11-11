@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 
 import {
   StyleSheet,
@@ -8,35 +8,95 @@ import {
   Alert,
   Image,
   Dimensions,
+  TextInput,
 } from "react-native";
 import CodeInputField from "../components/CodeInputField";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { VerifyIcon } from "../components/IconBottomTabs";
+import { firebaseConfig } from "../firebase/firebaseConfig";
+import firebase from "firebase/compat/app";
+import {
+  FirebaseRecaptchaVerifierModal,
+  FirebaseRecaptchaBanner,
+} from "expo-firebase-recaptcha";
 
 const { width } = Dimensions.get("window");
 
 const SC_OTP = ({ navigation, route }) => {
   const [code, setCode] = useState("");
+  const [verificationId, setVerificationId] = useState(null);
   const [pinReady, setPinReady] = useState(false);
   const { username, password } = route.params;
+  const [numberPhone, setNumberPhone] = useState("");
+  const recaptchaVerifier = useRef(null);
+  const [status, setStatus] = useState(false);
+  const [timerCount, setTimer] = useState();
 
-  const MAX_CODE_LENGTH = 4;
+  // useEffect(() => {
+  //   console.log(status);
+  // });
 
-  function test() {
-    if (code === "") {
-      console.log("code: " + code, " pin: " + pinReady);
-      navigation.navigate("SC_Continue", {
-        username: username,
-        password: password,
+  function countDown() {
+    let interval = setInterval(() => {
+      setTimer((lastTimerCount) => {
+        lastTimerCount <= 1 && clearInterval(interval);
+        return lastTimerCount - 1;
       });
-    } else {
-      Alert.alert("Ma  OTP khong chinh xac!");
-    }
+    }, 1000);
+    return () => clearInterval(interval);
   }
+
+  // useEffect(() => {
+  //   console.log(username);
+  //   console.log("1 dau: " + numberPhone);
+  //   setNumberPhone("+84" + username);
+  //   console.log("1 sau " + numberPhone);
+  // }, []);
+
+  const MAX_CODE_LENGTH = 6;
+
+  const sendCode = () => {
+    const phoneProvider = new firebase.auth.PhoneAuthProvider();
+    phoneProvider
+      .verifyPhoneNumber("+84" + username, recaptchaVerifier.current)
+      .then(setVerificationId);
+    setNumberPhone("");
+    setTimer(90);
+    countDown();
+    setStatus(true);
+    setTimeout(() => {
+      console.log("false");
+    }, 60000);
+  };
+
+  const confirmCode = () => {
+    const credential = firebase.auth.PhoneAuthProvider.credential(
+      verificationId,
+      code
+    );
+    firebase
+      .auth()
+      .signInWithCredential(credential)
+      .then(() => {
+        setCode("");
+        // Alert.alert("Thanh cong");
+        navigation.navigate("SC_Continue", {
+          username: username,
+          password: password,
+        });
+      })
+      .catch((error) => {
+        Alert.alert(error + " Mã OTP không chính xác!");
+      });
+  };
 
   return (
     <View style={styles.container}>
+      <FirebaseRecaptchaVerifierModal
+        ref={recaptchaVerifier}
+        firebaseConfig={firebaseConfig}
+      />
       <View
         style={{
           marginTop: 70,
@@ -61,7 +121,7 @@ const SC_OTP = ({ navigation, route }) => {
             Xác thực OTP
           </Text>
           <Text style={{ fontSize: 16 }}>
-            OTP được gửi qua số điện thoại của bạn
+            OTP được gửi qua số điện thoại của bạn {numberPhone}
           </Text>
         </View>
       </View>
@@ -80,17 +140,42 @@ const SC_OTP = ({ navigation, route }) => {
           setCode={setCode}
           maxLength={MAX_CODE_LENGTH}
         />
-        <Text style={{ fontSize: 16 }}>OTP tồn tại trong: 0 giây</Text>
+        {status === true ? (
+          <Text style={{ fontSize: 16 }}>
+            OTP tồn tại trong: {timerCount} giây
+          </Text>
+        ) : (
+          <Text style={{ fontSize: 16 }}></Text>
+        )}
       </View>
       <View style={styles.wrapBtn}>
-        <TouchableOpacity style={styles.btnVerify} onPress={test}>
+        {timerCount === 0 || status === false ? (
+          <TouchableOpacity style={styles.btnVerify} onPress={sendCode}>
+            <VerifyIcon color="green" size={24} />
+            <Text
+              style={{ fontSize: 18, fontWeight: "500", textAlign: "center" }}
+            >
+              Gửi OTP
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.btnVerify} onPress={confirmCode}>
+            <VerifyIcon color="green" size={24} />
+            <Text
+              style={{ fontSize: 18, fontWeight: "500", textAlign: "center" }}
+            >
+              Xác nhận
+            </Text>
+          </TouchableOpacity>
+        )}
+        {/* <TouchableOpacity style={styles.btnVerify} onPress={confirmCode}>
           <VerifyIcon color="green" size={24} />
           <Text
             style={{ fontSize: 18, fontWeight: "500", textAlign: "center" }}
           >
             Xác nhận
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -101,6 +186,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  input: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: "black",
+    borderBottomColor: "grey",
+    borderBottomWidth: 2,
+    padding: 10,
   },
 
   wrapBtn: {

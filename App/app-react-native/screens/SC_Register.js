@@ -62,6 +62,7 @@ const SC_Register = ({ navigation }) => {
         );
       });
     } catch (error) {
+      console.log(error);
       Alert.alert("Số điện thoại đã được đăng ký!");
     }
   };

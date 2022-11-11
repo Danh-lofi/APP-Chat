@@ -2,7 +2,7 @@ import "./UserChat.scss";
 import React, { useState } from "react";
 
 const UserChat = (props) => {
-  return (
+  return ( <>
     <div className="userChat" onClick={props.onClick}>
       {props.isChannels ? (
         <div className="userChat_boxImgUser">
@@ -36,6 +36,7 @@ const UserChat = (props) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

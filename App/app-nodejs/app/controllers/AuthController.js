@@ -1,10 +1,27 @@
 import UserModel from "../models/User.js";
 import AuthService from "../Service/AuthService.js";
+import mongoose from "mongoose";
+
 import * as randToken from "rand-token";
 import bcrypt from "bcrypt";
 const AutherController = {
+  getAllUser: async (req, res, next) => {
+    try {
+      const users = await UserModel.find().select([
+        "_id",
+        "username",
+        "name",
+        "avatar",
+        "coverImg",
+      ]);
+      return res.json({ users });
+    } catch (ex) {
+      next(ex);
+    }
+  },
+
   login: async (req, res, next) => {
-    const username = req.body.username.toLowerCase();
+    const username = req.body.username;
     const password = req.body.password;
     console.log("username: " + username + " password:" + password);
 
@@ -104,6 +121,7 @@ const AutherController = {
       }
     });
   },
+
   // POST (username, name, birthday, gender, bio)
   // Thông tin chi tiết
   registerInfomation: (req, res) => {

@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -18,15 +18,49 @@ import {
   UpdateProfileIcon,
   OptionIcon,
 } from "../components/IconBottomTabs";
+import { ApiProfile } from "../api/ApiUser";
 
 const { width } = Dimensions.get("window");
 const size = 24;
 
 export const Personal = ({ navigation }) => {
+  const [name, setName] = useState("");
+  const [introduceYourself, setIntroduceYourself] = useState("");
+  const [gender, setGender] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [address, setAddress] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [coverImg, setCoverImg] = useState("");
+
   const handleLogout = () => {
     AsyncStorage.clear();
     navigation.replace("SC_Login");
   };
+
+  const callApiProfile = useCallback(async () => {
+    const token = await AsyncStorage.getItem("token");
+
+    await ApiProfile.profile2(token)
+      .then((res) => {
+        console.log("Thong tin user:" + res.data.introducePersonal);
+        setName(res.data.name);
+        setIntroduceYourself(res.data.introducePersonal);
+        setGender(res.data.gender);
+        setAddress(res.data.address);
+        setBirthDate(res.data.birthDate);
+        setAvatar(res.data.avatar);
+        setCoverImg(res.data.coverImg);
+      })
+      .catch((err) => {
+        console.log("3");
+      });
+  }, []);
+
+  useEffect(() => {
+    callApiProfile();
+    var today = new Date(birthDate);
+    console.log(today.toLocaleDateString("en-US"));
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -35,7 +69,7 @@ export const Personal = ({ navigation }) => {
           <View style={styles.coverImage}>
             <Image
               style={styles.image}
-              source={require("../assets/coverimg.jpeg")}
+              source={{ uri: coverImg }}
               resizeMode={"stretch"}
             />
             <View style={styles.option}>
@@ -55,7 +89,7 @@ export const Personal = ({ navigation }) => {
                   borderWidth: 4,
                 },
               ]}
-              source={require("../assets/avatar.jpg")}
+              source={{ uri: avatar }}
               resizeMode={"contain"}
             />
           </View>
@@ -69,7 +103,7 @@ export const Personal = ({ navigation }) => {
               top: 70,
             }}
           >
-            Đạt vina mobiphone
+            {name}
           </Text>
           <Text
             style={{
@@ -79,7 +113,7 @@ export const Personal = ({ navigation }) => {
               top: 105,
             }}
           >
-            400 củ đâu rồi
+            {introduceYourself}
           </Text>
         </View>
       </View>
@@ -98,7 +132,7 @@ export const Personal = ({ navigation }) => {
                   marginLeft: 15,
                 }}
               >
-                01/05/2001
+                {birthDate}
               </Text>
             </View>
             <View style={styles.xxxHi}>
@@ -109,7 +143,7 @@ export const Personal = ({ navigation }) => {
                   marginLeft: 15,
                 }}
               >
-                Nam
+                {gender}
               </Text>
             </View>
             <View style={styles.xxxHi}>
@@ -120,7 +154,7 @@ export const Personal = ({ navigation }) => {
                   marginLeft: 15,
                 }}
               >
-                Tuy An, Phú Yên, Việt Nam
+                {address}
               </Text>
             </View>
           </View>

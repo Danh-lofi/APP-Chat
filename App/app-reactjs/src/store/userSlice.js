@@ -158,6 +158,7 @@ const userSlice = createSlice({
       console.log(action);
       state.friend = action.payload;
     },
+    // changeInfo: (state, action) => {}
   },
 });
 
