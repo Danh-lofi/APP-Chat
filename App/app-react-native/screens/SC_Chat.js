@@ -31,6 +31,7 @@ const SC_Chat = (navigation, route) => {
   const [idFriend, setIdFriend] = useState("");
   const [chatId, setChatId] = useState("");
   const [receivedMessage, setReceivedMessage] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   const getId = useCallback(async () => {
     setIdUser(await AsyncStorage.getItem("idUser"));
@@ -42,6 +43,19 @@ const SC_Chat = (navigation, route) => {
   useEffect(() => {
     getId();
   }, []);
+
+  useEffect(() => {
+    console.log("--+++");
+    console.log(idUser);
+    socket.emit("new-user-add", idUser);
+    socket.on("get-users", (users) => {
+      setOnlineUsers(users);
+    });
+  }, [idUser]);
+
+  useEffect(() => {
+    socket;
+  }, [socket]);
 
   const [chatMessages, setChatMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -88,9 +102,11 @@ const SC_Chat = (navigation, route) => {
       setMessage("");
     }
 
+    setMessage("");
+
     console.log({
       message,
-      user,
+      idUser,
       timestamp: { hour, mins },
     });
   };
@@ -124,10 +140,11 @@ const SC_Chat = (navigation, route) => {
   // Get the message from socket server
   useEffect(() => {
     socket.on("recieve-message", (data) => {
+      console.log("data");
       console.log(data);
       setChatMessages((chatMessages) => [...chatMessages, data]);
     });
-  }, [receivedMessage]);
+  }, [socket]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -176,7 +193,7 @@ const SC_Chat = (navigation, route) => {
               <FlatList
                 data={chatMessages}
                 renderItem={({ item }) => (
-                  <MessageComponent item={item} user={user} />
+                  <MessageComponent item={item} idUser={idUser} />
                 )}
                 keyExtractor={(item) => item.id}
               />
@@ -194,9 +211,7 @@ const SC_Chat = (navigation, route) => {
               style={styles.messagingbuttonContainer}
               onPress={handleNewMessage}
             >
-              <View>
-                <Text style={{ color: "#f2f0f1", fontSize: 20 }}>SEND</Text>
-              </View>
+              <Text style={{ color: "#f2f0f1", fontSize: 20 }}>SEND</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -268,9 +283,9 @@ const styles = StyleSheet.create({
 
   messaginginputContainer: {
     width: "100%",
-    minHeight: 100,
+    // minHeight: 100,
     backgroundColor: "white",
-    paddingVertical: 30,
+    paddingVertical: 10,
     paddingHorizontal: 15,
     justifyContent: "center",
     flexDirection: "row",

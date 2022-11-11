@@ -28,7 +28,11 @@ const CreateGroupChat = ({ setVisible }) => {
       .then((res) => {
         console.log("get friend 2");
         console.log(res.data.listFriend);
-        setInfor(res.data.listFriend);
+        setInfor(
+          res.data.listFriend.filter((element) => {
+            return element !== null;
+          })
+        );
       })
       .catch((err) => {
         console.log("405");
@@ -47,9 +51,15 @@ const CreateGroupChat = ({ setVisible }) => {
     setVisible(false);
   };
 
-  const handleCreateRoom = async () => {
-    // socket.emit("createRoom", groupName);
+  const test = () => {
+    console.log("runnnnnn");
+    socket.on("listGroup", (data) => {
+      console.log("socket group: ");
+      console.log(data);
+    });
+  };
 
+  const handleCreateRoom = async () => {
     const id = await AsyncStorage.getItem("idUser");
     aMembers.unshift({ id: id });
     const data = {
@@ -59,6 +69,8 @@ const CreateGroupChat = ({ setVisible }) => {
     };
 
     if (aMembers.length < 3) {
+      console.log("2");
+      console.log(aMembers);
       Alert.alert("So luong thanh vien phai lon hon 2");
     } else {
       for (let i = 0; i < aMembers.length; i++) {
@@ -66,24 +78,34 @@ const CreateGroupChat = ({ setVisible }) => {
         console.log("hihi");
         // ngày mai code tiếp
       }
-      //   try {
-      //     await ApiLoadGroupChat.createGroup(data).then(async (res) => {
-      //       console.log("tao group thanh cong");
-      //       console.log(res.data._id);
-      //       for(let i = 0; i < aMembers.length; i++) {
-      //         console.log(i);
-      //         console.log(hihi);
-      //       }
-      //     });
-      //   } catch (error) {
-      //     console.log("Khong tao duoc group: " + error);
-      //   }
-      //   closeModal();
+      try {
+        await ApiLoadGroupChat.createGroup(data).then(async (res) => {
+          console.log("tao group thanh cong");
+          console.log(res.data._id);
+          socket.emit("createGroupChat", data);
+          for (let i = 0; i < aMembers.length; i++) {
+            console.log(i);
+            console.log("hihi");
+          }
+        });
+      } catch (error) {
+        console.log("Khong tao duoc group: " + error);
+      }
+
+      // test();
+      closeModal();
       //   console.log("infor");
-      //   console.log(aMembers);
+
       //   console.log(data);
     }
   };
+
+  useEffect(() => {
+    socket.on("listGroup", (data) => {
+      console.log("socket group: ");
+      console.log(data);
+    });
+  }, [socket]);
 
   const handleClick = (item) => {
     aMembers.push({

@@ -17,7 +17,7 @@ routerGroupChat.get(
 );
 routerGroupChat.get(
   "/getAllGroup",
-  authMiddleware.isAuth,
+  authMiddleware.authApp,
   GroupChatController.getGroupChat
 );
 routerGroupChat.put(
@@ -26,5 +26,19 @@ routerGroupChat.put(
 );
 routerGroupChat.post("/deleteMember",authMiddleware.isAuth,GroupChatController.deleteGroupChat);
 routerGroupChat.post("/leaveGroup",authMiddleware.isAuth,GroupChatController.leaveGroup);
+
+routerGroupChat.put("/renameGroupChat", GroupChatController.renameGroupChat);
+
+routerGroupChat.put(
+  "/deleteUserFromGroupChat",
+  GroupChatController.deleteUserFromGroupChat,
+  GroupChatController.updateUserWhenDelete
+);
+
+routerGroupChat.put(
+  "/addUserToGroup",
+  GroupChatController.addUserToGroup,
+  GroupChatController.updateGroupInUser
+);
 
 export default routerGroupChat;
