@@ -85,6 +85,7 @@
 
                 &_avt_heading {
                     border-radius: 50%;
+                    height: 100%;
                 }
 
                 &_status {
@@ -251,6 +252,10 @@
 .react-input-emoji--input:focus {
     border: 1px solid #ccc;
     border-radius: 21px;
+}
+.react-input-emoji--input {
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
 

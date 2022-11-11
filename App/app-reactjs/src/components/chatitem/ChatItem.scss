@@ -21,6 +21,65 @@
 .messenger{
   margin-bottom: 10px;
 }
+.messengerUpload {
+  padding: 10px 10px;
+  border-radius: 5px;
+  background-color: $white;
+  &_file {
+    display: flex;
+    margin: 12px 20px;
+    padding: 12px 20px;
+    border: 1px solid #000;
+    border-radius: 6px;
+    justify-content: space-between;
+
+    .chatBox_modal_more_icon_fa__second{
+      background-color: #6da5ee;
+      color: #000;
+    }
+    .iconIsPdf{
+      background-color: #666081;
+    }
+    .iconIsPowP {
+      background-color: #fa9e6c;
+    }
+    .iconIsExel {
+      background-color: #29a351;
+    }
+
+    &__contentFile{
+      margin-left: 10px;
+      width: 380px;
+      align-items: center;
+      display: flex;
+      text-align: left;
+      &__name{
+        font-weight: bold;
+        color: $text-muted;
+        word-wrap: break-word;
+      }
+      &__capacity{
+        color: $text-muted;
+      }
+    }
+  }
+}
+
+
+  .messengerUpload {
+    background-color: #a8caf5;
+  }
+  .isFilePdf {
+    background-color: #dcd7f1;
+  }
+  .isFilePowP {
+    background-color: #f7ba99;
+  }
+  .isFileExel {
+    background-color: #ace5be;
+  }
+
+
 .content_messenger{
   max-width: 600px;
   height: auto;

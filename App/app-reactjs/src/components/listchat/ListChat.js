@@ -20,6 +20,7 @@ const ListChat = (props) => {
     : "https://placeimg.com/640/480/any";
 
   const Chat = messages.map((message) => {
+    console.log(message);
     const isUser = message.senderId === currentUserId;
     const date = new Date(message.createdAt);
     let time = `${date.getHours()}:${
@@ -33,9 +34,15 @@ const ListChat = (props) => {
         key={message._id}
         id={message._id}
         isImg={message.isImg}
+        isFileWord = {message.isFileWord}
+        isFilePdf = {message.isFilePdf}
+        isFileExel = {message.isFileExel}
+        isFilePowP = {message.isFilePowP}
+        type = {message.type}
         isRight={isUser}
         Messenger={message.text}
         time={time}
+        fileName = {message.fileName}
         name={isUser ? name : friendName}
         linkImage={isUser ? avatar : friendAvatar}
       />
