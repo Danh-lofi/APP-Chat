@@ -16,13 +16,31 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./profile.scss";
+import { modalSliceAction } from "../../store/modalSlice";
 const Profile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // state
+  // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+
   let isLogin = useSelector((state) => state.user.isLoggedIn);
-  console.log(user);
-  const { name, avatar, gender, birthDate, bio, username } = user;
+  const { name, avatar, gender, birthDate, bio, username, coverImg } = user;
+  const D = new Date(birthDate);
+  // Hàm chuyển đổi thành dd/mm/yyyy
+  const getFormattedDate = (date) => {
+    var year = date.getFullYear();
+
+    var month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+
+    var day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+
+    return day + "/" + month + "/" + year;
+  };
+  const date = getFormattedDate(D);
+
   useEffect(() => {
     if (user) {
       dispatch(profile(user.accessToken)).then((res) => {
@@ -39,13 +57,10 @@ const Profile = () => {
 
   const [ariaExpanded, setAriaExpanded] = useState("");
 
-  // const changeHideProfileFriendHandle = () => {
-  //   setIsProfileFriend(!isProfileFriend);
-  // };
-
-  // useEffect(() => {
-  //   toast.success("Đăng nhập thành công");
-  // });
+  // Mở modal đổi thông tin
+  const openChangeProfileModal = () => {
+    dispatch(modalSliceAction.setChangeProfileOpen(true));
+  };
 
   return (
     <>
@@ -53,14 +68,14 @@ const Profile = () => {
         <div className="profile__container">
           <div className="profile__header">
             <div className="header__img_contain">
-              <img src={avatar}></img>
+              <img src={coverImg}></img>
             </div>
             <div className="header__info_and_avt_contain">
               <div className="header__avt_contain">
                 <img src={avatar}></img>
               </div>
               <p>{name}</p>
-              <div className="update_info">
+              <div className="update_info" onClick={openChangeProfileModal}>
                 <p>Sửa thông tin</p>
               </div>
             </div>
@@ -81,7 +96,7 @@ const Profile = () => {
               </div>
               <div className="info__birthday">
                 <FontAwesomeIcon className="icon" icon={faCalendarDay} />
-                <p>{birthDate}</p>
+                <p>{date}</p>
               </div>
               <div className="info__gender">
                 <FontAwesomeIcon className="icon" icon={faVenusMars} />

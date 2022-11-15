@@ -40,6 +40,7 @@ import messageApi from "../../api/messageApi";
 import ProfileFriend from "./profile-friend/ProfileFriend";
 import NonChatBox from "./non-chat-box/NonChatBox";
 import cloudinaryApi from "../../api/cloudinaryApi";
+import ProfileGroup from "./profile-group/ProfileGroup";
 
 const ChatBox = () => {
   const fileRef = useRef();
@@ -529,7 +530,8 @@ const ChatBox = () => {
         <NonChatBox />
       )}
       <div className={`profile-friend ${!isProfileFriend ? "not-active" : ""}`}>
-        <ProfileFriend />
+        {/* <ProfileFriend /> */}
+        <ProfileGroup />
       </div>
     </div>
   );

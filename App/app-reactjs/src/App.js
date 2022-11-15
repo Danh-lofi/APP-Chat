@@ -14,25 +14,41 @@ import ListFriend from "./components/list-friend/ListFriend";
 import UserChat from "./components/userchat/UserChat";
 import ModalGroup from "./components/modalGroup/ModalGroup";
 import AddFriend from "./components/modals/addfriend/AddFriend";
+import AddFriendToGroup from "./components/modals/addfriendtogroup/AddFriendToGroup";
 
 function App() {
   const [loading, setLoading] = useState(false);
 
   const [openModal, setOpenModal] = useState(false);
   const [isModal, setIsModal] = useState(false);
+  // Store từ redux
   let isAuth = useSelector((state) => state.user.isLoggedIn);
+  let isOpenAddGroup = useSelector((state) => state.modal.isOpen);
+  let isOpenChangeProfile = useSelector(
+    (state) => state.modal.isChangeProfileModal
+  );
+  const isSelected = useSelector((state) => state.image.isSelected);
+
   const hideModalHandle = () => {
     setIsModal(!isModal);
   };
   const hideModalFriendHandle = () => {
     setOpenModal(!openModal);
   };
-  const isSelected = useSelector((state) => state.image.isSelected);
 
+  // Change Loading
+  const changeLoadingHandle = (isLoading) => {
+    setLoading(isLoading);
+  };
   return (
     <div className="App">
+      {isOpenAddGroup ? <AddFriendToGroup /> : ""}
+      {isOpenChangeProfile ? (
+        <ChangeInfo onLoading={(isLoading) => changeLoadingHandle} />
+      ) : (
+        ""
+      )}
       {isSelected ? <PreviewImage /> : ""}
-
       {openModal ? (
         <AddFriend onClose={() => setOpenModal(false)}></AddFriend>
       ) : (
@@ -54,7 +70,7 @@ function App() {
                     <Page
                       onOpenGroup={hideModalHandle}
                       onOpenFriend={hideModalFriendHandle}
-                      onLoading={() => setLoading(!loading)}
+                      onLoading={(isLoading) => changeLoadingHandle}
                       isModal={isModal}
                     />
                     {/* <Page onClick={() => setOpenModal(true)} /> */}

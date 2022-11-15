@@ -158,7 +158,9 @@ const userSlice = createSlice({
       console.log(action);
       state.friend = action.payload;
     },
-    // changeInfo: (state, action) => {}
+    changeInfo: (state, action) => {
+      state.user = action.payload;
+    },
   },
 });
 

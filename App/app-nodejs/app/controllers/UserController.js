@@ -3,14 +3,11 @@ const UserController = {
   update: (req, res, next) => {
     const user = req.user;
     let { name, gender, birthDate, avatar } = req.body;
-    log;
     name = name ? name : user.name;
     gender = gender ? gender : user.gender;
     birthDate = birthDate ? birthDate : user.birthDate;
     avatar = avatar ? avatar : user.avatar;
-    console.log(user);
-    console.log(user.name);
-    console.log(avatar);
+
     UserModel.updateOne(
       { _id: user._id },
       {
@@ -24,6 +21,7 @@ const UserController = {
         res.status(200).send({
           message: "Cập nhật thành công",
           user: {
+            ...user._doc,
             name,
             birthDate,
             gender,

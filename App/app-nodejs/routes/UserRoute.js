@@ -1,11 +1,15 @@
 import express from "express";
+import CloudinaryController from "../app/controllers/CloudinaryController.js";
 import UserController from "../app/controllers/UserController.js";
 import authMiddleware from "../app/middleware/authMiddleware.js";
 
 const routerUser = express.Router();
-
-routerUser.post("/update", authMiddleware.isAuth, UserController.update);
-
-
+// /user
+routerUser.post(
+  "/update",
+  authMiddleware.isAuth,
+  CloudinaryController.uploadAvatar,
+  UserController.update
+);
 
 export default routerUser;

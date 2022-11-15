@@ -17,7 +17,6 @@ const CloudinaryController = {
   },
   upload: async (req, res, next) => {
     try {
-      console.log(req.body.chatId);
       const fileStr = req.body.data;
       const type = req.body.type;
       const fileName = req.body.fileName;
@@ -39,6 +38,25 @@ const CloudinaryController = {
       req.body.type = req.body.type;
       req.body.fileName = req.body.fileName;
 
+      next();
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ err: "Something went wrong" });
+    }
+  },
+  uploadAvatar: async (req, res, next) => {
+    try {
+      const fileStr = req.body.data;
+      const type = req.body.type;
+      const fileName = req.body.fileName;
+      const uploadResponse = await cloudinary.v2.uploader.upload(fileStr, {
+        folder: "Danh",
+        upload_preset: "ml_default",
+        resource_type: "raw",
+        filename_override: fileName,
+        format: type,
+      });
+      req.body.avatar = uploadResponse.url;
       next();
     } catch (err) {
       console.error(err);

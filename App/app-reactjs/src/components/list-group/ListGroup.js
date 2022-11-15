@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import friendApi from "../../api/friendApi";
 import groupApi from "../../api/groupApi";
+import { groupAction } from "../../store/groupSlice";
 import { userActions } from "../../store/userSlice";
 import UserChat from "../userchat/UserChat";
 
@@ -29,6 +30,7 @@ const ListGroup = (props) => {
       const data = await groupApi.getGroups(accessToken);
       props.changeLoading();
       setListGroup(data.data.listGroup);
+      dispatch(groupAction.setGroup(data.data.listGroup));
     };
     getListFriends();
     props.changeLoading();
