@@ -49,9 +49,8 @@ const ChatBox = () => {
   const socket = useRef();
   const [onlineUsers, setOnlineUsers] = useState([]);
 
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")).user
-  );
+  const [user, setUser] = useState(useSelector((state) => state.user.user));
+
   const [accessToken, setAccessToken] = useState(
     JSON.parse(localStorage.getItem("user")).accessToken
   );
@@ -318,8 +317,8 @@ const ChatBox = () => {
                 <img
                   className="chatBox_heading_left_headingImage_avt_heading"
                   src={
-                    user.avatar
-                      ? user.avatar
+                    friend.avatar
+                      ? friend.avatar
                       : "https://placeimg.com/640/480/any"
                   }
                   alt="avt"
@@ -328,7 +327,7 @@ const ChatBox = () => {
               </div>
               <div className="chatBox_heading_left_heading_name">
                 <h3 className="chatBox_heading_left_heading_name_name">
-                  {user.name ? user.name : user.username}
+                  {friend.name ? friend.name : friend.username}
                 </h3>
                 <p className="chatBox_heading_left_heading_name_active">
                   Active
@@ -530,8 +529,8 @@ const ChatBox = () => {
         <NonChatBox />
       )}
       <div className={`profile-friend ${!isProfileFriend ? "not-active" : ""}`}>
-        {/* <ProfileFriend /> */}
-        <ProfileGroup />
+        <ProfileFriend />
+        {/* <ProfileGroup /> */}
       </div>
     </div>
   );

@@ -47,12 +47,13 @@
         height: 100vh;
     }
 
-    width: 70%;
+    width: 100%;
     height: 100%;
     position: relative;
     flex-direction: column;
     display: flex;
     justify-content: space-between;
+ 
 
     &.full {
         width: 100%;
@@ -67,11 +68,11 @@
         width: 100%;
         padding: 20px;
         position: static;
-        height: 15%;
+        height: 10%;
         justify-content: space-between;
         align-items: center;
-        background-color: #F3F3F3;
-        box-shadow: 0 0 10px #ccc;
+        background-color: #f9f9f9;
+        box-shadow: 0px 1px 10px 0px #ccc;
         border-bottom: 1px solid #EAEAF1;
 
         &_left {
@@ -271,14 +272,7 @@
 }
 
 
-.profile-friend {
-    transition: width .4s ease-in-out;
-    width: 30%;
 
-    &.not-active {
-        width: 0%;
-    }
-}
 
 .chatBox__modal__container {
     cursor: pointer;

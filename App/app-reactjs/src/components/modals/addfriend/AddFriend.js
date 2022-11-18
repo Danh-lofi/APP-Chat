@@ -19,6 +19,10 @@ const AddFriend = ({ onClose }) => {
   };
   const submitButtonHandle = async () => {
     try {
+      // handle Trùng số điện thoại bản thân
+      if (findText === user.username) {
+        return;
+      }
       const data = await friendApi.findFriend(findText);
       setLoading(true);
       setUserFind(data.data);

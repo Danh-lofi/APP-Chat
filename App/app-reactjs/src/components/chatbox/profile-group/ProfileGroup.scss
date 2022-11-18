@@ -41,7 +41,7 @@
     }
 
     .contain_title_friend {
-        padding: 10px 0;
+        padding: 10px;
         width: 100%;
         border-bottom: 1px solid gainsboro;
 
@@ -116,8 +116,11 @@ h2 {
 .contain_media_friend,
 .contain_files_friends {
     // padding: 10px;
+    margin: 2rem 0;
     border-bottom: 1px solid gainsboro;
-
+    &__title{
+        margin-bottom: 1rem;
+    }
     p {
         margin-left: 10px;
         text-align: left;
@@ -155,7 +158,7 @@ h2 {
     }
 
     .file {
-
+        margin: .5rem 0;
         // width: 100px;
         .file_infor {
             width: 70%;
