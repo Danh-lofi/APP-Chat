@@ -6,19 +6,16 @@ import LayoutAuth from "./layout/layout-auth/LayoutAuth";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import PreviewImage from "./components/modals/preview-image/PreviewImage";
-import { imageAction } from "./store/imageSlice";
+
 import ChangeInfo from "./components/modals/change-info/ChangeInfo";
-import { faXmark, faCamera, faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ListFriend from "./components/list-friend/ListFriend";
-import UserChat from "./components/userchat/UserChat";
+
 import ModalGroup from "./components/modalGroup/ModalGroup";
 import AddFriend from "./components/modals/addfriend/AddFriend";
 import AddFriendToGroup from "./components/modals/addfriendtogroup/AddFriendToGroup";
 
 function App() {
+  // state
   const [loading, setLoading] = useState(false);
-
   const [openModal, setOpenModal] = useState(false);
   const [isModal, setIsModal] = useState(false);
   // Store từ redux
@@ -29,9 +26,12 @@ function App() {
   );
   const isSelected = useSelector((state) => state.image.isSelected);
 
+  // Ẩn/hiện modal group
   const hideModalHandle = () => {
     setIsModal(!isModal);
   };
+
+  // Ẩn/hiện modal bạn bè
   const hideModalFriendHandle = () => {
     setOpenModal(!openModal);
   };
@@ -44,7 +44,7 @@ function App() {
     <div className="App">
       {isOpenAddGroup ? <AddFriendToGroup /> : ""}
       {isOpenChangeProfile ? (
-        <ChangeInfo onLoading={(isLoading) => changeLoadingHandle} />
+        <ChangeInfo onLoading={(isLoading) => changeLoadingHandle(isLoading)} />
       ) : (
         ""
       )}
@@ -72,6 +72,7 @@ function App() {
                       onOpenFriend={hideModalFriendHandle}
                       onLoading={(isLoading) => changeLoadingHandle}
                       isModal={isModal}
+                      isLoading={loading}
                     />
                     {/* <Page onClick={() => setOpenModal(true)} /> */}
                   </LayoutMain>

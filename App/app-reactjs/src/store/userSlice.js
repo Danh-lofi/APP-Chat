@@ -159,7 +159,9 @@ const userSlice = createSlice({
       state.friend = action.payload;
     },
     changeInfo: (state, action) => {
+      console.log("-------------------------Change Info--------------");
       state.user = action.payload;
+      console.log(state.user);
     },
   },
 });

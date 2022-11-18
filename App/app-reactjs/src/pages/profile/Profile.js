@@ -17,17 +17,25 @@ import {
 
 import "./profile.scss";
 import { modalSliceAction } from "../../store/modalSlice";
-const Profile = () => {
+const Profile = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // state
-  // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-
+  const [user, setUser] = useState(useSelector((state) => state.user.user));
+  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
   let isLogin = useSelector((state) => state.user.isLoggedIn);
   const { name, avatar, gender, birthDate, bio, username, coverImg } = user;
-  const D = new Date(birthDate);
+
+  // Loading change
+  // re render set lai
+  const userChange = useSelector((state) => state.user.user);
+  useEffect(() => {
+    setUser(userChange);
+  }, [props.isLoading]);
+  //
+
   // Hàm chuyển đổi thành dd/mm/yyyy
+  const D = new Date(birthDate);
   const getFormattedDate = (date) => {
     var year = date.getFullYear();
 
@@ -42,13 +50,14 @@ const Profile = () => {
   const date = getFormattedDate(D);
 
   useEffect(() => {
+    console.log(user);
+
     if (user) {
-      dispatch(profile(user.accessToken)).then((res) => {
+      dispatch(profile(accessToken)).then((res) => {
         if (res.payload.status === 401) {
           dispatch(userActions.logOut());
           navigate("/login");
         } else {
-          console.log(user);
           setUser(res.payload.data.user);
         }
       });

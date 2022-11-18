@@ -15,9 +15,8 @@ const ChangeInfo = (props) => {
   // Ref
   const avatarRef = useRef();
   //
-  const [user, setUser] = useState(useSelector((state) => state.user.user));
-
   // State
+  const [user, setUser] = useState(useSelector((state) => state.user.user));
   const [name, setName] = useState(user.name);
   const [avatar, setAvatar] = useState(user.avatar);
   const [gender, setGender] = useState(user.gender);
@@ -95,11 +94,11 @@ const ChangeInfo = (props) => {
       const res = await userApi.changeProfile(accessToken, data);
       props.onLoading(true);
       if (res.status === 200) {
-        props.onLoading(false);
         toast.success("Cập nhật thành công!!!");
         setTimeout(() => {
           dispatch(userActions.changeInfo(res.data.user));
           dispatch(modalSliceAction.setChangeProfileOpen(false));
+          props.onLoading(false);
         }, 2000);
       }
     } catch (error) {
