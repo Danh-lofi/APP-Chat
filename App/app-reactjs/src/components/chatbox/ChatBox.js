@@ -42,14 +42,17 @@ import NonChatBox from "./non-chat-box/NonChatBox";
 import cloudinaryApi from "../../api/cloudinaryApi";
 import ProfileGroup from "./profile-group/ProfileGroup";
 
-const ChatBox = () => {
+const ChatBox = (props) => {
   const fileRef = useRef();
   const imgRef = useRef();
 
   const socket = useRef();
+
   const [onlineUsers, setOnlineUsers] = useState([]);
 
-  const [user, setUser] = useState(useSelector((state) => state.user.user));
+  const [user, setUser] = useState(
+    useSelector((state) => state.user.user.user)
+  );
 
   const [accessToken, setAccessToken] = useState(
     JSON.parse(localStorage.getItem("user")).accessToken
@@ -96,6 +99,19 @@ const ChatBox = () => {
       setMessgages((messages) => [...messages, data]);
     });
   }, [receivedMessage]);
+
+  useEffect(() => {
+    console.log("Socket server listening on receive friend");
+    socket.current.on(
+      "recieve-require-friend",
+      (data) => {
+        console.log("Data");
+        console.log(data);
+        // setListFriend((listFriend) => [...listFriend, data]);
+      },
+      [receivedMessage]
+    );
+  });
 
   // Get room chat
   useEffect(() => {

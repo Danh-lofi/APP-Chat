@@ -6,18 +6,34 @@ import {
   faBan,
   faDownload,
 } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "./ProfileFriend.scss";
 import { useSelector } from "react-redux";
+import friendApi from "../../../api/friendApi";
 const ProfileFriend = () => {
+  // AccessToken
+  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
   const friendInfo = useSelector((state) => state.user.friend);
+
   if (!friendInfo) return;
-  const { name, avatar, username, bio, birthDate, gender, address } =
+  const { name, avatar, username, bio, birthDate, gender, address, _id } =
     friendInfo;
-  console.log(gender);
-  console.log(friendInfo.gender);
+
+  // Handle Event
+  // Handle Delete Friend
+  const deleteFriendHandle = async () => {
+    try {
+      const data = await friendApi.deleteFriend(accessToken, _id);
+      console.log(data);
+      toast.success("Xóa thành công");
+    } catch (error) {}
+  };
+
   return (
     <div className="profile_friend_container">
+      <ToastContainer />
       <div className="profile_friend_container__header">
         <h2>Thông tin bạn bè</h2>
       </div>
@@ -29,13 +45,13 @@ const ProfileFriend = () => {
         </div>
         <p className="friend_name">{name}</p>
         <div className="contain_btn">
-          <div className="btn">
+          <div className="btn" onClick={deleteFriendHandle}>
             <FontAwesomeIcon className="icon" icon={faTrash} />
             <p>Hủy kết bạn</p>
           </div>
           <div className="btn">
             <FontAwesomeIcon className="icon" icon={faUserGroup} />
-            <p>Thêm vào nhóm</p>
+            <p>Tạo nhóm</p>
           </div>
           <div className="btn">
             <FontAwesomeIcon className="icon" icon={faBan} />

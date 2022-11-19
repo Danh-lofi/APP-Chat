@@ -33,6 +33,18 @@ const friendApi = {
     const url = `/request-friend/accept`;
     return axiosClient.post(url, { idRequest });
   },
+  deleteFriend: (accessToken, friendId) => {
+    const url = `/friend/deleteFriend`;
+    return axiosClient.post(
+      url,
+      { friendId },
+      {
+        headers: {
+          x_authorization: accessToken,
+        },
+      }
+    );
+  },
 };
 
 export default friendApi;

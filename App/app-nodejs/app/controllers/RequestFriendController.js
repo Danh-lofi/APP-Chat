@@ -33,6 +33,10 @@ const RequestFriendController = {
     console.log(listId);
     const senderId = listId.senderId;
     const receiverId = listId.receiverId;
+    console.log("senderId: ");
+    console.log(senderId);
+    console.log("receiverId: ");
+    console.log(receiverId);
     res.send(senderId + "+" + receiverId);
     try {
       const Result1 = await UserModel.findOneAndUpdate(
@@ -64,7 +68,7 @@ const RequestFriendController = {
     const request = new RequestFriendModel({ senderId, receiverId });
     try {
       const a = await request.save();
-      send.status(200).send({ message: "success" });
+      res.status(200).send({ message: "success" });
     } catch (err) {
       res.status(500).send(err);
     }

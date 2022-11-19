@@ -4,6 +4,7 @@ import authMiddleware from "../app/middleware/authMiddleware.js";
 
 const routerFriend = express.Router();
 
+// friend
 routerFriend.get(
   "/get-all-friend",
   authMiddleware.isAuth,

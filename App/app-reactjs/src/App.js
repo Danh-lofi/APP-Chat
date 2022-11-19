@@ -4,7 +4,7 @@ import mainRoutes, { authRoutes } from "./routes/Routes";
 import LayoutMain from "./layout/layout-main/LayoutMain";
 import LayoutAuth from "./layout/layout-auth/LayoutAuth";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PreviewImage from "./components/modals/preview-image/PreviewImage";
 
 import ChangeInfo from "./components/modals/change-info/ChangeInfo";

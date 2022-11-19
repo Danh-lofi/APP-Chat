@@ -37,6 +37,8 @@ const socket = (io) => {
           const user = activeUsers.find(
             (user) => user.userId === userReceiver.id
           );
+          console.log("-----------Socket send mesage-------------------");
+          console.log(user);
           if (user) {
             // gửi cho các users ngoại trừ sender
             io.to(user.socketId).emit("recieve-message", data);
@@ -51,6 +53,23 @@ const socket = (io) => {
           // gửi cho các users ngoại trừ sender
           io.to(user.socketId).emit("recieve-message", data);
         }
+      }
+    });
+
+    socket.on("send-require-friend", (data) => {
+      console.log(
+        "--------------------send-require-friend------------------------------"
+      );
+      console.log(data);
+      const { _id } = data;
+
+      const user = activeUsers.find((user) => user.userId === _id);
+      console.log("Sending from socket to :", _id);
+      console.log("Data: ", data);
+      console.log(user);
+      if (user) {
+        // gửi cho các users ngoại trừ sender
+        io.to(user.socketId).emit("recieve-require-friend", data);
       }
     });
   });
