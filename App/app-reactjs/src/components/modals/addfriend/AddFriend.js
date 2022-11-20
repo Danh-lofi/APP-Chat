@@ -11,15 +11,15 @@ import FormatDate from "../../../method/FormatDate";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { io } from "socket.io-client";
+import { useSelector } from "react-redux";
 
 const AddFriend = ({ onClose }) => {
   const socket = useRef();
   const [findText, setFindText] = useState("");
   const [userFind, setUserFind] = useState();
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")).user
-  );
+  const [user, setUser] = useState(useSelector((state) => state.user.user));
+
   const changeFindTextHandle = (value) => {
     setFindText(value);
   };

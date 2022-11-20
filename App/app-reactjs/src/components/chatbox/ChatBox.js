@@ -41,26 +41,24 @@ import ProfileFriend from "./profile-friend/ProfileFriend";
 import NonChatBox from "./non-chat-box/NonChatBox";
 import cloudinaryApi from "../../api/cloudinaryApi";
 import ProfileGroup from "./profile-group/ProfileGroup";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { friendSliceAction } from "../../store/friendSlice";
 
 const ChatBox = (props) => {
+  // Ref
   const fileRef = useRef();
   const imgRef = useRef();
-
+  // Socket
   const socket = useRef();
-
+  // State
   const [onlineUsers, setOnlineUsers] = useState([]);
 
-  const [user, setUser] = useState(
-    useSelector((state) => state.user.user.user)
-  );
+  const [user, setUser] = useState(useSelector((state) => state.user.user));
 
   const [accessToken, setAccessToken] = useState(
     JSON.parse(localStorage.getItem("user")).accessToken
   );
-
-  const friend = useSelector((state) => state.user.friend);
-  console.log(friend);
-
   const [chatId, setChatId] = useState();
   const [messages, setMessgages] = useState([]);
   const [message, setMessage] = useState("");
@@ -68,6 +66,10 @@ const ChatBox = (props) => {
   const [ariaExpanded, setAriaExpanded] = useState("");
   const [more, setMore] = useState(false);
 
+  // Redux
+  const friend = useSelector((state) => state.user.friend);
+  const dispatch = useDispatch();
+  //
   const clickMore = () => {
     if (more === false) {
       setMore(true);
@@ -86,6 +88,8 @@ const ChatBox = (props) => {
   // // Connect to Socket.io
   useEffect(() => {
     socket.current = io("ws://localhost:3001");
+    console.log("---------------------User: ------------------------");
+    console.log(user);
     socket.current.emit("new-user-add", user._id);
     socket.current.on("get-users", (users) => {
       setOnlineUsers(users);
@@ -100,18 +104,14 @@ const ChatBox = (props) => {
     });
   }, [receivedMessage]);
 
+  // Recieve-require-friend
   useEffect(() => {
     console.log("Socket server listening on receive friend");
-    socket.current.on(
-      "recieve-require-friend",
-      (data) => {
-        console.log("Data");
-        console.log(data);
-        // setListFriend((listFriend) => [...listFriend, data]);
-      },
-      [receivedMessage]
-    );
-  });
+    socket.current.on("recieve-require-friend", (data) => {
+      toast.success(`${data.name} vừa mới gửi lời mời kết bạn`);
+      dispatch(friendSliceAction.setUserRequired(data));
+    });
+  }, [receivedMessage]);
 
   // Get room chat
   useEffect(() => {
@@ -121,6 +121,7 @@ const ChatBox = (props) => {
         if (friend.memberChat) {
           return;
         }
+
         const chat = await chatApi.getChat(user._id, friend._id);
         setChatId(chat.data._id);
       } catch (error) {
@@ -325,6 +326,7 @@ const ChatBox = (props) => {
   };
   return (
     <div className="chatBox__container">
+      <ToastContainer />
       {chatId ? (
         <div className={`chatBox ${!isProfileFriend ? "full" : ""}`}>
           <div className="chatBox_heading">

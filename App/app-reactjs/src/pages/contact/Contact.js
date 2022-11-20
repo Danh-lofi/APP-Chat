@@ -18,7 +18,6 @@ const Contact = (props) => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")).user
   );
-
   const [loading, setLoading] = useState(false);
   // Get All Friends
 

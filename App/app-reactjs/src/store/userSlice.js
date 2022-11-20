@@ -1,7 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authApi from "../api/authApi";
 import friendApi from "../api/friendApi";
-const user = JSON.parse(localStorage.getItem("user"));
+let user = JSON.parse(localStorage.getItem("user"));
+if (user) {
+  user = user.user;
+}
 
 export const login = createAsyncThunk(
   "/login",

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import friendApi from "../../api/friendApi";
 import { userActions } from "../../store/userSlice";
 import UserChat from "../userchat/UserChat";
@@ -10,16 +10,19 @@ import { io } from "socket.io-client";
 
 const ListInvite = (props) => {
   const { user } = props;
+  // State
   const [listFriend, setListFriend] = useState([]);
   const [activeChatFavou, setActiveChatFavou] = useState("");
-  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
-
   const [receivedMessage, setReceivedMessage] = useState(null);
-
-  const socket = useRef();
-  socket.current = io("ws://localhost:3001");
-
+  // Token
+  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
+  // Redux
   const dispatch = useDispatch();
+  const userRequired = useSelector((state) => state.friend.userRequired);
+  //
+  useEffect(() => {
+    setListFriend((listFriend) => [...listFriend, userRequired]);
+  }, [userRequired]);
 
   const changeActiveFriendHandle = (index) => {
     setActiveChatFavou(index);
@@ -38,25 +41,6 @@ const ListInvite = (props) => {
     getListFriends();
     props.changeLoading();
   }, []);
-
-  // // Connect to Socket.io
-  useEffect(() => {
-    socket.current = io("ws://localhost:3001");
-  }, [user]);
-
-  // Socket khi nhận lời mời kết bạn
-  // Nhận về dữ liệu của user
-  // Add vào listFriend
-  // Get the message from socket server
-
-  // useEffect(() => {
-  //   console.log("Socket server listening on receive friend");
-  //   socket.current.on("recieve-require-friend", (data) => {
-  //     console.log("Data");
-  //     console.log(data);
-  //     setListFriend((listFriend) => [...listFriend, data]);
-  //   });
-  // });
 
   // Xử lí đồng ý kết bạn
   const acceptRequestFriendHandle = (idRequest) => {

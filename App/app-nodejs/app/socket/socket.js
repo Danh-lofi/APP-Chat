@@ -71,6 +71,9 @@ const socket = (io) => {
         // gửi cho các users ngoại trừ sender
         io.to(user.socketId).emit("recieve-require-friend", data);
       }
+      console.log(
+        "--------------------End---send-require-friend------------------------------"
+      );
     });
   });
 };

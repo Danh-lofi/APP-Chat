@@ -18,6 +18,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [isModal, setIsModal] = useState(false);
+  //
+
   // Store từ redux
   let isAuth = useSelector((state) => state.user.isLoggedIn);
   let isOpenAddGroup = useSelector((state) => state.modal.isOpen);
