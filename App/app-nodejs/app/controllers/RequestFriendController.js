@@ -73,6 +73,27 @@ const RequestFriendController = {
       res.status(500).send(err);
     }
   },
+  checkRequestFriend: async (req, res) => {
+    const friend = req.userFriend;
+    const user = req.user;
+    console.log(
+      "-----------------------Check Request Friend --------------------"
+    );
+
+    const senderId = user._id.toString();
+    const receiverId = friend._id.toString();
+    console.log("user");
+    console.log(senderId);
+    console.log("friend");
+    console.log(receiverId);
+    try {
+      const data = await RequestFriendModel.findOne({ senderId, receiverId });
+      console.log(data);
+      res.status(200).json({ friend, isRequired: data ? true : false });
+    } catch (error) {
+      res.status(402).send(error);
+    }
+  },
 };
 
 export default RequestFriendController;

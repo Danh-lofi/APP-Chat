@@ -45,6 +45,15 @@ const friendApi = {
       }
     );
   },
+  // Tìm và kiểm tra yêu cầu kb
+  findAndCheck: (accessToken, username) => {
+    const url = `/request-friend/check/${username}`;
+    return axiosClient.get(url, {
+      headers: {
+        x_authorization: accessToken,
+      },
+    });
+  },
 };
 
 export default friendApi;

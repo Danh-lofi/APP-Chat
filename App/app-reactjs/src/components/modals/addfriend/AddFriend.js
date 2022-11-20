@@ -2,7 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import "./addfriend.scss";
 import InputAuthen from "../../input/InputAuthen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus, faBan } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserPlus,
+  faBan,
+  faUserMinus,
+} from "@fortawesome/free-solid-svg-icons";
 import ButtonAuthen from "../../button/ButtonAuthen";
 import { async } from "@firebase/util";
 import friendApi from "../../../api/friendApi";
@@ -17,8 +21,12 @@ const AddFriend = ({ onClose }) => {
   const socket = useRef();
   const [findText, setFindText] = useState("");
   const [userFind, setUserFind] = useState();
+  const [isRequired, setIsRequired] = useState();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(useSelector((state) => state.user.user));
+  const [accessToken, setAccessToken] = useState(
+    JSON.parse(localStorage.getItem("user")).accessToken
+  );
 
   const changeFindTextHandle = (value) => {
     setFindText(value);
@@ -30,9 +38,12 @@ const AddFriend = ({ onClose }) => {
       if (findText === user.username) {
         return;
       }
-      const data = await friendApi.findFriend(findText);
+
+      const data = await friendApi.findAndCheck(accessToken, findText);
+      console.log(data);
       setLoading(true);
-      setUserFind(data.data);
+      setUserFind(data.data.friend);
+      setIsRequired(data.data.isRequired);
       console.log(userFind);
       setLoading(false);
     } catch (error) {
@@ -46,8 +57,6 @@ const AddFriend = ({ onClose }) => {
     // gửi request senderId, receiverId
     const senderId = user._id;
     const receiverId = userFind._id;
-    console.log(senderId);
-    console.log(receiverId);
 
     // Kiem tra kb
 
@@ -59,6 +68,7 @@ const AddFriend = ({ onClose }) => {
       socket.current.emit("send-require-friend", userFind);
       // Thông báo gửi thành công
       toast.success("Gửi yêu cầu thành công");
+      setIsRequired(true);
     } catch (error) {
       console.log(error);
     }
@@ -109,12 +119,21 @@ const AddFriend = ({ onClose }) => {
                 </div>
               </div>
               <div className="btnContain">
-                <FontAwesomeIcon
-                  title="Thêm"
-                  className="icon"
-                  icon={faUserPlus}
-                  onClick={requestFriendHandle}
-                />
+                {isRequired ? (
+                  <FontAwesomeIcon
+                    title="Thu hồi"
+                    className="icon"
+                    icon={faUserMinus}
+                    onClick={requestFriendHandle}
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    title="Thêm"
+                    className="icon"
+                    icon={faUserPlus}
+                    onClick={requestFriendHandle}
+                  />
+                )}
                 <FontAwesomeIcon title="Chặn" className="icon" icon={faBan} />
               </div>
             </div>

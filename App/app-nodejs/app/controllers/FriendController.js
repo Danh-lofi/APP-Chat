@@ -48,7 +48,7 @@ const FriendController = {
     }
     res.status(200).send({ message: "Xóa thành công!!!" });
   },
-  getUserByUsername: async (req, res) => {
+  getUserByUsername: async (req, res, next) => {
     const username = req.params.username;
 
     const user = await UserModel.findOne({ username: username });
@@ -56,8 +56,12 @@ const FriendController = {
       res.status(404).send(user);
       return;
     }
-
-    res.status(200).send(user);
+    if (!next) {
+      res.status(200).send(user);
+    } else {
+      req.userFriend = user;
+      next();
+    }
   },
 };
 
