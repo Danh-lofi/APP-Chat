@@ -65,7 +65,7 @@ const AddFriend = ({ onClose }) => {
       const data = await friendApi.requestFriend(senderId, receiverId);
       console.log(data);
       //Gửi user và id user
-      socket.current.emit("send-require-friend", userFind);
+      socket.current.emit("send-require-friend", { userFind, user });
       // Thông báo gửi thành công
       toast.success("Gửi yêu cầu thành công");
       setIsRequired(true);

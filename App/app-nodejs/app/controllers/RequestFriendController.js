@@ -13,8 +13,9 @@ const RequestFriendController = {
     const listReceiverId = [];
     listRequest.forEach((request) => {
       console.log("request: " + request._id);
+      console.log(request);
       listReceiverId.push({
-        id: request.receiverId,
+        id: request.senderId,
         idRequest: request._id.toString(),
       });
     });

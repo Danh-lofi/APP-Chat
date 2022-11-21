@@ -61,15 +61,17 @@ const socket = (io) => {
         "--------------------send-require-friend------------------------------"
       );
       console.log(data);
-      const { _id } = data;
+      const { _id } = data.userFind;
 
-      const user = activeUsers.find((user) => user.userId === _id);
-      console.log("Sending from socket to :", _id);
-      console.log("Data: ", data);
+      const user = activeUsers.find(
+        (user) => user.userId === data.userFind._id
+      );
+      console.log("Sending from socket to :", data.userFind._id);
+      console.log("Data: ", data.userFind);
       console.log(user);
       if (user) {
         // gửi cho các users ngoại trừ sender
-        io.to(user.socketId).emit("recieve-require-friend", data);
+        io.to(user.socketId).emit("recieve-require-friend", data.user);
       }
       console.log(
         "--------------------End---send-require-friend------------------------------"
