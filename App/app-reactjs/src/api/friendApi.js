@@ -29,8 +29,14 @@ const friendApi = {
     const url = `/request-friend/${id}`;
     return axiosClient.get(url, {});
   },
+  // đồng ý lời mời
   acceptFriend: (idRequest) => {
     const url = `/request-friend/accept`;
+    return axiosClient.post(url, { idRequest });
+  },
+  // Thu hồi/ từ chối lời mời
+  declineFriend: (idRequest) => {
+    const url = `/request-friend/decline`;
     return axiosClient.post(url, { idRequest });
   },
   deleteFriend: (accessToken, friendId) => {

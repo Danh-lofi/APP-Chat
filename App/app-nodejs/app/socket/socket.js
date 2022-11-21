@@ -68,10 +68,13 @@ const socket = (io) => {
       );
       console.log("Sending from socket to :", data.userFind._id);
       console.log("Data: ", data.userFind);
-      console.log(user);
       if (user) {
-        // gửi cho các users ngoại trừ sender
-        io.to(user.socketId).emit("recieve-require-friend", data.user);
+        if (data.isDeclined) {
+          io.to(user.socketId).emit("declined-require-friend", data.user);
+        } else {
+          // gửi cho các users ngoại trừ sender
+          io.to(user.socketId).emit("recieve-require-friend", data.user);
+        }
       }
       console.log(
         "--------------------End---send-require-friend------------------------------"

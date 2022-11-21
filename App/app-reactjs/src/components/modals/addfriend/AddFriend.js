@@ -19,19 +19,64 @@ import { useSelector } from "react-redux";
 
 const AddFriend = ({ onClose }) => {
   const socket = useRef();
+  // State
   const [findText, setFindText] = useState("");
   const [userFind, setUserFind] = useState();
   const [isRequired, setIsRequired] = useState();
+  const [idRequest, setIdRequest] = useState();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(useSelector((state) => state.user.user));
+
+  // end state
+  // Access
   const [accessToken, setAccessToken] = useState(
     JSON.parse(localStorage.getItem("user")).accessToken
   );
+  //end access
 
+  // Event
   const changeFindTextHandle = (value) => {
     setFindText(value);
   };
+
+  // thu hồi lời mời
+  const evictRequestFriendHandle = async () => {
+    // INPUT: idRequest
+    console.log("idRequest: ");
+    console.log(idRequest);
+    try {
+      const data = await friendApi.declineFriend(idRequest);
+
+      if (data.status === 200) {
+        toast.success("Thu hồi thành công");
+        // Đổi trạng thái
+        setIsRequired(false);
+        // Thu hồi bên bạn socket
+        socket.current.emit("send-require-friend", {
+          userFind,
+          user,
+          isDeclined: true,
+        });
+      }
+    } catch (error) {
+      toast.error("Thu hồi thất bại");
+    }
+  };
+  //
+
+  // Set lại idRequest
+  useEffect(() => {
+    const callAgain = async () => {
+      const data = await friendApi.findAndCheck(accessToken, findText);
+      setIdRequest(data.data.idRequest);
+    };
+    callAgain();
+  }, [isRequired]);
+  //
+
   socket.current = io("ws://localhost:3001");
+
+  //Event: Tìm bạn bè
   const submitButtonHandle = async () => {
     try {
       // handle Trùng số điện thoại bản thân
@@ -41,10 +86,12 @@ const AddFriend = ({ onClose }) => {
 
       const data = await friendApi.findAndCheck(accessToken, findText);
       console.log(data);
+      // Set data
       setLoading(true);
       setUserFind(data.data.friend);
       setIsRequired(data.data.isRequired);
-      console.log(userFind);
+      setIdRequest(data.data.idRequest);
+      //
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -64,7 +111,7 @@ const AddFriend = ({ onClose }) => {
     try {
       const data = await friendApi.requestFriend(senderId, receiverId);
       console.log(data);
-      //Gửi user và id user
+      //Gửi user và id user socket
       socket.current.emit("send-require-friend", { userFind, user });
       // Thông báo gửi thành công
       toast.success("Gửi yêu cầu thành công");
@@ -124,7 +171,7 @@ const AddFriend = ({ onClose }) => {
                     title="Thu hồi"
                     className="icon"
                     icon={faUserMinus}
-                    onClick={requestFriendHandle}
+                    onClick={evictRequestFriendHandle}
                   />
                 ) : (
                   <FontAwesomeIcon

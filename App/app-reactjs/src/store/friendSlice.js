@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   userRequired: {},
+  isEvicted: false,
 };
 const friendSlice = createSlice({
   name: "friend",
@@ -11,6 +12,14 @@ const friendSlice = createSlice({
         return;
       }
       state.userRequired = action.payload;
+      state.isEvicted = false;
+    },
+    setUserEvicted: (state, action) => {
+      if (!action.payload) {
+        return;
+      }
+      // state.userRequired = {};
+      state.isEvicted = true;
     },
   },
 });

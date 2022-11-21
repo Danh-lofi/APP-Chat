@@ -19,17 +19,24 @@ const ListInvite = (props) => {
   // Redux
   const dispatch = useDispatch();
   const userRequired = useSelector((state) => state.friend.userRequired);
+  const isEvicted = useSelector((state) => state.friend.isEvicted);
   //
+  // Set lại list khi có thêm yêu cầu kết bạn
   useEffect(() => {
-    setListFriend((listFriend) => [...listFriend, userRequired]);
-  }, [userRequired]);
+    console.log("isEvicted");
+    console.log(isEvicted);
+    console.log("userRequired");
+    console.log(userRequired);
+    if (isEvicted) {
+      const listNotEvicted = listFriend.filter(
+        (item) => item.username !== userRequired.username
+      );
+      setListFriend(listNotEvicted);
+    } else setListFriend((listFriend) => [...listFriend, userRequired]);
+  }, [userRequired, isEvicted]);
+  //
 
-  const changeActiveFriendHandle = (index) => {
-    setActiveChatFavou(index);
-    const friendActive = listFriend.find((friend) => friend._id === index);
-    dispatch(userActions.setFriend(friendActive));
-  };
-
+  // gọi lấy danh sách kết bạn
   useEffect(() => {
     props.changeLoading();
     const getListFriends = async () => {
@@ -41,6 +48,7 @@ const ListInvite = (props) => {
     getListFriends();
     props.changeLoading();
   }, []);
+  //
 
   // Xử lí đồng ý kết bạn
   const acceptRequestFriendHandle = (idRequest) => {
@@ -55,6 +63,8 @@ const ListInvite = (props) => {
       console.log(error);
     }
   };
+  //
+
   // Render list
   const List = listFriend.map((friend, index) => {
     const idRequest = friend.idRequest;
@@ -84,7 +94,7 @@ const ListInvite = (props) => {
       </div>
     );
   });
-
+  //
   return <div>{List}</div>;
 };
 

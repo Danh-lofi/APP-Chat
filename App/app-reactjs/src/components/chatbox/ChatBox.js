@@ -113,6 +113,15 @@ const ChatBox = (props) => {
     });
   }, [receivedMessage]);
 
+  // declined-require-friend
+  useEffect(() => {
+    console.log("Socket server listening on declined-require-friend");
+    socket.current.on("declined-require-friend", (data) => {
+      console.log(data);
+      dispatch(friendSliceAction.setUserEvicted(data));
+    });
+  }, [receivedMessage]);
+
   // Get room chat
   useEffect(() => {
     const getChats = async () => {

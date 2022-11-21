@@ -55,8 +55,16 @@ const RequestFriendController = {
   },
   //tu choi ne
   declineFriend: async (req, res) => {
+    console.log("---------------declineFriend------------------");
     const idRequest = req.body.idRequest;
-    await RequestFriendModel.deleteOne({ _id: idRequest });
+    console.log("idRequest: ");
+    console.log(idRequest);
+    try {
+      const data = await RequestFriendModel.deleteOne({ _id: idRequest });
+      res.status(200).send(data);
+    } catch (error) {
+      res.status(402).send(error);
+    }
   },
   sendRequestFriend: async (req, res) => {
     const senderId = req.body.senderId;
@@ -90,7 +98,11 @@ const RequestFriendController = {
     try {
       const data = await RequestFriendModel.findOne({ senderId, receiverId });
       console.log(data);
-      res.status(200).json({ friend, isRequired: data ? true : false });
+      res.status(200).json({
+        friend,
+        isRequired: data ? true : false,
+        idRequest: data ? data._id : null,
+      });
     } catch (error) {
       res.status(402).send(error);
     }
