@@ -6,10 +6,16 @@ import UserChat from "../userchat/UserChat";
 import "./listinvite.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { io } from "socket.io-client";
 
 const ListInvite = (props) => {
   const { user } = props;
+  // Socket
+  const socket = useRef();
+  socket.current = io("ws://localhost:3001");
+
   // State
   const [listFriend, setListFriend] = useState([]);
   const [activeChatFavou, setActiveChatFavou] = useState("");
@@ -51,13 +57,28 @@ const ListInvite = (props) => {
   //
 
   // Xử lí đồng ý kết bạn
-  const acceptRequestFriendHandle = (idRequest) => {
+  const acceptRequestFriendHandle = async (idRequest, friend) => {
+    console.log("friend: ");
+    console.log(friend);
     // Gửi id của yêu cầu
-    console.log("idRequest" + idRequest);
+    console.log("idRequest: ");
+    console.log(idRequest);
     try {
-      const data = friendApi.acceptFriend(idRequest);
+      const data = await friendApi.acceptFriend(idRequest);
+      console.log(data);
       if (data.status === 200) {
-        alert("thanh cong");
+        toast.success("Kết bạn thành công");
+        // Set lại danh sách yêu cầu
+        const listRemoveUserAccept = listFriend.filter(
+          (user) => user.username !== friend.username
+        );
+        setListFriend(listRemoveUserAccept);
+        // Gửi thông báo bạn bè kb thành công socket
+        socket.current.emit("send-require-friend", {
+          userFind: friend,
+          user: user,
+          isAccept: true,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -84,7 +105,7 @@ const ListInvite = (props) => {
           <FontAwesomeIcon
             icon={faCheck}
             className="list__invite__icon__agree"
-            onClick={() => acceptRequestFriendHandle(idRequest)}
+            onClick={() => acceptRequestFriendHandle(idRequest, friend)}
           />
           <FontAwesomeIcon
             icon={faTrash}
@@ -95,7 +116,13 @@ const ListInvite = (props) => {
     );
   });
   //
-  return <div>{List}</div>;
+  return (
+    <div>
+      <ToastContainer />
+
+      {List}
+    </div>
+  );
 };
 
 export default ListInvite;

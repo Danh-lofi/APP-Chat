@@ -72,15 +72,17 @@ const RequestFriendController = {
     console.log("Send Request Friend: ");
     console.log(senderId);
     console.log(receiverId);
-    console.log("End send");
 
     const request = new RequestFriendModel({ senderId, receiverId });
     try {
-      const a = await request.save();
-      res.status(200).send({ message: "success" });
+      const data = await request.save();
+
+      console.log(data);
+      res.status(200).send({ idRequest: data._id });
     } catch (err) {
       res.status(500).send(err);
     }
+    console.log("End send");
   },
   checkRequestFriend: async (req, res) => {
     const friend = req.userFriend;

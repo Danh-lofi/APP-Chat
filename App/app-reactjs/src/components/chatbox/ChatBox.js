@@ -122,6 +122,15 @@ const ChatBox = (props) => {
     });
   }, [receivedMessage]);
 
+  // accept-require-friend
+  useEffect(() => {
+    console.log("Socket server listening on accept-require-friend");
+    socket.current.on("accept-require-friend", (data) => {
+      toast.success(`${data.user.name} vừa đồng ý kết bạn`);
+      // dispatch(friendSliceAction.setUserEvicted(data));
+    });
+  }, [receivedMessage]);
+
   // Get room chat
   useEffect(() => {
     const getChats = async () => {

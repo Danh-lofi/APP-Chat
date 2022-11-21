@@ -61,7 +61,6 @@ const socket = (io) => {
         "--------------------send-require-friend------------------------------"
       );
       console.log(data);
-      const { _id } = data.userFind;
 
       const user = activeUsers.find(
         (user) => user.userId === data.userFind._id
@@ -71,6 +70,10 @@ const socket = (io) => {
       if (user) {
         if (data.isDeclined) {
           io.to(user.socketId).emit("declined-require-friend", data.user);
+        } else if (data.isAccept) {
+          io.to(user.socketId).emit("accept-require-friend", {
+            user: data.user,
+          });
         } else {
           // gửi cho các users ngoại trừ sender
           io.to(user.socketId).emit("recieve-require-friend", data.user);
