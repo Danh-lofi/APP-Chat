@@ -2,6 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isOpen: false,
   isChangeProfileModal: false,
+  confirm: {
+    title: "",
+    content: "",
+    onConfirm: null,
+    isOpenConfirm: false,
+  },
 };
 const modalSlice = createSlice({
   name: "modal",
@@ -22,6 +28,17 @@ const modalSlice = createSlice({
         return;
       }
       state.isChangeProfileModal = true;
+    },
+    setOpenConfirm: (state, action) => {
+      if (!action.payload) {
+        state.confirm = {
+          title: "",
+          content: "",
+          onConfirm: null,
+          isOpenConfirm: false,
+        };
+      }
+      state.confirm = action.payload;
     },
   },
 });

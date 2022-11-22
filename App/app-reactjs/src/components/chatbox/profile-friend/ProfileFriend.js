@@ -10,9 +10,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./ProfileFriend.scss";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import friendApi from "../../../api/friendApi";
+import { modalSliceAction } from "../../../store/modalSlice";
 const ProfileFriend = () => {
+  // Redux
+  const dispatch = useDispatch();
   // AccessToken
   const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
   const friendInfo = useSelector((state) => state.user.friend);
@@ -24,6 +27,18 @@ const ProfileFriend = () => {
   // Handle Event
   // Handle Delete Friend
   const deleteFriendHandle = async () => {
+    dispatch(
+      modalSliceAction.setOpenConfirm({
+        title: "Hủy kết bạn",
+        content: "Bạn chắc chắn hủy kết bạn?",
+        onConfirm: confirmHandle,
+        isOpenConfirm: true,
+      })
+    );
+  };
+
+  // Handle Delete Friend
+  const confirmHandle = async () => {
     try {
       const data = await friendApi.deleteFriend(accessToken, _id);
       console.log(data);

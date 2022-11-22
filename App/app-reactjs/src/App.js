@@ -12,6 +12,7 @@ import ChangeInfo from "./components/modals/change-info/ChangeInfo";
 import ModalGroup from "./components/modalGroup/ModalGroup";
 import AddFriend from "./components/modals/addfriend/AddFriend";
 import AddFriendToGroup from "./components/modals/addfriendtogroup/AddFriendToGroup";
+import ConfirmModal from "./components/modals/confirm/ConfirmModal";
 
 function App() {
   // state
@@ -44,6 +45,7 @@ function App() {
   };
   return (
     <div className="App">
+      {/* Modal */}
       {isOpenAddGroup ? <AddFriendToGroup /> : ""}
       {isOpenChangeProfile ? (
         <ChangeInfo onLoading={(isLoading) => changeLoadingHandle(isLoading)} />
@@ -56,6 +58,9 @@ function App() {
       ) : (
         ""
       )}
+      {/* Modal Confirm */}
+      <ConfirmModal />
+      {/*  */}
       {/* App dùng cho router */}
       {/* <ChangeInfo /> */}
       {isModal ? <ModalGroup onClose={() => setIsModal(false)} /> : ""}
