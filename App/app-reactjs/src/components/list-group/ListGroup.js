@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import friendApi from "../../api/friendApi";
 import groupApi from "../../api/groupApi";
 import { groupAction } from "../../store/groupSlice";
@@ -8,12 +8,22 @@ import UserChat from "../userchat/UserChat";
 
 const ListGroup = (props) => {
   const { user } = props;
+  // State
   const [listGroup, setListGroup] = useState([]);
   const [activeChatFavou, setActiveChatFavou] = useState("");
   const [activeChatDirect, setActiveChatDirect] = useState("");
-  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
 
+  //
+  // Token
+  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
+  //
+
+  // Redux
   const dispatch = useDispatch();
+  const newGroup = useSelector((state) => state.group.group);
+  //
+
+  // Event
 
   const changeActiveFriendHandle = (index) => {
     setActiveChatFavou(index);
@@ -24,17 +34,22 @@ const ListGroup = (props) => {
     dispatch(userActions.setFriend(groupActive));
   };
 
+  // Set List Group
   useEffect(() => {
     props.changeLoading();
-    const getListFriends = async () => {
+    const getListGroups = async () => {
       const data = await groupApi.getGroups(accessToken);
       props.changeLoading();
       setListGroup(data.data.listGroup);
-      dispatch(groupAction.setGroup(data.data.listGroup));
     };
-    getListFriends();
+    getListGroups();
     props.changeLoading();
   }, []);
+
+  // set list group khi có group mới
+  useEffect(() => {
+    setListGroup((state) => [...state, newGroup]);
+  }, [newGroup]);
 
   // Render list
 

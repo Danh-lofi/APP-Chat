@@ -1,14 +1,6 @@
 const socket = (io) => {
   let activeUsers = [];
   io.on("connection", (socket) => {
-    // create group chat
-    socket.on("createGroupChat", (data) => {
-      console.log("create group chat data socket: ");
-      console.log(data);
-      const { nameGroupChat } = data;
-      socket.emit("listGroup", data);
-    });
-
     // add new User
     socket.on("new-user-add", (newUserId) => {
       // if user is not added previously
@@ -56,6 +48,31 @@ const socket = (io) => {
       }
     });
 
+    // Socket gửi thông báo tạo vào nhóm cho các user
+    // INPUT: Array id người nhận, dữ liệu của group
+    //
+    socket.on("send-notication-group", (data) => {
+      console.log(
+        "--------------------send-notication-group------------------------------"
+      );
+      console.log("Data: ");
+      console.log(data);
+
+      const { listIdUser, group } = data;
+
+      listIdUser.forEach((idUser) => {
+        const user = activeUsers.find((user) => user.userId === idUser.id);
+        console.log("Sending from socket to :", idUser.id);
+        if (user) {
+          io.to(user.socketId).emit("receive-notication-group", group);
+        }
+      });
+
+      console.log(
+        "--------------------End---send-notication-group------------------------------"
+      );
+    });
+    //
     socket.on("send-require-friend", (data) => {
       console.log(
         "--------------------send-require-friend------------------------------"

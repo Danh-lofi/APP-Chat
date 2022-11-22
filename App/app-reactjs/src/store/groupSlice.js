@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  data: [],
+  group: {},
 };
 const groupSlice = createSlice({
   name: "group",
@@ -8,11 +8,9 @@ const groupSlice = createSlice({
   reducers: {
     setGroup: (state, action) => {
       if (!action.payload) {
-        state.url = null;
-        state.isOpen = false;
         return;
       }
-      state.data = action;
+      state.group = action.payload;
     },
   },
 });

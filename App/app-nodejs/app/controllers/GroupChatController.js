@@ -6,6 +6,7 @@ import UserModel from "../models/User.js";
 const GroupChatController = {
   createGroupChat: async (req, res, next) => {
     //
+
     const adminGroup = req.user._id;
     const { nameGroupChat, memberChat, avatar } = req.body;
 
@@ -24,6 +25,7 @@ const GroupChatController = {
       const rs = await groupChat.save();
       req.body.idGroupChat = rs._id;
       req.body.listIdUser = rs.memberChat;
+      req.body.group = rs;
       next();
     } catch (error) {
       res.status(406).json(error);
@@ -45,6 +47,7 @@ const GroupChatController = {
   updateGroupChatInUser: async (req, res) => {
     const listIdUser = req.body.listIdUser;
     const idGroupChat = req.body.idGroupChat;
+    const group = req.body.group;
     console.log(idGroupChat);
     console.log(listIdUser);
     const oGroups = { id: idGroupChat };
@@ -59,7 +62,7 @@ const GroupChatController = {
         res.status(407).json({ error, message: "Khong thanh cong" });
       }
     }
-    res.status(200).json({ message: "Thanh cong" });
+    res.status(200).json(group);
   },
   deleteUserFromGroupChat: async (req, res, next) => {
     const idGroupChat = req.body._id;

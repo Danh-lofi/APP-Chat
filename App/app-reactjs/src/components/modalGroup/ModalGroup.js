@@ -9,7 +9,11 @@ import ListChat from "../listchat/ListChat";
 import ListFriend from "../list-friend/ListFriend";
 import ListFriendCreateGroup from "../list-friend/ListFriendCreateGroup";
 import groupApi from "../../api/groupApi";
-
+import { useDispatch } from "react-redux";
+import { groupAction } from "../../store/groupSlice";
+import { io } from "socket.io-client";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const ModalGroup = ({ onClose }) => {
   // State
   const [nameGroup, setNameGroup] = useState("");
@@ -23,7 +27,15 @@ const ModalGroup = ({ onClose }) => {
   // Valid
   const [isNameGroup, setIsNameGroup] = useState(false);
   const [isButtonGroup, setIsButtonGroup] = useState(false);
+  //
+  // Socket
+  const socket = useRef();
+  socket.current = io("ws://localhost:3001");
 
+  //
+
+  // Redux
+  const dispatch = useDispatch();
   //
   // Token
   const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
@@ -105,13 +117,30 @@ const ModalGroup = ({ onClose }) => {
     };
 
     const res = await groupApi.createGroup(accessToken, data);
-    console.log(res);
+
+    // Set group để vào store
+    dispatch(groupAction.setGroup(res.data));
+    // Socket
+    // Gửi Arr listIdUser, group
+    const idAdmin = res.data.adminGroup;
+    const listIdUser = res.data.memberChat.filter(
+      (member) => member.id !== idAdmin
+    );
+    const group = res.data;
+    socket.current.emit("send-notication-group", {
+      listIdUser,
+      group,
+    });
+    //
+
     if (res.status === 200) {
+      toast.success("Tạo group thành công");
       onClose();
     }
   };
   return (
     <div>
+      <ToastContainer />
       <div class="modalGroup">
         <div class="modalGroup__overlay" onClick={onClose}></div>
         <div class="modalGroup__body">
@@ -196,7 +225,7 @@ const ModalGroup = ({ onClose }) => {
                   isButtonGroup ? "" : "disabled"
                 }`}
                 onClick={createGroupHandle}
-                disabled={isButtonGroup}
+                disabled={!isButtonGroup}
               >
                 Tạo nhóm
               </button>

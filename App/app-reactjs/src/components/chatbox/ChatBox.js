@@ -44,6 +44,7 @@ import ProfileGroup from "./profile-group/ProfileGroup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { friendSliceAction } from "../../store/friendSlice";
+import { groupAction } from "../../store/groupSlice";
 
 const ChatBox = (props) => {
   // Ref
@@ -110,6 +111,15 @@ const ChatBox = (props) => {
     socket.current.on("recieve-require-friend", (data) => {
       toast.success(`${data.name} vừa mới gửi lời mời kết bạn`);
       dispatch(friendSliceAction.setUserRequired(data));
+    });
+  }, [receivedMessage]);
+
+  // Recieve-notication-group
+  useEffect(() => {
+    console.log("Socket server listening on receive notication group");
+    socket.current.on("receive-notication-group", (data) => {
+      toast.success(`Bạn vừa được thêm vào nhóm ${data.nameGroupChat}`);
+      dispatch(groupAction.setGroup(data));
     });
   }, [receivedMessage]);
 
