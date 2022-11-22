@@ -86,6 +86,21 @@ const ListInvite = (props) => {
   };
   //
 
+  // Xử lí từ chối kết bạn
+  const deninedRequestFriendHandle = async (idRequest, friend) => {
+    const data = await friendApi.declineFriend(idRequest);
+    try {
+      if (data.status === 200) {
+        toast.success("Từ chối thành công");
+        // Set lại list
+        const listRemoveUserAccept = listFriend.filter(
+          (user) => user.username !== friend.username
+        );
+        setListFriend(listRemoveUserAccept);
+      }
+    } catch (error) {}
+  };
+  //
   // Render list
   const List = listFriend.map((friend, index) => {
     const idRequest = friend.idRequest;
@@ -110,6 +125,7 @@ const ListInvite = (props) => {
           <FontAwesomeIcon
             icon={faTrash}
             className="list__invite__icon__denied"
+            onClick={() => deninedRequestFriendHandle(idRequest, friend)}
           />
         </div>
       </div>

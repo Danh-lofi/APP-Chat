@@ -4,13 +4,15 @@
     margin-right: 25px;
     &__icon{
         & svg{
-            margin-left: 10px;
+            margin-left: 15px;
             cursor: pointer;
+            color: #797C8C;
+            transition: color 0.2s ease-in-out;
         }
-        &__agree{
+        &__agree:hover{
             color: $primary-color;
         }
-        &__denied{
+        &__denied:hover{
             color: #FF2E2E;
         }
     }
