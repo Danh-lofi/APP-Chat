@@ -45,6 +45,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { friendSliceAction } from "../../store/friendSlice";
 import { groupAction } from "../../store/groupSlice";
+import ListGroupChat from "../listchat/ListGroupChat";
 
 const ChatBox = (props) => {
   // Ref
@@ -54,9 +55,7 @@ const ChatBox = (props) => {
   const socket = useRef();
   // State
   const [onlineUsers, setOnlineUsers] = useState([]);
-
   const [user, setUser] = useState(useSelector((state) => state.user.user));
-
   const [accessToken, setAccessToken] = useState(
     JSON.parse(localStorage.getItem("user")).accessToken
   );
@@ -66,11 +65,14 @@ const ChatBox = (props) => {
   const [receivedMessage, setReceivedMessage] = useState(null);
   const [ariaExpanded, setAriaExpanded] = useState("");
   const [more, setMore] = useState(false);
-
+  const [isProfileFriend, setIsProfileFriend] = useState(false);
+  //
   // Redux
   const friend = useSelector((state) => state.user.friend);
+  const group = useSelector((state) => state.user.group);
   const dispatch = useDispatch();
   //
+
   const clickMore = () => {
     if (more === false) {
       setMore(true);
@@ -84,7 +86,6 @@ const ChatBox = (props) => {
   }
 
   // Handle Event
-  const [isProfileFriend, setIsProfileFriend] = useState(false);
 
   // // Connect to Socket.io
   useEffect(() => {
@@ -146,19 +147,30 @@ const ChatBox = (props) => {
     const getChats = async () => {
       try {
         // Là group thì không cần setChatId
-        if (friend.memberChat) {
+        if (friend) {
+          console.log("Friend: ");
+          console.log(friend);
+
+          const chat = await chatApi.getChat(user._id, friend._id);
+          console.log(chat);
+          setChatId(chat.data._id);
           return;
         }
-
-        const chat = await chatApi.getChat(user._id, friend._id);
-        setChatId(chat.data._id);
+        if (group) {
+          console.log("group: ");
+          console.log(group);
+          const chat = await chatApi.getGroupChat(group._id);
+          setChatId(chat.data._id);
+          return;
+        }
       } catch (error) {
         const chat = chatApi.createChat(user._id, friend._id);
       }
     };
     getChats();
-    if (friend) setChatId(friend._id);
-  }, [user, friend]);
+    // if (friend) setChatId(friend._id);
+  }, [user, friend, group]);
+  //
 
   // get all messages from chat id
   useEffect(() => {
@@ -182,6 +194,9 @@ const ChatBox = (props) => {
   // Send Message
   const sendMessageHandle = async () => {
     // console.log(message);
+    console.log("chatId");
+    console.log(chatId);
+
     const messageSender = {
       chatId,
       senderId: user._id,
@@ -195,8 +210,8 @@ const ChatBox = (props) => {
     }`;
     if (data.status === 200) {
       let members;
-      if (friend.memberChat) {
-        members = friend.memberChat.filter((member) => member.id !== user._id);
+      if (group) {
+        members = group.memberChat.filter((member) => member.id !== user._id);
       }
 
       if (message !== null) {
@@ -204,7 +219,7 @@ const ChatBox = (props) => {
           chatId,
           senderId: user._id,
           text: message,
-          receiverId: friend.memberChat ? members : friend._id,
+          receiverId: group ? members : friend._id,
           time,
         });
       }
@@ -213,6 +228,7 @@ const ChatBox = (props) => {
       setMessage("");
     }
   };
+  //
 
   // Chagne file
   const changeFileHandle = async (e) => {
@@ -277,7 +293,7 @@ const ChatBox = (props) => {
           chatId,
           senderId: user._id,
           text: data.data.result.text,
-          receiverId: friend.memberChat ? members : friend._id,
+          receiverId: group ? members : friend._id,
           isFileWord,
           isImg,
           type,
@@ -334,11 +350,15 @@ const ChatBox = (props) => {
         date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
       }`;
       if (data.status === 200) {
+        let members;
+        if (group) {
+          members = group.memberChat.filter((member) => member.id !== user._id);
+        }
         socket.current.emit("send-message", {
           chatId,
           senderId: user._id,
           text: data.data.result.text,
-          receiverId: friend._id,
+          receiverId: group ? members : friend._id,
           isImg,
           isFile,
           time,
@@ -352,6 +372,8 @@ const ChatBox = (props) => {
       setMessage("");
     };
   };
+  //
+
   return (
     <div className="chatBox__container">
       <ToastContainer />
@@ -362,18 +384,14 @@ const ChatBox = (props) => {
               <div className="chatBox_heading_left_headingImage">
                 <img
                   className="chatBox_heading_left_headingImage_avt_heading"
-                  src={
-                    friend.avatar
-                      ? friend.avatar
-                      : "https://placeimg.com/640/480/any"
-                  }
+                  src={friend ? friend.avatar : group.imgGroupChat}
                   alt="avt"
                 />
                 <span className="chatBox_heading_left_headingImage_status"></span>
               </div>
               <div className="chatBox_heading_left_heading_name">
                 <h3 className="chatBox_heading_left_heading_name_name">
-                  {friend.name ? friend.name : friend.username}
+                  {friend ? friend.name : group.nameGroupChat}
                 </h3>
                 <p className="chatBox_heading_left_heading_name_active">
                   Active
@@ -460,7 +478,11 @@ const ChatBox = (props) => {
                 friendUser={friend}
               />
             ) : (
-              <></>
+              <ListGroupChat
+                messages={messages}
+                currentUser={user}
+                listFriend={group.memberChat}
+              />
             )}
           </div>
 
@@ -575,8 +597,7 @@ const ChatBox = (props) => {
         <NonChatBox />
       )}
       <div className={`profile-friend ${!isProfileFriend ? "not-active" : ""}`}>
-        <ProfileFriend />
-        {/* <ProfileGroup /> */}
+        {friend ? <ProfileFriend /> : <ProfileGroup />}
       </div>
     </div>
   );

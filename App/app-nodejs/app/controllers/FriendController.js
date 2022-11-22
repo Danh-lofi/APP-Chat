@@ -63,6 +63,19 @@ const FriendController = {
       next();
     }
   },
+  getUserById: async (req, res) => {
+    const id = req.params.id;
+    console.log("id");
+    console.log(id);
+    const user = await UserModel.findOne({ _id: id });
+    console.log("user");
+    console.log(user);
+    if (!user) {
+      res.status(404).send(user);
+      return;
+    }
+    res.status(200).send(user);
+  },
 };
 
 export default FriendController;

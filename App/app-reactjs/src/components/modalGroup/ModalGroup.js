@@ -217,7 +217,10 @@ const ModalGroup = ({ onClose }) => {
               </div>
             </div>
             <div className="modalGroup__body__form__footer">
-              <button className="modalGroup__body__form__footer__cancle">
+              <button
+                className="modalGroup__body__form__footer__cancle"
+                onClick={onClose}
+              >
                 Hủy
               </button>
               <button

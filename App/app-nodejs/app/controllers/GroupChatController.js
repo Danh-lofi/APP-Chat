@@ -41,10 +41,11 @@ const GroupChatController = {
       const data = await GroupChatModel.findOne({ _id: id });
       listGroup.push(data);
     }
+
     res.status(200).json({ listGroup });
   },
 
-  updateGroupChatInUser: async (req, res) => {
+  updateGroupChatInUser: async (req, res, next) => {
     const listIdUser = req.body.listIdUser;
     const idGroupChat = req.body.idGroupChat;
     const group = req.body.group;
@@ -62,6 +63,24 @@ const GroupChatController = {
         res.status(407).json({ error, message: "Khong thanh cong" });
       }
     }
+
+    // Create chat
+
+    const isGroup = true;
+    const idGroup = group._id.toString();
+
+    const members = [idGroup];
+
+    const newChat = new ChatModel({
+      members,
+      isGroup,
+    });
+    try {
+      const result = await newChat.save();
+    } catch (error) {
+      res.status(500).json(error);
+    }
+
     res.status(200).json(group);
   },
   deleteUserFromGroupChat: async (req, res, next) => {

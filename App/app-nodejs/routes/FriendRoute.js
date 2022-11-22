@@ -12,6 +12,7 @@ routerFriend.get(
 );
 routerFriend.get("/", authMiddleware.authApp, FriendController.getAllFriend);
 routerFriend.get("/:username", FriendController.getUserByUsername);
+routerFriend.get("/id/:id", FriendController.getUserById);
 routerFriend.post(
   "/deleteFriend",
   authMiddleware.isAuth,

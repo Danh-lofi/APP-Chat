@@ -14,11 +14,17 @@ import ListGroup from "../../components/list-group/ListGroup";
 
 const Chat = (props) => {
   const { isModal, onLoading } = props;
+  // State
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")).user
   );
-
   const [loading, setLoading] = useState(false);
+  const [activeChatFavou, setActiveChatFavou] = useState("");
+
+  const changeActiveChatHandle = (index) => {
+    setActiveChatFavou(index);
+  };
+  //
   // Get All Friends
 
   const changeLoadingHandle = () => {
@@ -56,12 +62,22 @@ const Chat = (props) => {
       <div className="chat_favourites">
         <p className="chat_favourites_text">Tất cả tin nhắn</p>
         <div className="box_favour">
-          <ListFriend user={user} changeLoading={changeLoadingHandle} />
+          <ListFriend
+            user={user}
+            changeLoading={changeLoadingHandle}
+            activeChatFavou={activeChatFavou}
+            onChangeActiveChat={(index) => changeActiveChatHandle(index)}
+          />
         </div>
         <p className="chat_favourites_text">Tất cả nhóm</p>
 
         <div className="box_favour">
-          <ListGroup user={user} changeLoading={changeLoadingHandle} />
+          <ListGroup
+            user={user}
+            changeLoading={changeLoadingHandle}
+            activeChatFavou={activeChatFavou}
+            onChangeActiveChat={(index) => changeActiveChatHandle(index)}
+          />
         </div>
       </div>
     </div>

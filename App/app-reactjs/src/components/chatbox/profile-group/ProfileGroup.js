@@ -15,9 +15,9 @@ const ProfileGroup = () => {
   const dispatch = useDispatch();
   // const profileGroup = useSelector((state) => state.group.data);
   // console.log(profileGroup);
-  const friendInfo = useSelector((state) => state.user.friend);
-  if (!friendInfo) return;
-  const { name, avatar, usename } = friendInfo;
+  const groupInfo = useSelector((state) => state.user.group);
+  if (!groupInfo) return;
+  const { nameGroupChat, imgGroupChat, memberChat, adminGroup } = groupInfo;
 
   const addMemberHandle = () => {
     dispatch(modalSliceAction.setOpen(true));
@@ -30,10 +30,10 @@ const ProfileGroup = () => {
       <div className="infor">
         <div className="img_div">
           <div className="contain_img">
-            <img className="avt_friend" src={avatar}></img>
+            <img className="avt_friend" src={imgGroupChat} alt={""}></img>
           </div>
         </div>
-        <p className="friend_name">{name}</p>
+        <p className="friend_name">{nameGroupChat}</p>
         <div className="contain_btn">
           <div className="btn">
             <FontAwesomeIcon className="icon" icon={faRightFromBracket} />
@@ -90,28 +90,28 @@ const ProfileGroup = () => {
           <p>Media</p>
           <div className="contain_media">
             <div className="media">
-              <img src={avatar} alt=""></img>
+              <img src={imgGroupChat} alt=""></img>
             </div>
             <div className="media">
-              <img src={avatar} alt=""></img>
+              <img src={imgGroupChat} alt=""></img>
             </div>
             <div className="media">
-              <img src={avatar} alt=""></img>
+              <img src={imgGroupChat} alt=""></img>
             </div>
             <div className="media">
-              <img src={avatar} alt=""></img>
+              <img src={imgGroupChat} alt=""></img>
             </div>
             <div className="media">
-              <img src={avatar} alt=""></img>
+              <img src={imgGroupChat} alt=""></img>
             </div>
             <div className="media">
-              <img src={avatar} alt=""></img>
+              <img src={imgGroupChat} alt=""></img>
             </div>
             <div className="media">
-              <img src={avatar} alt=""></img>
+              <img src={imgGroupChat} alt=""></img>
             </div>
             <div className="media">
-              <img src={avatar} alt=""></img>
+              <img src={imgGroupChat} alt=""></img>
             </div>
           </div>
         </div>

@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authApi from "../api/authApi";
-import friendApi from "../api/friendApi";
 let user = JSON.parse(localStorage.getItem("user"));
 if (user) {
   user = user.user;
@@ -159,8 +158,15 @@ const userSlice = createSlice({
     },
     setFriend: (state, action) => {
       console.log(action);
+      state.group = null;
       state.friend = action.payload;
     },
+    setGroup: (state, action) => {
+      console.log(action);
+      state.friend = null;
+      state.group = action.payload;
+    },
+
     changeInfo: (state, action) => {
       console.log("-------------------------Change Info--------------");
       state.user = action.payload;

@@ -1,11 +1,28 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import friendApi from "../../api/friendApi";
 import ChatItem from "../chatitem/ChatItem";
 
-const ListChat = (props) => {
-  // const messages = props.messages;
-  // const currentUser = props.currentUser;
-  const friend = props.friendUser;
-  const { messages, currentUser } = props;
+const ListGroupChat = (props) => {
+  // State
+  const [listInfoFriend, setListInfoFriend] = useState([]);
+  //
+
+  const { messages, currentUser, listFriend } = props;
+
+  // Gọi api lấy dữ liệu danh sách bạn bè
+  useEffect(() => {
+    const data = [];
+    const getListFriend = async (listFriend) => {
+      for (const friend of listFriend) {
+        const item = await friendApi.findFriendById(friend.id);
+        data.push(item.data);
+      }
+      setListInfoFriend(data);
+    };
+    getListFriend(listFriend);
+  }, []);
+
+  //
   //Current user
   const currentUserId = currentUser._id;
   const name = currentUser.name ? currentUser.name : currentUser.username;
@@ -13,16 +30,22 @@ const ListChat = (props) => {
     ? currentUser.avatar
     : "https://placeimg.com/640/480/any";
 
-  // Friend
-
-  // const friendUserId = friend._id;
-  const friendName = friend.name ? friend.name : friend.username;
-  const friendAvatar = friend.avatar
-    ? friend.avatar
-    : "https://placeimg.com/640/480/any";
-
   const Chat = messages.map((message) => {
     const isUser = message.senderId === currentUserId;
+    // Friend
+    let friendName = "";
+    let friendAvatar = "";
+
+    if (!isUser) {
+      listInfoFriend.forEach((friend) => {
+        if (friend._id === message.senderId) {
+          friendName = friend.name;
+          friendAvatar = friend.avatar;
+          return;
+        }
+      });
+    }
+
     const date = new Date(message.createdAt);
     let time = `${date.getHours()}:${
       date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
@@ -52,4 +75,4 @@ const ListChat = (props) => {
   return <div className="content">{Chat}</div>;
 };
 
-export default ListChat;
+export default ListGroupChat;

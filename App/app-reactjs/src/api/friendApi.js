@@ -18,6 +18,11 @@ const friendApi = {
     const url = `/friend/${username}`;
     return axiosClient.get(url, {});
   },
+  // Tìm bạn bè theo id
+  findFriendById: (id) => {
+    const url = `/friend/id/${id}`;
+    return axiosClient.get(url, {});
+  },
   // Gửi yêu cầu kết bạn
   requestFriend: (senderId, receiverId) => {
     const url = `/request-friend/send`;

@@ -5,15 +5,21 @@ import { userActions } from "../../store/userSlice";
 import UserChat from "../userchat/UserChat";
 
 const ListFriend = (props) => {
-  const { user } = props;
+  const { user, activeChatFavou, onChangeActiveChat } = props;
+  // State
   const [listFriend, setListFriend] = useState([]);
-  const [activeChatFavou, setActiveChatFavou] = useState("");
+
+  //
+  // Token
   const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
 
+  // Redux
   const dispatch = useDispatch();
+  //
 
+  // Event
   const changeActiveFriendHandle = (index) => {
-    setActiveChatFavou(index);
+    onChangeActiveChat(index);
     const friendActive = listFriend.find((friend) => friend._id === index);
     dispatch(userActions.setFriend(friendActive));
   };

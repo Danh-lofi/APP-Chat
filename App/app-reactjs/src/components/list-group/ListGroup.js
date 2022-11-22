@@ -7,10 +7,11 @@ import { userActions } from "../../store/userSlice";
 import UserChat from "../userchat/UserChat";
 
 const ListGroup = (props) => {
-  const { user } = props;
+  const { user, activeChatFavou, onChangeActiveChat } = props;
+
   // State
   const [listGroup, setListGroup] = useState([]);
-  const [activeChatFavou, setActiveChatFavou] = useState("");
+  // const [activeChatFavou, setActiveChatFavou] = useState("");
   const [activeChatDirect, setActiveChatDirect] = useState("");
 
   //
@@ -26,12 +27,13 @@ const ListGroup = (props) => {
   // Event
 
   const changeActiveFriendHandle = (index) => {
-    setActiveChatFavou(index);
+    onChangeActiveChat(index);
     const groupActive = listGroup.find((group) => {
       if (!group) return;
       return group._id === index;
     });
-    dispatch(userActions.setFriend(groupActive));
+    console.log(groupActive);
+    dispatch(userActions.setGroup(groupActive));
   };
 
   // Set List Group

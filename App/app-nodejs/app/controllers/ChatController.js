@@ -1,4 +1,3 @@
-
 import ChatModel from "../models/chatModel.js";
 
 const ChatController = {
@@ -33,6 +32,30 @@ const ChatController = {
     try {
       const chat = await ChatModel.findOne({
         members: { $all: [req.params.senderId, req.params.recieverId] },
+      });
+      if (chat) {
+        console.log(chat);
+        res.status(200).json(chat);
+      } else {
+        const newChat = new ChatModel({
+          members: [req.params.senderId, req.params.recieverId],
+        });
+        try {
+          const result = await newChat.save();
+          res.status(200).json(result);
+        } catch (error) {
+          res.status(500).json(error);
+        }
+      }
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+  findGroupChat: async (req, res) => {
+    const { groupId } = req.params;
+    try {
+      const chat = await ChatModel.findOne({
+        members: { $all: [groupId] },
       });
       if (chat) {
         console.log(chat);

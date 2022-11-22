@@ -48,7 +48,10 @@ const CloudinaryController = {
     // INP: data(base64), type, fileName,
     // OUT: avatar :(link)
 
-    if (!req.body.data) next();
+    if (!req.body.data) {
+      next();
+      return;
+    }
 
     try {
       const fileStr = req.body.data;
