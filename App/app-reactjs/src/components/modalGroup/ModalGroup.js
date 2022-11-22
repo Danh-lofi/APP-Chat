@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import "./ModalGroup.scss";
 import { useEffect, useState } from "react";
 import { faXmark, faCamera, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -11,30 +11,102 @@ import ListFriendCreateGroup from "../list-friend/ListFriendCreateGroup";
 import groupApi from "../../api/groupApi";
 
 const ModalGroup = ({ onClose }) => {
+  // State
   const [nameGroup, setNameGroup] = useState("");
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")).user
   );
-  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
-
   const [members, setMembers] = useState([{ id: user._id }]);
+  const [avatar, setAvatar] = useState();
+  const [type, setType] = useState();
+  const [fileName, setFileName] = useState();
+  // Valid
+  const [isNameGroup, setIsNameGroup] = useState(false);
+  const [isButtonGroup, setIsButtonGroup] = useState(false);
 
+  //
+  // Token
+  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
+  //
+
+  // Ref
+  const imgGroupRef = useRef();
+  //
+
+  // Set tên group
   const changeNameGroupHandle = (e) => {
+    if (e.target.value === "") {
+      setIsNameGroup(false);
+    } else {
+      setIsNameGroup(true);
+    }
+    // Bắt rỗng
     setNameGroup(e.target.value);
   };
+  //
+
+  // Xử lí ảnh nhóm
+  // Mở input
+  const openInputFileHandle = () => {
+    imgGroupRef.current.click();
+  };
+
+  // Set ảnh nhóm
+  const changeImgGroupHandle = (e) => {
+    const name = e.target.files[0].name;
+    const lastDot = name.lastIndexOf(".");
+    const fileName = name.substring(0, lastDot);
+    const type = name.substring(lastDot + 1);
+    setFileName(fileName);
+    setType(type);
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onloadend = () => {
+      setAvatar(reader.result);
+    };
+  };
+
+  // --End Xử lí ảnh nhóm--
+
+  // Set valid members
+  useEffect(() => {
+    if (members.length > 2 && nameGroup !== "") {
+      setIsButtonGroup(true);
+    } else {
+      setIsButtonGroup(false);
+    }
+  }, [members, nameGroup]);
+
+  //
   const [loading, setLoading] = useState(false);
   // Get All Friends
 
   const changeLoadingHandle = () => {
     setLoading((prev) => !loading);
   };
+  // Tạo group
+  /*
+   INPUT: accessToken, data: {
+    name, avatar, type, fileName, member[]
+   }
+   Output: group
+  */
   const createGroupHandle = async () => {
     console.log(user);
     console.log(nameGroup);
     console.log(members);
-    const data = await groupApi.createGroup(accessToken, nameGroup, members);
-    console.log(data);
-    if (data.status === 200) {
+
+    const data = {
+      name: nameGroup,
+      avatar,
+      type,
+      fileName,
+      members,
+    };
+
+    const res = await groupApi.createGroup(accessToken, data);
+    console.log(res);
+    if (res.status === 200) {
       onClose();
     }
   };
@@ -54,15 +126,35 @@ const ModalGroup = ({ onClose }) => {
             </div>
             <div className="modalGroup__body__form__container">
               <div className="modalGroup__body__form__container__nameGroup">
-                <FontAwesomeIcon
-                  className="modalGroup__body__form__container__nameGroup__icon"
-                  icon={faCamera}
+                {avatar ? (
+                  <div className="modalGroup__body__form__container__nameGroup__container">
+                    {" "}
+                    <img
+                      className="modalGroup__body__form__container__nameGroup__img"
+                      src={avatar}
+                      alt=""
+                    />
+                  </div>
+                ) : (
+                  <FontAwesomeIcon
+                    className="modalGroup__body__form__container__nameGroup__icon"
+                    icon={faCamera}
+                    onClick={openInputFileHandle}
+                  />
+                )}
+                <input
+                  ref={imgGroupRef}
+                  type="file"
+                  onChange={changeImgGroupHandle}
+                  style={{ display: "none" }}
                 />
                 <input
                   type="text"
                   value={nameGroup}
                   onChange={(e) => changeNameGroupHandle(e)}
-                  className="modalGroup__body__form__container__nameGroup__input"
+                  className={`modalGroup__body__form__container__nameGroup__input  ${
+                    isNameGroup ? "" : "invalid"
+                  }`}
                   placeholder="Nhập tên nhóm..."
                 />
               </div>
@@ -76,7 +168,7 @@ const ModalGroup = ({ onClose }) => {
                   />
                   <input
                     type="text"
-                    className="modalGroup__body__form__container__searchPhone__groupSearch__input"
+                    className={`modalGroup__body__form__container__searchPhone__groupSearch__input`}
                     placeholder="Nhập tên, số điện thoại, hoặc danh sách số điện thoại"
                   />
                   <FontAwesomeIcon
@@ -100,8 +192,11 @@ const ModalGroup = ({ onClose }) => {
                 Hủy
               </button>
               <button
-                className="modalGroup__body__form__footer__createGroup"
+                className={`modalGroup__body__form__footer__createGroup ${
+                  isButtonGroup ? "" : "disabled"
+                }`}
                 onClick={createGroupHandle}
+                disabled={isButtonGroup}
               >
                 Tạo nhóm
               </button>

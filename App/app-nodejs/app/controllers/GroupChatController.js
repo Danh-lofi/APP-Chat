@@ -5,10 +5,9 @@ import UserModel from "../models/User.js";
 
 const GroupChatController = {
   createGroupChat: async (req, res, next) => {
-    const nameGroupChat = req.body.nameGroupChat;
-    console.log(req.user._id);
+    //
     const adminGroup = req.user._id;
-    const memberChat = req.body.memberChat;
+    const { nameGroupChat, memberChat, avatar } = req.body;
 
     if (memberChat.length < 3) {
       return res.status(400).send("Nhóm chat phải từ từ3 thành viên trở lên!");
@@ -18,6 +17,7 @@ const GroupChatController = {
       nameGroupChat: nameGroupChat,
       adminGroup: adminGroup,
       memberChat: memberChat,
+      imgGroupChat: avatar,
     });
 
     try {

@@ -1,5 +1,6 @@
 @use '../../scss/' as *;
 .list__friend__group{
+    padding: 5px 20px;
 
     @include flex(center,none);
     &:hover{

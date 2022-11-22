@@ -1,12 +1,14 @@
 import express from "express";
+import CloudinaryController from "../app/controllers/CloudinaryController.js";
 import GroupChatController from "../app/controllers/GroupChatController.js";
 import authMiddleware from "../app/middleware/authMiddleware.js";
 
 const routerGroupChat = express.Router();
-
+// /groupChat"
 routerGroupChat.post(
   "/createGroup",
   authMiddleware.isAuth,
+  CloudinaryController.uploadAvatar,
   GroupChatController.createGroupChat,
   GroupChatController.updateGroupChatInUser
 );

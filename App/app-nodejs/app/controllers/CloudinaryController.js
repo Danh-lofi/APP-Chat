@@ -45,6 +45,11 @@ const CloudinaryController = {
     }
   },
   uploadAvatar: async (req, res, next) => {
+    // INP: data(base64), type, fileName,
+    // OUT: avatar :(link)
+
+    if (!req.body.data) next();
+
     try {
       const fileStr = req.body.data;
       const type = req.body.type;
