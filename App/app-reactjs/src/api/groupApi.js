@@ -31,6 +31,13 @@ const groupApi = {
       }
     );
   },
+  deleteMemberFromGroup: (idGroup, idUserDeleted) => {
+    const url = `/groupChat/deleteUserFromGroupChat`;
+    return axiosClient.put(url, {
+      _id: idGroup,
+      idUserDeleted,
+    });
+  },
 };
 
 export default groupApi;

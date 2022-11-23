@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faRightFromBracket,
@@ -10,20 +10,99 @@ import {
 import "./ProfileGroup.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { modalSliceAction } from "../../../store/modalSlice";
+import groupApi from "../../../api/groupApi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { groupAction } from "../../../store/groupSlice";
 
 const ProfileGroup = () => {
+  // Redux
   const dispatch = useDispatch();
-  // const profileGroup = useSelector((state) => state.group.data);
-  // console.log(profileGroup);
+  const user = useSelector((state) => state.user.user);
+  let memberForStore = useSelector((state) => state.group.memberGroup);
+  // set lại list không chứa bản thân
+  // memberForStore = memberForStore.filter((member) => member._id !== user._id);
+  // Tổng thành viên
+  const [totalMember, setTotalMember] = useState(memberForStore.length);
+
+  // State
+  const [memberInfoChat, setMemberInfoChat] = useState(memberForStore);
+  // Set lại effect
+  useEffect(() => {
+    setMemberInfoChat(memberForStore);
+    setTotalMember(memberForStore.length);
+  }, [memberForStore]);
+  //
+
   const groupInfo = useSelector((state) => state.user.group);
   if (!groupInfo) return;
-  const { nameGroupChat, imgGroupChat, memberChat, adminGroup } = groupInfo;
 
+  //
+  const { nameGroupChat, imgGroupChat, memberChat, adminGroup, _id } =
+    groupInfo;
+  //
+
+  // Event
   const addMemberHandle = () => {
     dispatch(modalSliceAction.setOpen(true));
   };
+
+  // Xóa thành viên
+  // Thông báo
+  const deleteFriendFromGroupHandle = (idUserDeleted) => {
+    const confirm = {
+      title: "Xóa thành viên",
+      content: "Bạn chắc chắn xóa thành viên?",
+      onConfirm: async () => {
+        try {
+          const data = await groupApi.deleteMemberFromGroup(_id, idUserDeleted);
+          console.log(data);
+          if (data.status === 200) {
+            toast.success("Xóa thành công");
+            const listMemberNew = memberInfoChat.filter(
+              (member) => member._id !== idUserDeleted
+            );
+            // Set lại thành viên
+            setMemberInfoChat(listMemberNew);
+            // Set lại số lượng
+            setTotalMember(totalMember - 1);
+          }
+        } catch (error) {}
+      },
+      isOpenConfirm: true,
+    };
+    dispatch(modalSliceAction.setOpenConfirm(confirm));
+  };
+  // Render
+
+  // Danh sách thành viên
+  const ListFriend = memberInfoChat.map((member) => {
+    if (member._id === user._id) {
+    }
+    return (
+      <div className="tag_member" key={member._id} id={member._id}>
+        <div className="left_tag">
+          <img src={member.avatar} alt="avatar"></img>
+          <p className="name_member">{member.name}</p>
+        </div>
+        {member._id === adminGroup ? (
+          <span> Trưởng nhóm</span>
+        ) : adminGroup === user._id ? (
+          <FontAwesomeIcon
+            title="Xóa khỏi nhóm"
+            className="icon"
+            icon={faTrash}
+            onClick={() => deleteFriendFromGroupHandle(member._id)}
+          />
+        ) : (
+          ""
+        )}
+      </div>
+    );
+  });
   return (
     <div className="profile_friend_container">
+      <ToastContainer />
       <div className="header">
         <h2>Thông tin nhóm</h2>
       </div>
@@ -49,42 +128,11 @@ const ProfileGroup = () => {
           </div>
         </div>
         <div className="contain_title_friend">
-          <p>Thành viên nhóm</p>
-          <div className="contain_list_tag">
-            <div className="tag_member">
-              <div className="left_tag">
-                <img src="https://www.twago.de/img/2018/default/no-user.png"></img>
-                <p className="name_member">Phạm Đăng Khoa</p>
-              </div>
-              <FontAwesomeIcon
-                title="Xóa khỏi nhóm"
-                className="icon"
-                icon={faTrash}
-              />
-            </div>
-            <div className="tag_member">
-              <div className="left_tag">
-                <img src="https://www.twago.de/img/2018/default/no-user.png"></img>
-                <p className="name_member">Phạm Đăng </p>
-              </div>
-              <FontAwesomeIcon
-                title="Xóa khỏi nhóm"
-                className="icon"
-                icon={faTrash}
-              />
-            </div>
-            <div className="tag_member">
-              <div className="left_tag">
-                <img src="https://www.twago.de/img/2018/default/no-user.png"></img>
-                <p className="name_member">Phạm Khoa</p>
-              </div>
-              <FontAwesomeIcon
-                title="Xóa khỏi nhóm"
-                className="icon"
-                icon={faTrash}
-              />
-            </div>
+          <div className="contain_title_friend__member">
+            <p>Thành viên nhóm</p>
+            <span>{totalMember} thành viên</span>
           </div>
+          <div className="contain_list_tag">{ListFriend}</div>
         </div>
         <div className="contain_media_friend">
           <p>Media</p>

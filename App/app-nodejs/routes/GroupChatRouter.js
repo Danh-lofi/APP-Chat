@@ -39,6 +39,7 @@ routerGroupChat.post(
 
 routerGroupChat.put("/renameGroupChat", GroupChatController.renameGroupChat);
 
+// _id: idGroup, idUserDeleted
 routerGroupChat.put(
   "/deleteUserFromGroupChat",
   GroupChatController.deleteUserFromGroupChat,

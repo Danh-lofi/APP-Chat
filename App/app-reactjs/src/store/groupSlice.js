@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   group: {},
+  memberGroup: [],
 };
 const groupSlice = createSlice({
   name: "group",
@@ -11,6 +12,16 @@ const groupSlice = createSlice({
         return;
       }
       state.group = action.payload;
+    },
+    setMemberGroup: (state, action) => {
+      state.memberGroup = action.payload;
+    },
+    deleteMemberGroup: (state, action) => {
+      const listMember = state.memberGroup;
+      const idMemberDelete = action.payload;
+      state.memberGroup = listMember.filter(
+        (member) => member.id !== idMemberDelete
+      );
     },
   },
 });

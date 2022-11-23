@@ -1,10 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import friendApi from "../../api/friendApi";
+import { groupAction } from "../../store/groupSlice";
+import { userActions } from "../../store/userSlice";
 import ChatItem from "../chatitem/ChatItem";
 
 const ListGroupChat = (props) => {
   // State
   const [listInfoFriend, setListInfoFriend] = useState([]);
+  //
+  // Redux
+  const dispatch = useDispatch();
   //
 
   const { messages, currentUser, listFriend } = props;
@@ -18,6 +24,7 @@ const ListGroupChat = (props) => {
         data.push(item.data);
       }
       setListInfoFriend(data);
+      dispatch(groupAction.setMemberGroup(data));
     };
     getListFriend(listFriend);
   }, []);

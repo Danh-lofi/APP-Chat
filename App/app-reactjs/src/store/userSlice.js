@@ -12,7 +12,6 @@ export const login = createAsyncThunk(
       const res = await authApi.login(username, password);
       return { data: res.data, status: res.status };
     } catch (error) {
-      console.log(error.response.status);
       return error.response;
     }
   }
@@ -24,9 +23,7 @@ export const register = createAsyncThunk(
     try {
       const response = await authApi.register(username, password);
       return { data: response.data, status: response.status };
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 );
 
@@ -79,7 +76,6 @@ export const resetPassword = createAsyncThunk(
   async (username, password) => {
     try {
       const response = await authApi.resetPassword(username, password);
-      console.log(response);
       return { data: response.data, status: response.status };
     } catch (error) {
       return error.response;
@@ -105,7 +101,6 @@ const userSlice = createSlice({
       state.isLoggedIn = false;
     },
     [login.fulfilled]: (state, action) => {
-      console.log(action);
       if (!action.payload.data.user) return;
       state.isLoggedIn = true;
       state.user = action.payload.data.user;
@@ -123,7 +118,6 @@ const userSlice = createSlice({
       }
     },
     [profile.rejected]: (state, action) => {
-      console.log("rejected");
       state.isLoggedIn = false;
       state.user = null;
     },
@@ -133,7 +127,6 @@ const userSlice = createSlice({
       state.user = action.payload.data.username;
     },
     [resetPassword.fulfilled]: (state, action) => {
-      console.log(action);
       if (!action.payload) return;
       state.isLoggedIn = false;
       state.user = action.payload.data.username;
@@ -145,7 +138,6 @@ const userSlice = createSlice({
   },
   reducers: {
     logOut: (state, action) => {
-      console.log("ok");
       state.isLoggedIn = false;
       state.user = null;
       localStorage.setItem("user", JSON.stringify(null));
@@ -157,20 +149,15 @@ const userSlice = createSlice({
       state.isLoggedIn = true;
     },
     setFriend: (state, action) => {
-      console.log(action);
       state.group = null;
       state.friend = action.payload;
     },
     setGroup: (state, action) => {
-      console.log(action);
       state.friend = null;
       state.group = action.payload;
     },
-
     changeInfo: (state, action) => {
-      console.log("-------------------------Change Info--------------");
       state.user = action.payload;
-      console.log(state.user);
     },
   },
 });

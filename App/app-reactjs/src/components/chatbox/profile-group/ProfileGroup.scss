@@ -41,22 +41,29 @@
     }
 
     .contain_title_friend {
-        padding: 10px;
+        padding: 22px 10px;
         width: 100%;
         border-bottom: 1px solid gainsboro;
+        &__member{
+            margin-right: 20px;
+            @include flex(center,space-between);
+            & p {
+                font-weight: bold;
+                margin-left: 10px;
+                font-size: 1.6rem;
+                text-align: start;
+            }
+            & span{
+                font-size: 1.3rem;
+            }
 
-        p {
-            font-weight: bold;
-            margin-left: 10px;
-            font-size: 14px;
-            text-align: start;
         }
-
+    }
         .tag_member {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 4px 20px;
+            padding: 10px 20px;
             transition: ease-in-out 0.1s;
             cursor: pointer;
 
@@ -65,8 +72,8 @@
             }
 
             img {
-                width: 50px;
-                height: 50px;
+                width: 40px;
+                height: 40px;
                 object-fit: cover;
                 border-radius: 50%;
             }
@@ -74,11 +81,13 @@
             .left_tag {
                 display: flex;
                 align-items: center;
+                & p {
+                    margin-left: 10px;
+                }
             }
         }
     }
 
-}
 
 .friend_name {
     padding-top: 10px;
@@ -193,4 +202,8 @@ h2 {
             font-weight: bold;
         }
     }
+}
+
+.contain_list_tag{
+    margin: 10px 0;
 }

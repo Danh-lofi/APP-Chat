@@ -34,7 +34,6 @@ const GroupChatController = {
 
   getGroupChat: async (req, res) => {
     const user = req.user;
-    console.log(user);
     const listGroup = [];
     for (const group of user.groups) {
       const id = mongoose.Types.ObjectId(group.id);
@@ -49,8 +48,7 @@ const GroupChatController = {
     const listIdUser = req.body.listIdUser;
     const idGroupChat = req.body.idGroupChat;
     const group = req.body.group;
-    console.log(idGroupChat);
-    console.log(listIdUser);
+
     const oGroups = { id: idGroupChat };
     // const idUser = req.body.idUser;
     for (const idUser of listIdUser) {
@@ -86,8 +84,10 @@ const GroupChatController = {
   deleteUserFromGroupChat: async (req, res, next) => {
     const idGroupChat = req.body._id;
     const idUserDeleted = req.body.idUserDeleted;
-
-    console.log("idUserDeleted");
+    console.log("---------------Delete User Group---------------------");
+    console.log("idGroupChat: ");
+    console.log(idGroupChat);
+    console.log("idUserDeleted: ");
     console.log(idUserDeleted);
 
     const remove = await GroupChatModel.findByIdAndUpdate(
@@ -222,11 +222,6 @@ const GroupChatController = {
     const idGroupChat = req.body.idGroupChat;
     const idUserDeleted = req.body.idUserDeleted;
 
-    console.log("---------");
-    console.log(idGroupChat);
-    console.log(idUserDeleted);
-    console.log("---------");
-
     const removeGroup = await UserModel.findByIdAndUpdate(
       idUserDeleted,
       {
@@ -250,9 +245,6 @@ const GroupChatController = {
   addUserToGroup: async (req, res, next) => {
     const idGroupChat = req.body.idGroupChat;
     const idUser = req.body.idUser;
-
-    console.log(idGroupChat);
-    console.log(idUser);
 
     const added = await GroupChatModel.findByIdAndUpdate(
       idGroupChat,
@@ -280,11 +272,6 @@ const GroupChatController = {
   updateGroupInUser: async (req, res) => {
     const idGroupChatInsert = req.body.idGroupChat;
     const idUserNeedInsert = req.body.idUser;
-
-    console.log("---------");
-    console.log(idGroupChatInsert);
-    console.log(idUserNeedInsert);
-    console.log("---------");
 
     const insert = await UserModel.findByIdAndUpdate(
       idUserNeedInsert,
