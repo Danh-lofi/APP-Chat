@@ -90,8 +90,6 @@ const ChatBox = (props) => {
   // // Connect to Socket.io
   useEffect(() => {
     socket.current = io("ws://localhost:3001");
-    console.log("---------------------User: ------------------------");
-    console.log(user);
     socket.current.emit("new-user-add", user._id);
     socket.current.on("get-users", (users) => {
       setOnlineUsers(users);
@@ -101,14 +99,12 @@ const ChatBox = (props) => {
   // Get the message from socket server
   useEffect(() => {
     socket.current.on("recieve-message", (data) => {
-      console.log(data);
       setMessgages((messages) => [...messages, data]);
     });
   }, [receivedMessage]);
 
   // Recieve-require-friend
   useEffect(() => {
-    console.log("Socket server listening on receive friend");
     socket.current.on("recieve-require-friend", (data) => {
       toast.success(`${data.name} vừa mới gửi lời mời kết bạn`);
       dispatch(friendSliceAction.setUserRequired(data));
@@ -117,7 +113,6 @@ const ChatBox = (props) => {
 
   // Recieve-notication-group
   useEffect(() => {
-    console.log("Socket server listening on receive notication group");
     socket.current.on("receive-notication-group", (data) => {
       toast.success(`Bạn vừa được thêm vào nhóm ${data.nameGroupChat}`);
       dispatch(groupAction.setGroup(data));
@@ -126,16 +121,13 @@ const ChatBox = (props) => {
 
   // declined-require-friend
   useEffect(() => {
-    console.log("Socket server listening on declined-require-friend");
     socket.current.on("declined-require-friend", (data) => {
-      console.log(data);
       dispatch(friendSliceAction.setUserEvicted(data));
     });
   }, [receivedMessage]);
 
   // accept-require-friend
   useEffect(() => {
-    console.log("Socket server listening on accept-require-friend");
     socket.current.on("accept-require-friend", (data) => {
       toast.success(`${data.user.name} vừa đồng ý kết bạn`);
       // dispatch(friendSliceAction.setUserEvicted(data));
@@ -148,17 +140,11 @@ const ChatBox = (props) => {
       try {
         // Là group thì không cần setChatId
         if (friend) {
-          console.log("Friend: ");
-          console.log(friend);
-
           const chat = await chatApi.getChat(user._id, friend._id);
-          console.log(chat);
           setChatId(chat.data._id);
           return;
         }
         if (group) {
-          console.log("group: ");
-          console.log(group);
           const chat = await chatApi.getGroupChat(group._id);
           setChatId(chat.data._id);
           return;
@@ -193,10 +179,6 @@ const ChatBox = (props) => {
 
   // Send Message
   const sendMessageHandle = async () => {
-    // console.log(message);
-    console.log("chatId");
-    console.log(chatId);
-
     const messageSender = {
       chatId,
       senderId: user._id,
@@ -223,7 +205,6 @@ const ChatBox = (props) => {
           time,
         });
       }
-      // console.log(messages);
       setMessgages((messages) => [...messages, { ...messageSender, time }]);
       setMessage("");
     }
@@ -275,7 +256,6 @@ const ChatBox = (props) => {
         isFilePowP,
         isFileExel
       );
-      console.log(data);
 
       const date = new Date();
       const time = `${date.getHours()}:${
@@ -283,10 +263,8 @@ const ChatBox = (props) => {
       }`;
       if (data.status === 200) {
         let members;
-        if (friend.memberChat) {
-          members = friend.memberChat.filter(
-            (member) => member.id !== user._id
-          );
+        if (group) {
+          members = group.memberChat.filter((member) => member.id !== user._id);
         }
 
         socket.current.emit("send-message", {
@@ -364,7 +342,6 @@ const ChatBox = (props) => {
           time,
         });
       }
-      console.log(fileName);
       setMessgages((messages) => [
         ...messages,
         { ...messageSender, time, text: data.data.result.text },
