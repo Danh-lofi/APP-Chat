@@ -46,6 +46,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { friendSliceAction } from "../../store/friendSlice";
 import { groupAction } from "../../store/groupSlice";
 import ListGroupChat from "../listchat/ListGroupChat";
+import friendApi from "../../api/friendApi";
 
 const ChatBox = (props) => {
   // Ref
@@ -69,7 +70,8 @@ const ChatBox = (props) => {
   //
   // Redux
   const friend = useSelector((state) => state.user.friend);
-  const group = useSelector((state) => state.user.group);
+  // const group = useSelector((state) => state.user.group);
+  const group = useSelector((state) => state.group.group);
   const dispatch = useDispatch();
   //
 
@@ -115,7 +117,19 @@ const ChatBox = (props) => {
   useEffect(() => {
     socket.current.on("receive-notication-group", (data) => {
       toast.success(`Bạn vừa được thêm vào nhóm ${data.nameGroupChat}`);
-      dispatch(groupAction.setGroup(data));
+      const arr = [];
+      const setData = async (arr) => {
+        const listFriend = data.memberChat;
+        for (const friend of listFriend) {
+          const item = await friendApi.findFriendById(friend.id);
+          arr.push(item.data);
+        }
+        return arr;
+      };
+      setData(arr);
+      // Chuyển đến store với object chưa dữ liệu bạn bè
+      const groupToStore = { ...data, memberInfoChat: arr };
+      dispatch(groupAction.setGroup(groupToStore));
     });
   }, [receivedMessage]);
 

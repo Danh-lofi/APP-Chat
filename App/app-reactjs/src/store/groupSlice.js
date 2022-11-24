@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  group: {},
+  group: {
+    _id: null,
+    memberInfoChat: [],
+  },
   memberGroup: [],
   idGroupDeleted: "",
 };
@@ -15,7 +18,11 @@ const groupSlice = createSlice({
       state.group = action.payload;
     },
     setMemberGroup: (state, action) => {
-      state.memberGroup = action.payload;
+      // state.memberGroup = action.payload;
+      console.log("Set list member chat");
+      console.log(state.group);
+      state.group.memberInfoChat = action.payload;
+      console.log(state.group.memberInfoChat);
     },
     deleteMemberGroup: (state, action) => {
       const listMember = state.memberGroup;

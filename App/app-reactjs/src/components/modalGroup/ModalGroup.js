@@ -14,6 +14,7 @@ import { groupAction } from "../../store/groupSlice";
 import { io } from "socket.io-client";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import friendApi from "../../api/friendApi";
 const ModalGroup = ({ onClose }) => {
   // State
   const [nameGroup, setNameGroup] = useState("");
@@ -117,9 +118,21 @@ const ModalGroup = ({ onClose }) => {
     };
 
     const res = await groupApi.createGroup(accessToken, data);
-
+    const arr = [];
+    const setData = async (arr) => {
+      const listFriend = res.data.memberChat;
+      for (const friend of listFriend) {
+        const item = await friendApi.findFriendById(friend.id);
+        arr.push(item.data);
+      }
+      return arr;
+    };
+    setData(arr);
+    // Chuyển đến store với object chưa dữ liệu bạn bè
+    const groupToStore = { ...res.data, memberInfoChat: arr };
     // Set group để vào store
-    dispatch(groupAction.setGroup(res.data));
+
+    dispatch(groupAction.setGroup(groupToStore));
     // Socket
     // Gửi Arr listIdUser, group
     const idAdmin = res.data.adminGroup;

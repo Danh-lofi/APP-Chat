@@ -21,35 +21,37 @@ const ProfileGroup = () => {
   const socket = useRef();
   socket.current = io("ws://localhost:3001");
   //
+  // State
+  const [listMember, setListMember] = useState([]);
+  const [totalMember, setTotalMember] = useState();
+  //
+
   // Redux
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   let memberForStore = useSelector((state) => state.group.memberGroup);
+  const groupInfo = useSelector((state) => state.group.group);
+  console.log("Group Info: ");
+  console.log(groupInfo);
 
-  // set lại list không chứa bản thân
-  // memberForStore = memberForStore.filter((member) => member._id !== user._id);
-  // Tổng thành viên
-  const [totalMember, setTotalMember] = useState(memberForStore.length);
-
-  // State
-  const [memberInfoChat, setMemberInfoChat] = useState(memberForStore);
-
-  // Set lại effect List
+  // effect
   useEffect(() => {
-    console.log("List mới sau khi xóa:");
-    console.log(memberForStore);
-    setMemberInfoChat(memberForStore);
-    setTotalMember(memberForStore.length);
-  }, [memberForStore]);
+    // if()
+    setListMember(groupInfo.memberInfoChat);
+    setTotalMember(groupInfo.memberInfoChat.length);
+  }, [groupInfo.memberInfoChat]);
+  //
+  if (!groupInfo._id) return;
   //
 
-  const groupInfo = useSelector((state) => state.user.group);
-  if (!groupInfo) return;
-
-  //
-  const { nameGroupChat, imgGroupChat, memberChat, adminGroup, _id } =
-    groupInfo;
-  //
+  const {
+    nameGroupChat,
+    imgGroupChat,
+    memberChat,
+    memberInfoChat,
+    adminGroup,
+    _id,
+  } = groupInfo;
 
   // Event
   const addMemberHandle = () => {
@@ -68,11 +70,15 @@ const ProfileGroup = () => {
           console.log(data);
           if (data.status === 200) {
             toast.success("Xóa thành công");
-            const listMemberNew = memberInfoChat.filter(
+            // const listMemberNew = memberInfoChat.filter(
+            //   (member) => member._id !== idUserDeleted
+            // );
+
+            const listMemberNew = listMember.filter(
               (member) => member._id !== idUserDeleted
             );
             // Set lại thành viên
-            setMemberInfoChat(listMemberNew);
+            setListMember(listMemberNew);
             // Set lại số lượng
             setTotalMember(totalMember - 1);
 
@@ -93,7 +99,7 @@ const ProfileGroup = () => {
   // Render
 
   // Danh sách thành viên
-  const ListFriend = memberInfoChat.map((member) => {
+  const ListFriend = listMember.map((member) => {
     if (member._id === user._id) {
     }
     return (

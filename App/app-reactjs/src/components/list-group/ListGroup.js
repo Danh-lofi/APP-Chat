@@ -31,14 +31,22 @@ const ListGroup = (props) => {
 
   // Event
 
-  const changeActiveFriendHandle = (index) => {
+  const changeActiveFriendHandle = async (index) => {
     onChangeActiveChat(index);
     const groupActive = listGroup.find((group) => {
       if (!group) return;
       return group._id === index;
     });
     console.log(groupActive);
-    dispatch(userActions.setGroup(groupActive));
+    const data = [];
+    const listFriend = groupActive.memberChat;
+    for (const friend of listFriend) {
+      const item = await friendApi.findFriendById(friend.id);
+      data.push(item.data);
+    }
+    // Chuyển đến store với object chưa dữ liệu bạn bè
+    const groupToStore = { ...groupActive, memberInfoChat: data };
+    dispatch(groupAction.setGroup(groupToStore));
   };
 
   // Set List Group
@@ -55,7 +63,13 @@ const ListGroup = (props) => {
 
   // set list group khi có group mới
   useEffect(() => {
-    setListGroup((state) => [...state, newGroup]);
+    let isExist = false;
+    listGroup.forEach((group) => {
+      if (group) {
+        if (group._id === newGroup._id) isExist = true;
+      }
+    });
+    if (!isExist) setListGroup((state) => [...state, newGroup]);
   }, [newGroup]);
 
   // Set lại effect List khi bị đuổi

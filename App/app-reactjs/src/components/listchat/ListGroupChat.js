@@ -24,7 +24,7 @@ const ListGroupChat = (props) => {
         data.push(item.data);
       }
       setListInfoFriend(data);
-      dispatch(groupAction.setMemberGroup(data));
+      // dispatch(groupAction.setMemberGroup(data));
     };
     getListFriend(listFriend);
   }, []);
