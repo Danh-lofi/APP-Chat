@@ -22,6 +22,11 @@ const ListGroup = (props) => {
   // Redux
   const dispatch = useDispatch();
   const newGroup = useSelector((state) => state.group.group);
+  const idGroupDeletedStore = useSelector(
+    (state) => state.group.idGroupDeleted
+  );
+  const [idGroupDeleted, setIdGroupDeleted] = useState(idGroupDeletedStore);
+
   //
 
   // Event
@@ -52,6 +57,21 @@ const ListGroup = (props) => {
   useEffect(() => {
     setListGroup((state) => [...state, newGroup]);
   }, [newGroup]);
+
+  // Set lại effect List khi bị đuổi
+  useEffect(() => {
+    console.log(listGroup);
+    listGroup.forEach((group) => console.log(group));
+    console.log(idGroupDeletedStore);
+
+    const newListGroup = listGroup.filter((group) => {
+      if (group) {
+        return group._id !== idGroupDeletedStore;
+      }
+    });
+    setListGroup(newListGroup);
+  }, [idGroupDeletedStore]);
+  //
 
   // Render list
 

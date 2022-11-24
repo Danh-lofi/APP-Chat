@@ -100,6 +100,54 @@ const socket = (io) => {
         "--------------------End---send-require-friend------------------------------"
       );
     });
+
+    // Socket xóa thành viên ra khỏi nhóm
+    // INPUT: Array người nhận, id người xóa
+    //
+    //
+    socket.on("delete-member-group", (data) => {
+      console.log(
+        "--------------------delete-member-group------------------------------"
+      );
+      console.log("Data: ");
+      console.log(data);
+
+      const { listMember, idUserDelete, idHost, idGroupDelete } = data;
+
+      const listNewMember = listMember.filter(
+        (member) => member._id !== idUserDelete
+      );
+      listMember.forEach((member) => {
+        const user = activeUsers.find((user) => user.userId === member._id);
+        console.log("Sending from socket to :", member._id);
+        console.log(user);
+        // Không gửi cho người xóa
+        if (user) {
+          if (user.userId === idHost) {
+            return;
+          }
+          // Gửi id để xóa thành viên khỏi nhóm
+          if (user.userId === idUserDelete) {
+            console.log("idUserDelete: ", idGroupDelete);
+            io.to(user.socketId).emit(
+              "receive-delete-member-from-group",
+              idGroupDelete
+            );
+          }
+          // Gửi list để render lại
+          else {
+            console.log("listNewMember");
+            console.log(listNewMember);
+            io.to(user.socketId).emit("receive-delete-member", listNewMember);
+          }
+        }
+      });
+
+      console.log(
+        "--------------------End---send-notication-group------------------------------"
+      );
+    });
+    //
   });
 };
 

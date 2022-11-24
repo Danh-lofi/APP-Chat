@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faRightFromBracket,
@@ -14,12 +14,18 @@ import groupApi from "../../../api/groupApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { groupAction } from "../../../store/groupSlice";
+import { io } from "socket.io-client";
 
 const ProfileGroup = () => {
+  // Socket
+  const socket = useRef();
+  socket.current = io("ws://localhost:3001");
+  //
   // Redux
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   let memberForStore = useSelector((state) => state.group.memberGroup);
+
   // set lại list không chứa bản thân
   // memberForStore = memberForStore.filter((member) => member._id !== user._id);
   // Tổng thành viên
@@ -27,8 +33,11 @@ const ProfileGroup = () => {
 
   // State
   const [memberInfoChat, setMemberInfoChat] = useState(memberForStore);
-  // Set lại effect
+
+  // Set lại effect List
   useEffect(() => {
+    console.log("List mới sau khi xóa:");
+    console.log(memberForStore);
     setMemberInfoChat(memberForStore);
     setTotalMember(memberForStore.length);
   }, [memberForStore]);
@@ -66,6 +75,14 @@ const ProfileGroup = () => {
             setMemberInfoChat(listMemberNew);
             // Set lại số lượng
             setTotalMember(totalMember - 1);
+
+            // Socket cho các user
+            socket.current.emit("delete-member-group", {
+              listMember: memberInfoChat,
+              idUserDelete: idUserDeleted,
+              idGroupDelete: _id,
+              idHost: adminGroup,
+            });
           }
         } catch (error) {}
       },

@@ -158,6 +158,25 @@ const ChatBox = (props) => {
   }, [user, friend, group]);
   //
 
+  // Nhận lại id người bị xóa
+  useEffect(() => {
+    socket.current.on("receive-delete-member-from-group", (data) => {
+      console.log("Id group bị xóa:");
+      console.log(data);
+      dispatch(groupAction.setIdGroupDeleted(data));
+    });
+  }, [receivedMessage]);
+
+  // Nhận lại list member ngoại trừ người bị xóa
+  useEffect(() => {
+    socket.current.on("receive-delete-member", (data) => {
+      console.log("List mới sau khi xóa:");
+      console.log(data);
+      dispatch(groupAction.setMemberGroup(data));
+    });
+  }, [receivedMessage]);
+  //
+
   // get all messages from chat id
   useEffect(() => {
     const getAllMessages = async (chatId) => {
