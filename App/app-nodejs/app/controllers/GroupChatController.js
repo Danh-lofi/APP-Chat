@@ -41,6 +41,31 @@ const GroupChatController = {
     res.status(200).json({ listGroup });
   },
 
+  getMemberInGroupChat: async (req, res) => {
+    const { idGroupChat } = req.params;
+    console.log(idGroupChat);
+
+    const rs = await GroupChatModel.findById({
+      _id: mongoose.Types.ObjectId(idGroupChat),
+    });
+
+    if (!rs) {
+      res.status(400).json({ mess: "Khong co group" });
+    } else {
+      const listUser = rs.memberChat;
+      const listMemberChat = [];
+
+      for (const idUser of listUser) {
+        const mb = await UserModel.findById({
+          _id: mongoose.Types.ObjectId(idUser.id),
+        });
+        listMemberChat.push(mb);
+      }
+
+      res.status(200).json(listMemberChat);
+    }
+  },
+
   updateGroupChatInUser: async (req, res) => {
     const listIdUser = req.body.listIdUser;
     const idGroupChat = req.body.idGroupChat;
@@ -222,6 +247,10 @@ const GroupChatController = {
         .json({ message: "them vao nhom chat thanh cong", insert });
     }
   },
+
+  // getInforGroup: async (req, res) => {
+  //   console.log(req.params);
+  // }
 };
 
 export default GroupChatController;

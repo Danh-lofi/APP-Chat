@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   StyleSheet,
   FlatList,
@@ -9,8 +9,102 @@ import {
   Image,
   ImageBackground,
 } from "react-native";
+import { chatApi } from "../api/ApiChat";
+import { messageApi } from "../api/ApiMessage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const GroupBar = ({ listInfor, onPress }) => {
+  const [chatId, setChatId] = useState();
+  const [disMess, setDisMess] = useState();
+  const [disTime, setDisTime] = useState("");
+  // const [idUser, setIdUser] = useState("");
+
+  // useEffect(() => {
+  //   const getIdUser = async () => {
+  //     setIdUser(await AsyncStorage.getItem("idUser"));
+  //   };
+  //   getIdUser();
+  // }, []);
+
+  const getOneMess = async () => {
+    const idUser = await AsyncStorage.getItem("idUser");
+    // console.log("idUser");
+    // console.log(idUser);
+    if (idUser === "") {
+    } else {
+      // const roomChat = await chatApi.getChat(idUser, listInfor._id);
+      setChatId(listInfor._id);
+      console.log("chatId");
+      console.log(chatId);
+
+      const messagesData = await messageApi.getOneMessage(chatId);
+
+      if (messagesData.data === null) {
+        // console.log("null");
+        setDisMess("Các bạn chưa có cuộc trò chuyện nào !");
+        setDisTime("");
+      } else {
+        // console.log(messagesData.data);
+        const date = new Date(messagesData.data.createdAt);
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        if (hour < 10) {
+          hour = "0" + hour;
+        }
+        if (minute < 10) {
+          minute = "0" + minute;
+        }
+        setDisTime(hour + ":" + minute);
+
+        if (messagesData.data.senderId === idUser) {
+          // console.log("messagesData.data");
+          // console.log("Ban: " + messagesData.data.text);
+          // setDisMess("Bạn: " + messagesData.data.text);
+          if (messagesData.data.isImg === true) {
+            // console.log("Hinh anh");
+            setDisMess("Bạn đã gửi 1 hình ảnh!");
+          } else if (
+            (messagesData.data.isImg === undefined &&
+              messagesData.data.isFileWord === true) ||
+            messagesData.data.isFilePdf === true ||
+            messagesData.data.isFilePowP === true ||
+            messagesData.data.isFileExel === true
+          ) {
+            // console.log("File");
+            setDisMess("Bạn đã gửi 1 file!");
+          } else {
+            // console.log("text");
+            setDisMess("Bạn: " + messagesData.data.text);
+          }
+        } else {
+          // console.log("messagesData.data");
+          // console.log(messagesData.data.text);
+          // setDisMess(messagesData.data.text);
+          if (messagesData.data.isImg === true) {
+            // console.log("Hinh anh");
+            setDisMess("Đã gửi 1 hình ảnh!");
+          } else if (
+            (messagesData.data.isImg === undefined &&
+              messagesData.data.isFileWord === true) ||
+            messagesData.data.isFilePdf === true ||
+            messagesData.data.isFilePowP === true ||
+            messagesData.data.isFileExel === true
+          ) {
+            // console.log("File");
+            setDisMess("Đã gửi 1 file!");
+          } else {
+            // console.log("text");
+            setDisMess(messagesData.data.text);
+          }
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    getOneMess();
+  }, [chatId]); // ?
+
   return (
     <TouchableOpacity style={styles.aMess} onPress={onPress}>
       <View style={styles.aMess_avt}>
@@ -22,10 +116,12 @@ const GroupBar = ({ listInfor, onPress }) => {
       <View style={styles.aMess_right}>
         <View style={styles.name_and_disMess}>
           <Text style={styles.txtNameMess}>{listInfor.nameGroupChat}</Text>
-          <Text style={styles.txtDisMess}>{listInfor._id}</Text>
+          <Text numberOfLines={1} style={styles.txtDisMess}>
+            {disMess}
+          </Text>
         </View>
         <View style={styles.xxxDiff}>
-          <Text style={styles.txtTimeMess}>9: 10</Text>
+          <Text style={styles.txtTimeMess}>{disTime}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -43,12 +139,12 @@ const styles = StyleSheet.create({
   aMess_avt: {
     justifyContent: "center",
     alignItems: "center",
-    flexGrow: 1,
+    width: "15%",
   },
 
   aMess_right: {
     flexDirection: "row",
-    flexGrow: 9,
+    width: "80%",
     height: "100%",
     marginLeft: 10,
     borderColor: "#b6b9ba",
@@ -67,7 +163,7 @@ const styles = StyleSheet.create({
   name_and_disMess: {
     flexDirection: "column",
     justifyContent: "center",
-    flexGrow: 5,
+    width: "85%",
     backgroundColor: "white",
   },
 
@@ -82,7 +178,7 @@ const styles = StyleSheet.create({
   },
 
   xxxDiff: {
-    flexGrow: 2,
+    width: "15%",
     maxWidth: 60,
     alignItems: "center",
     justifyContent: "center",

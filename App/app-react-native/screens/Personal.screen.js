@@ -29,8 +29,8 @@ export const Personal = ({ navigation }) => {
   const [gender, setGender] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [address, setAddress] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [coverImg, setCoverImg] = useState("");
+  const [avatar, setAvatar] = useState();
+  const [coverImg, setCoverImg] = useState();
 
   const handleLogout = () => {
     AsyncStorage.clear();

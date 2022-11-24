@@ -7,4 +7,9 @@ routerMessage.post("/", MessageController.addMessage);
 
 routerMessage.get("/:chatId", MessageController.getMessages);
 
+routerMessage.get(
+  "/getOneNewMessage/:chatId",
+  MessageController.getOneNewMessage
+);
+
 export default routerMessage;

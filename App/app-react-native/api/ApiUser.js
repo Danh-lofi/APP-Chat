@@ -78,7 +78,7 @@ export const ApiProfile = {
     //   },
     // });
     return axios.create({
-      baseURL: "http://192.168.1.12:3001/me",
+      baseURL: "http://192.168.1.3:3001/me",
       // baseURL: "http://localhost:3001/me",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -88,5 +88,12 @@ export const ApiProfile = {
 
   profile2: async (token) => {
     return await apiGet.get(`/me`, token);
+  },
+};
+
+export const ApiGetUser = {
+  getProfileUserFromId: (id) => {
+    const url = "/user/getProfileUserFromId";
+    return apiGet.get(url, id);
   },
 };

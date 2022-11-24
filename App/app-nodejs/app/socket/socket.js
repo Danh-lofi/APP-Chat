@@ -36,10 +36,11 @@ const socket = (io) => {
       console.log("Sending from socket to :", receiverId);
       console.log("Data: ", data);
       console.log(user);
-      if (user) {
-        // gửi cho các users ngoại trừ sender
-        io.to(user.socketId).emit("recieve-message", data);
-      }
+      // if (user) {
+      //   // gửi cho các users ngoại trừ sender
+      //   io.to(user.socketId).emit("recieve-message", data);
+      // }
+      io.emit("recieve-message", data);
     });
   });
 };

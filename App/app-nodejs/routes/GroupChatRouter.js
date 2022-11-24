@@ -38,4 +38,6 @@ routerGroupChat.put(
   GroupChatController.updateGroupInUser
 );
 
+routerGroupChat.get("/:idGroupChat", GroupChatController.getMemberInGroupChat);
+
 export default routerGroupChat;

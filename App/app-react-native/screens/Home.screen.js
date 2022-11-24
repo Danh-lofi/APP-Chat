@@ -48,7 +48,7 @@ export const Home = ({ navigation, route }) => {
   const handleCreateGroupChat = () => setVisible(true);
 
   const handleClick = async (item) => {
-    navigation.navigate("SC_Chat");
+    navigation.navigate("SC_Chat", { statusG: 0 });
     await AsyncStorage.setItem("idUser", user._id);
     await AsyncStorage.setItem("idFriend", item._id);
     await AsyncStorage.setItem("currentName", item.name);
@@ -56,12 +56,13 @@ export const Home = ({ navigation, route }) => {
   };
 
   const handleClick2 = async (item) => {
-    navigation.navigate("SC_Chat");
+    navigation.navigate("SC_Chat", { statusG: 1 });
     await AsyncStorage.setItem("idUser", user._id);
     await AsyncStorage.setItem("idFriend", item._id);
     await AsyncStorage.setItem("currentName", item.nameGroupChat);
     await AsyncStorage.setItem("avatar", item.imgGroupChat);
-    console.log(item._id);
+    await AsyncStorage.setItem("idGroupChat", item._id);
+    await AsyncStorage.setItem("adminGroup", item.adminGroup);
   };
 
   const callApiProfile = useCallback(async () => {
@@ -102,11 +103,10 @@ export const Home = ({ navigation, route }) => {
     await ApiLoadGroupChat.getGroupChat(token)
       .then((res) => {
         console.log("get group chat");
-        console.log(
-          res.data.listGroup.filter((element) => {
-            return element !== null;
-          })
-        );
+        const ff = res.data.listGroup.filter((element) => {
+          return element !== null;
+        });
+        console.log(ff);
         setListGroup(
           res.data.listGroup.filter((element) => {
             return element !== null;
@@ -134,20 +134,20 @@ export const Home = ({ navigation, route }) => {
     }, 1000);
   });
 
-  useEffect(() => {
-    socket.on("listGroup", (data) => {
-      setListGroup((listGroup) => [
-        ...listGroup,
-        {
-          nameGroupChat: data.nameGroupChat,
-          adminGroup: data.adminGroup,
-          memberChat: data.memberChat,
-        },
-      ]);
-      console.log("socket group: ");
-      console.log(data);
-    });
-  }, [socket]);
+  // useEffect(() => {
+  //   socket.on("listGroup", (data) => {
+  //     setListGroup((listGroup) => [
+  //       ...listGroup,
+  //       {
+  //         nameGroupChat: data.nameGroupChat,
+  //         adminGroup: data.adminGroup,
+  //         memberChat: data.memberChat,
+  //       },
+  //     ]);
+  //     console.log("socket group: ");
+  //     console.log(data);
+  //   });
+  // }, [socket]);
 
   return (
     <SafeAreaView style={[styles.container, GlobalStyles.droidSafeArea]}>

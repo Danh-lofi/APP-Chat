@@ -82,11 +82,11 @@ const CreateGroupChat = ({ setVisible }) => {
         await ApiLoadGroupChat.createGroup(data).then(async (res) => {
           console.log("tao group thanh cong");
           console.log(res.data._id);
-          socket.emit("createGroupChat", data);
-          for (let i = 0; i < aMembers.length; i++) {
-            console.log(i);
-            console.log("hihi");
-          }
+          // socket.emit("createGroupChat", data);
+          // for (let i = 0; i < aMembers.length; i++) {
+          //   console.log(i);
+          //   console.log("hihi");
+          // }
         });
       } catch (error) {
         console.log("Khong tao duoc group: " + error);
