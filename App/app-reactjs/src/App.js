@@ -23,7 +23,9 @@ function App() {
 
   // Store từ redux
   let isAuth = useSelector((state) => state.user.isLoggedIn);
-  let isOpenAddGroup = useSelector((state) => state.modal.isOpen);
+  let isOpenAddGroup = useSelector(
+    (state) => state.modal.addFriendToGroup.isOpen
+  );
   let isOpenChangeProfile = useSelector(
     (state) => state.modal.isChangeProfileModal
   );

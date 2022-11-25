@@ -31,6 +31,12 @@ const groupApi = {
       }
     );
   },
+  //
+  addUsersToGroup: (idGroupChat, listIdUser) => {
+    const url = `/groupChat/add-users`;
+    return axiosClient.put(url, { idGroupChat, listIdUser });
+  },
+  //
   deleteMemberFromGroup: (idGroup, idUserDeleted) => {
     const url = `/groupChat/deleteUserFromGroupChat`;
     return axiosClient.put(url, {

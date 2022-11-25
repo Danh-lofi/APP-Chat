@@ -31,8 +31,6 @@ const ProfileGroup = () => {
   const user = useSelector((state) => state.user.user);
   let memberForStore = useSelector((state) => state.group.memberGroup);
   const groupInfo = useSelector((state) => state.group.group);
-  console.log("Group Info: ");
-  console.log(groupInfo);
 
   // effect
   useEffect(() => {
@@ -55,7 +53,12 @@ const ProfileGroup = () => {
 
   // Event
   const addMemberHandle = () => {
-    dispatch(modalSliceAction.setOpen(true));
+    // idGroupChat, listIdUserInGroup
+    const action = {
+      idGroupChat: _id,
+      listIdUserInGroup: memberChat,
+    };
+    dispatch(modalSliceAction.setOpenAddFriendToGroup(action));
   };
 
   // Xóa thành viên
@@ -67,7 +70,7 @@ const ProfileGroup = () => {
       onConfirm: async () => {
         try {
           const data = await groupApi.deleteMemberFromGroup(_id, idUserDeleted);
-          console.log(data);
+
           if (data.status === 200) {
             toast.success("Xóa thành công");
             // const listMemberNew = memberInfoChat.filter(

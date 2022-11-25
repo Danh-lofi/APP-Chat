@@ -268,6 +268,60 @@ const GroupChatController = {
       // res.status(200).json({ message: "them thanh cong", added });
     }
   },
+  addUsersToGroup: async (req, res, next) => {
+    const { idGroupChat, listIdUser } = req.body;
+    console.log("ADD User To Group");
+    console.log("idGroupChat:");
+    console.log(idGroupChat);
+    console.log("listIdUser:");
+    console.log(listIdUser);
+    if (!listIdUser || !idGroupChat) {
+      res.status(404).json({ message: "Khong tim thay list id hay id group" });
+      return;
+    }
+    for (const id of listIdUser) {
+      try {
+        const added = await GroupChatModel.findByIdAndUpdate(
+          { _id: idGroupChat },
+          {
+            $push: {
+              memberChat: { id: id.id },
+            },
+          },
+          {
+            new: true,
+          }
+        );
+      } catch (error) {
+        res.status(401).send({ message: error });
+      }
+    }
+    req.body.idGroupChat = idGroupChat;
+    req.body.listIdUser = listIdUser;
+    next();
+  },
+  updateGroupInUsers: async (req, res) => {
+    const { listIdUser, idGroupChat } = req.body;
+
+    for (const id of listIdUser) {
+      try {
+        const insert = await UserModel.findByIdAndUpdate(
+          { _id: id.id },
+          {
+            $push: {
+              groups: { id: mongoose.Types.ObjectId(idGroupChat) },
+            },
+          },
+          {
+            new: true,
+          }
+        );
+      } catch (error) {
+        res.status(401).send({ message: error });
+      }
+    }
+    res.status(200).json({ message: "them vao nhom chat thanh cong" });
+  },
 
   updateGroupInUser: async (req, res) => {
     const idGroupChatInsert = req.body.idGroupChat;

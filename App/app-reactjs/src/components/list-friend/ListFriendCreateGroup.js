@@ -1,24 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import friendApi from "../../api/friendApi";
 import { userActions } from "../../store/userSlice";
 import UserChat from "../userchat/UserChat";
 import "./listfriend.scss";
 const ListFriendCreateGroup = (props) => {
-  const { user, members } = props;
+  const { user, members, infoGroup } = props;
+  // State
   const [listFriend, setListFriend] = useState([]);
   const [activeChatFavou, setActiveChatFavou] = useState("");
-  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
-
+  // Redux
   const dispatch = useDispatch();
+  //
+  // Token
+  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
 
   useEffect(() => {
     props.changeLoading();
     const getListFriends = async () => {
       const data = await friendApi.getFriend(accessToken);
       props.changeLoading();
-      console.log(data);
-      setListFriend(data.data.listFriend);
+
+      // Set list friend có trong group
+      let listFriendNotAdd = data.data.listFriend;
+      infoGroup.listIdUserInGroup.forEach((id) => {
+        listFriendNotAdd = listFriendNotAdd.filter((user) => {
+          return id.id !== user._id;
+        });
+      });
+      setListFriend(listFriendNotAdd);
     };
     getListFriends();
     props.changeLoading();

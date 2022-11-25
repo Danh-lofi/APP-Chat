@@ -8,24 +8,37 @@ import {
   faCirclePlus,
 } from "@fortawesome/free-solid-svg-icons";
 import ButtonAuthen from "../../button/ButtonAuthen";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { modalSliceAction } from "../../../store/modalSlice";
 import ListFriendCreateGroup from "../../list-friend/ListFriendCreateGroup";
-
+import groupApi from "../../../api/groupApi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const AddFriendToGroup = ({ onClose }) => {
+  // Redux
+  const dispatch = useDispatch();
+  const infoGroup = useSelector((state) => state.modal.addFriendToGroup);
+
+  //
+
+  // State
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")).user
   );
   const [listFriend, setListFriend] = useState([]);
-  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
-  const [members, setMembers] = useState([{ id: user._id }]);
+  const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [findText, setFindText] = useState("");
 
+  //
+
+  // Token
+  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
+  //
+  // Event
   const changeLoadingHandle = () => {
     setLoading((prev) => !loading);
   };
-  const [findText, setFindText] = useState("");
-  const dispatch = useDispatch();
   const changeFindTextHandle = (value) => {
     setFindText(value);
   };
@@ -33,11 +46,31 @@ const AddFriendToGroup = ({ onClose }) => {
     console.log(findText);
   };
   const closeModalHandle = () => {
-    dispatch(modalSliceAction.setOpen(false));
+    dispatch(modalSliceAction.setOpenAddFriendToGroup());
   };
+  //
+
+  // Thêm thành viên
+  const submitHandle = async () => {
+    // List id user, idGroupChat
+    try {
+      const data = await groupApi.addUsersToGroup(
+        infoGroup.idGroupChat,
+        members
+      );
+      if (data.status === 200) {
+        toast.success("Thêm thành công");
+        dispatch(modalSliceAction.setOpenAddFriendToGroup());
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   return (
     <div>
-      <div className="overlay" onClick={onClose}></div>
+      <ToastContainer />
+      <div className="overlay" onClick={closeModalHandle}></div>
       <div className="modalContainer">
         <div className="headerModal">
           <p className="title">Thêm thành viên</p>
@@ -92,10 +125,14 @@ const AddFriendToGroup = ({ onClose }) => {
             changeLoading={changeLoadingHandle}
             setMembers={setMembers}
             members={members}
+            infoGroup={infoGroup}
           />
         </div>
         <div className="footer">
-          <ButtonAuthen content="Xác nhận"></ButtonAuthen>
+          <ButtonAuthen
+            content="Xác nhận"
+            onClick={submitHandle}
+          ></ButtonAuthen>
         </div>
       </div>
     </div>

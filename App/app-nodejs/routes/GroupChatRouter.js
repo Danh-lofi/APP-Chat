@@ -51,5 +51,11 @@ routerGroupChat.put(
   GroupChatController.addUserToGroup,
   GroupChatController.updateGroupInUser
 );
+// idGroupChat, listIdUser
+routerGroupChat.put(
+  "/add-users",
+  GroupChatController.addUsersToGroup,
+  GroupChatController.updateGroupInUsers
+);
 
 export default routerGroupChat;

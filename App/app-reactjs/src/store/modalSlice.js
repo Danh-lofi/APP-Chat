@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  isOpen: false,
+  addFriendToGroup: {
+    isOpen: false,
+    idGroupChat: "",
+    listIdUserInGroup: [],
+  },
   isChangeProfileModal: false,
   confirm: {
     title: "",
@@ -13,13 +17,15 @@ const modalSlice = createSlice({
   name: "modal",
   initialState: initialState,
   reducers: {
-    setOpen: (state, action) => {
+    setOpenAddFriendToGroup: (state, action) => {
       if (!action.payload) {
-        state.url = null;
-        state.isOpen = false;
+        state.addFriendToGroup.isOpen = false;
         return;
       }
-      state.isOpen = true;
+      const { idGroupChat, listIdUserInGroup } = action.payload;
+      state.addFriendToGroup.isOpen = true;
+      state.addFriendToGroup.idGroupChat = idGroupChat;
+      state.addFriendToGroup.listIdUserInGroup = listIdUserInGroup;
     },
     setChangeProfileOpen: (state, action) => {
       if (!action.payload) {
