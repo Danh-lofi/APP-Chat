@@ -35,6 +35,7 @@ routerGroupChat.post(
   authMiddleware.isAuth,
   GroupChatController.deleteGroupChat
 );
+// [POST] {accessToken, groupId, newAdminId}
 routerGroupChat.post(
   "/leaveGroup",
   authMiddleware.isAuth,

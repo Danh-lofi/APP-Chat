@@ -82,7 +82,7 @@ const ListGroup = (props) => {
 
   // Set lại effect List khi bị đuổi
   useEffect(() => {
-    listGroup.forEach((group) => console.log(group));
+    // listGroup.forEach((group) => console.log(group));
 
     const newListGroup = listGroup.filter((group) => {
       if (group) {

@@ -13,6 +13,7 @@ import ModalGroup from "./components/modalGroup/ModalGroup";
 import AddFriend from "./components/modals/addfriend/AddFriend";
 import AddFriendToGroup from "./components/modals/addfriendtogroup/AddFriendToGroup";
 import ConfirmModal from "./components/modals/confirm/ConfirmModal";
+import FranchiesAdmin from "./components/modals/franchiseadmin/FranchiesAdmin";
 
 function App() {
   // state
@@ -26,9 +27,14 @@ function App() {
   let isOpenAddGroup = useSelector(
     (state) => state.modal.addFriendToGroup.isOpen
   );
+  let isOpenFranchiesAdmin = useSelector(
+    (state) => state.modal.franchiesAdmin.isOpen
+  );
+
   let isOpenChangeProfile = useSelector(
     (state) => state.modal.isChangeProfileModal
   );
+
   const isSelected = useSelector((state) => state.image.isSelected);
 
   // Ẩn/hiện modal group
@@ -49,6 +55,7 @@ function App() {
     <div className="App">
       {/* Modal */}
       {isOpenAddGroup ? <AddFriendToGroup /> : ""}
+      {isOpenFranchiesAdmin ? <FranchiesAdmin /> : ""}
       {isOpenChangeProfile ? (
         <ChangeInfo onLoading={(isLoading) => changeLoadingHandle(isLoading)} />
       ) : (

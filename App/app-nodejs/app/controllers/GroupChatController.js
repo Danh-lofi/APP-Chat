@@ -174,15 +174,18 @@ const GroupChatController = {
     const _groupId = groupChat._id;
     const groupChatAdminId = groupChat.adminGroup;
     const newAdminId = req.body.newAdminId;
+
+    console.log("----LEAVE GROUP----------");
+    console.log(meId);
     try {
       if (meId == groupChatAdminId) {
         await GroupChatModel.findOneAndUpdate(
           { _id: groupId },
-          { $pull: { memberChat: { id: meId } } }
+          { $pull: { memberChat: { id: meId.toString() } } }
         );
         await UserModel.findOneAndUpdate(
           { _id: meId },
-          { $pull: { groups: { id: _groupId } } }
+          { $pull: { groups: { id: mongoose.Types.ObjectId(_groupId) } } }
         );
         await GroupChatModel.findOneAndUpdate(
           { _id: groupId },

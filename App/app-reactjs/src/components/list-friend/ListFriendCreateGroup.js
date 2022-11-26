@@ -17,7 +17,7 @@ const ListFriendCreateGroup = (props) => {
   const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
 
   useEffect(() => {
-    props.changeLoading();
+    // props.changeLoading();
     const getListFriends = async () => {
       const data = await friendApi.getFriend(accessToken);
       props.changeLoading();
@@ -33,7 +33,7 @@ const ListFriendCreateGroup = (props) => {
       setListFriend(listFriendNotAdd);
     };
     getListFriends();
-    props.changeLoading();
+    // props.changeLoading();
   }, []);
 
   const changeActiveFriendHandle = (index) => {

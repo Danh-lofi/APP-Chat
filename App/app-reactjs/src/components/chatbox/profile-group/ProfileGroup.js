@@ -25,7 +25,9 @@ const ProfileGroup = () => {
   const [listMember, setListMember] = useState([]);
   const [totalMember, setTotalMember] = useState();
   //
-
+  // Token
+  const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
+  //
   // Redux
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
@@ -99,6 +101,42 @@ const ProfileGroup = () => {
     };
     dispatch(modalSliceAction.setOpenConfirm(confirm));
   };
+
+  // Rời nhóm
+  const leaveGroupHandle = () => {
+    /* [INPUT]: AccessToken, groupId, newAdminId
+      - Nếu là admin hiện bảng danh sách nhượng quyền admin
+      - Không là admin hiện modal xác nhận
+    */
+    const groupId = groupInfo._id;
+
+    // Là admin
+    if (user._id === groupInfo.adminGroup) {
+      dispatch(
+        modalSliceAction.setOpenFranchiesAdmin({ isOpen: true, groupInfo })
+      );
+    }
+    // Không là admin
+    else {
+      const confirmHanlde = () => {
+        groupApi.leaveGroup(accessToken, groupId);
+      };
+
+      const title = "Thoát nhóm";
+      const content = "Bạn chắc chắn thoát nhóm";
+      const isConfirm = true;
+
+      const confirm = {
+        title,
+        content,
+        onConfirm: confirmHanlde,
+        isOpenConfirm: isConfirm,
+      };
+      dispatch(modalSliceAction.setOpenConfirm(confirm));
+      // Render lại list group
+      dispatch(groupAction.setIdGroupDeleted(groupId));
+    }
+  };
   // Render
 
   // Danh sách thành viên
@@ -140,7 +178,7 @@ const ProfileGroup = () => {
         </div>
         <p className="friend_name">{nameGroupChat}</p>
         <div className="contain_btn">
-          <div className="btn">
+          <div className="btn" onClick={leaveGroupHandle}>
             <FontAwesomeIcon className="icon" icon={faRightFromBracket} />
             <p>Rời nhóm</p>
           </div>

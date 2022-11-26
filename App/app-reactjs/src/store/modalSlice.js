@@ -12,6 +12,10 @@ const initialState = {
     onConfirm: null,
     isOpenConfirm: false,
   },
+  franchiesAdmin: {
+    isOpen: false,
+    groupInfo: null,
+  },
 };
 const modalSlice = createSlice({
   name: "modal",
@@ -45,6 +49,14 @@ const modalSlice = createSlice({
         };
       }
       state.confirm = action.payload;
+    },
+    setOpenFranchiesAdmin: (state, action) => {
+      if (!action.payload) {
+        state.franchiesAdmin = {
+          isOpen: false,
+        };
+      }
+      state.franchiesAdmin = action.payload;
     },
   },
 });

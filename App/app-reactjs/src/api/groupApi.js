@@ -48,6 +48,21 @@ const groupApi = {
       idUserDeleted,
     });
   },
+  leaveGroup: (accessToken, groupId, newAdminId) => {
+    const url = `/groupChat/leaveGroup`;
+    return axiosClient.post(
+      url,
+      {
+        groupId,
+        newAdminId,
+      },
+      {
+        headers: {
+          x_authorization: accessToken,
+        },
+      }
+    );
+  },
 };
 
 export default groupApi;
