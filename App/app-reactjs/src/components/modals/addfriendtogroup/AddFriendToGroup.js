@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./addfriendgroup.scss";
 import InputAuthen from "../../input/InputAuthen";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,10 +14,16 @@ import ListFriendCreateGroup from "../../list-friend/ListFriendCreateGroup";
 import groupApi from "../../../api/groupApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import userApi from "../../../api/userApi";
+import { io } from "socket.io-client";
+import FormatDate from "../../../method/FormatDate";
+import { groupAction } from "../../../store/groupSlice";
+import friendApi from "../../../api/friendApi";
 const AddFriendToGroup = ({ onClose }) => {
   // Redux
   const dispatch = useDispatch();
   const infoGroup = useSelector((state) => state.modal.addFriendToGroup);
+  const group = useSelector((state) => state.group.group);
 
   //
 
@@ -29,6 +35,13 @@ const AddFriendToGroup = ({ onClose }) => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [findText, setFindText] = useState("");
+  const [userFinded, setUserFinded] = useState();
+  const [isExistInGroup, setIsExistInGroup] = useState(false);
+  //
+
+  // Socket
+  const socket = useRef();
+  socket.current = io("ws://localhost:3001");
 
   //
 
@@ -42,9 +55,42 @@ const AddFriendToGroup = ({ onClose }) => {
   const changeFindTextHandle = (value) => {
     setFindText(value);
   };
-  const submitButtonHandle = () => {
-    console.log(findText);
+  // Tìm kiếm thành viên
+  const findUserHandle = async () => {
+    try {
+      const idGroup = infoGroup.idGroupChat;
+      const data = await userApi.findUser(findText, idGroup);
+      setUserFinded(data.data.user);
+      setIsExistInGroup(data.data.isExist);
+    } catch (error) {
+      console.log(error);
+    }
   };
+  // Thêm user vừa tìm vào group
+  const addUserFindToGroup = async () => {
+    try {
+      const listIdUser = [{ id: userFinded._id }];
+      const data = await groupApi.addUsersToGroup(
+        infoGroup.idGroupChat,
+        listIdUser
+      );
+      if (data.status === 200) {
+        toast.success("Thêm thành công");
+        setIsExistInGroup(true);
+        // dispatch(modalSliceAction.setOpenAddFriendToGroup());
+        // Socket
+        // Gửi Arr listIdUser, group
+        socket.current.emit("send-notication-group", {
+          listIdUser,
+          group: group,
+        });
+        //
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+  //
   const closeModalHandle = () => {
     dispatch(modalSliceAction.setOpenAddFriendToGroup());
   };
@@ -61,6 +107,28 @@ const AddFriendToGroup = ({ onClose }) => {
       if (data.status === 200) {
         toast.success("Thêm thành công");
         dispatch(modalSliceAction.setOpenAddFriendToGroup());
+        // get info friends
+        const getListFriend = async (listFriend) => {
+          const listInfoFriend = [];
+          for (const friend of listFriend) {
+            const item = await friendApi.findFriendById(friend.id);
+            listInfoFriend.push(item.data);
+          }
+
+          // Set lại list bạn bè của mình
+          dispatch(groupAction.addMemberToGroup(listInfoFriend));
+        };
+        getListFriend(members);
+
+        //
+
+        // Socket
+        // Gửi Arr listIdUser, group
+        socket.current.emit("send-notication-group", {
+          listIdUser: members,
+          group,
+        });
+        //
       }
     } catch (error) {
       toast.error(error);
@@ -90,34 +158,42 @@ const AddFriendToGroup = ({ onClose }) => {
             placeholder="Nhập số điện thoại cần thêm vào nhóm"
           />
           <div>
-            <ButtonAuthen
-              onClick={submitButtonHandle}
-              content="Tìm"
-            ></ButtonAuthen>
+            <ButtonAuthen onClick={findUserHandle} content="Tìm"></ButtonAuthen>
           </div>
           {/* <div className="fakeFindBtn">Tìm</div> */}
         </div>
-        <div className="friendFoundRangeModal">
-          <div className="tabFriend">
-            <div className="left">
-              <div className="imageFriendContain">
-                <img src="https://nhanquyenvn.org/wp-content/uploads/2021/03/tran-dan.png"></img>
+        {userFinded ? (
+          <div className="friendFoundRangeModal">
+            <div className="tabFriend">
+              <div className="left">
+                <div className="imageFriendContain">
+                  <img src={userFinded.avatar}></img>
+                </div>
+                <div className="infoFriendContain">
+                  <p className="nameFriend">{userFinded.name}</p>
+                  {/* <p className="genderFriend">Nam</p> */}
+                  <p className="BirthDayFriend">
+                    {FormatDate(userFinded.birthDate)}
+                  </p>
+                </div>
               </div>
-              <div className="infoFriendContain">
-                <p className="nameFriend">Trần Dần</p>
-                {/* <p className="genderFriend">Nam</p> */}
-                <p className="BirthDayFriend">30/2/1977</p>
+              <div className="btnContain">
+                {!isExistInGroup ? (
+                  <FontAwesomeIcon
+                    title="Thêm"
+                    className="icon"
+                    icon={faCirclePlus}
+                    onClick={addUserFindToGroup}
+                  />
+                ) : (
+                  ""
+                )}
               </div>
-            </div>
-            <div className="btnContain">
-              <FontAwesomeIcon
-                title="Thêm"
-                className="icon"
-                icon={faCirclePlus}
-              />
             </div>
           </div>
-        </div>
+        ) : (
+          ""
+        )}
         <div className="listFriend">
           <p className="label">Bạn bè</p>
           <ListFriendCreateGroup

@@ -55,5 +55,25 @@ const UserController = {
       res.status(402).send(error);
     }
   },
+  findUserExistInGroup: async (req, res) => {
+    const { username, idGroup } = req.params;
+
+    try {
+      const user = await UserModel.findOne({ username });
+      const listGroup = user.groups;
+      let isExist = false;
+      listGroup.forEach((group) => {
+        if (group.id) {
+          if (group.id.toString() === idGroup) isExist = true;
+        }
+      });
+      if (!user) {
+        res.status(404).send({ message: "Không tìm thấy" });
+      }
+      res.status(200).json({ user, isExist });
+    } catch (error) {
+      res.status(404).send(error);
+    }
+  },
 };
 export default UserController;

@@ -19,10 +19,21 @@ const groupSlice = createSlice({
     },
     setMemberGroup: (state, action) => {
       // state.memberGroup = action.payload;
-      console.log("Set list member chat");
-      console.log(state.group);
+
       state.group.memberInfoChat = action.payload;
-      console.log(state.group.memberInfoChat);
+      console.log("Set Member to group");
+      console.log(state.group);
+    },
+    addMemberToGroup: (state, action) => {
+      console.log("Set list member chat");
+      console.log(action.payload);
+      let prevMemberInfoChat = state.group.memberInfoChat;
+      const listNewMember = action.payload;
+      listNewMember.forEach((member) => {
+        prevMemberInfoChat.push(member);
+      });
+
+      state.group.memberInfoChat = prevMemberInfoChat;
     },
     deleteMemberGroup: (state, action) => {
       const listMember = state.memberGroup;

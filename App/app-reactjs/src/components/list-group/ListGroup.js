@@ -7,7 +7,7 @@ import { userActions } from "../../store/userSlice";
 import UserChat from "../userchat/UserChat";
 
 const ListGroup = (props) => {
-  const { user, activeChatFavou, onChangeActiveChat } = props;
+  const { user, activeChatFavou, onChangeActiveChat, changeLoading } = props;
 
   // State
   const [listGroup, setListGroup] = useState([]);
@@ -32,14 +32,20 @@ const ListGroup = (props) => {
   // Event
 
   const changeActiveFriendHandle = async (index) => {
+    changeLoading();
     onChangeActiveChat(index);
     const groupActive = listGroup.find((group) => {
       if (!group) return;
       return group._id === index;
     });
-    console.log(groupActive);
+
+    // Call API lấy lại thông tin group
+    const res = await groupApi.getGroup(groupActive._id);
+    const groupInfo = res.data;
+    //
+
     const data = [];
-    const listFriend = groupActive.memberChat;
+    const listFriend = groupInfo.memberChat;
     for (const friend of listFriend) {
       const item = await friendApi.findFriendById(friend.id);
       data.push(item.data);
@@ -47,6 +53,8 @@ const ListGroup = (props) => {
     // Chuyển đến store với object chưa dữ liệu bạn bè
     const groupToStore = { ...groupActive, memberInfoChat: data };
     dispatch(groupAction.setGroup(groupToStore));
+    dispatch(userActions.setNullFriend());
+    changeLoading();
   };
 
   // Set List Group
@@ -74,9 +82,7 @@ const ListGroup = (props) => {
 
   // Set lại effect List khi bị đuổi
   useEffect(() => {
-    console.log(listGroup);
     listGroup.forEach((group) => console.log(group));
-    console.log(idGroupDeletedStore);
 
     const newListGroup = listGroup.filter((group) => {
       if (group) {

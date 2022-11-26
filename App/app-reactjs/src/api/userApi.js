@@ -21,6 +21,10 @@ const userApi = {
       }
     );
   },
+  findUser: (sdt, idGroup) => {
+    const url = `/user/${sdt}.${idGroup}`;
+    return axiosClient.get(url, {});
+  },
 };
 
 export default userApi;

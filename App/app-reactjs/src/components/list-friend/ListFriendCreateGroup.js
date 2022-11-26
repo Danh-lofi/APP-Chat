@@ -4,6 +4,7 @@ import friendApi from "../../api/friendApi";
 import { userActions } from "../../store/userSlice";
 import UserChat from "../userchat/UserChat";
 import "./listfriend.scss";
+
 const ListFriendCreateGroup = (props) => {
   const { user, members, infoGroup } = props;
   // State
@@ -23,6 +24,7 @@ const ListFriendCreateGroup = (props) => {
 
       // Set list friend có trong group
       let listFriendNotAdd = data.data.listFriend;
+
       infoGroup.listIdUserInGroup.forEach((id) => {
         listFriendNotAdd = listFriendNotAdd.filter((user) => {
           return id.id !== user._id;

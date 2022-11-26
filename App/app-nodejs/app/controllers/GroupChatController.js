@@ -43,6 +43,23 @@ const GroupChatController = {
 
     res.status(200).json({ listGroup });
   },
+  getInfoGroup: async (req, res) => {
+    const { idGroup } = req.params;
+    const id = mongoose.Types.ObjectId(idGroup);
+
+    console.log(idGroup);
+    try {
+      const group = await GroupChatModel.findOne({ _id: id });
+      console.log("group: ");
+      console.log(group);
+      if (!group) {
+        return res.status(404).json({ message: "Group not found" });
+      }
+      res.status(200).json(group);
+    } catch (error) {
+      res.status(402).json({ message: error });
+    }
+  },
 
   updateGroupChatInUser: async (req, res, next) => {
     const listIdUser = req.body.listIdUser;

@@ -152,9 +152,8 @@ const userSlice = createSlice({
       state.group = null;
       state.friend = action.payload;
     },
-    setGroup: (state, action) => {
+    setNullFriend: (state) => {
       state.friend = null;
-      state.group = action.payload;
     },
     changeInfo: (state, action) => {
       state.user = action.payload;

@@ -18,6 +18,10 @@ routerGroupChat.get(
   GroupChatController.getGroupChat
 );
 routerGroupChat.get(
+  "/get-info-group/:idGroup",
+  GroupChatController.getInfoGroup
+);
+routerGroupChat.get(
   "/getAllGroup",
   authMiddleware.isAuth,
   GroupChatController.getGroupChat

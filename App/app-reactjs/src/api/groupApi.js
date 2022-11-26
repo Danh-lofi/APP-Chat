@@ -13,6 +13,10 @@ const groupApi = {
         return response;
       });
   },
+  getGroup: (idGroup) => {
+    const url = `/groupChat/get-info-group/${idGroup}`;
+    return axiosClient.get(url, {});
+  },
   createGroup: (accessToken, data) => {
     const url = `/groupChat/createGroup`;
     return axiosClient.post(

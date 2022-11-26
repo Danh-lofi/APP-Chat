@@ -12,4 +12,6 @@ routerUser.post(
   UserController.update
 );
 
+routerUser.get("/:username.:idGroup", UserController.findUserExistInGroup);
+
 export default routerUser;
