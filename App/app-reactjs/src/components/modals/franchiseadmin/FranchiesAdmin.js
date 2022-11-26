@@ -66,21 +66,30 @@ const FranchiesAdmin = () => {
   const submitHandle = () => {
     const groupId = groupInfo._id;
     const newAdminId = userFranchied;
-    const confirmHanlde = () => {
+    const confirmFranchiesHanlde = () => {
       groupApi.leaveGroup(accessToken, groupId, newAdminId);
       // Render lại list group
       dispatch(groupAction.setIdGroupDeleted(groupId));
       hideModal();
     };
 
-    const title = "Thoát nhóm";
-    const content = "Bạn chắc chắn thoát nhóm";
+    const confirmDeleteGroupHanlde = () => {
+      groupApi.deleteGroup(groupId);
+      // Render lại list group
+      dispatch(groupAction.setIdGroupDeleted(groupId));
+      hideModal();
+    };
+
+    const title = newAdminId ? "Thoát nhóm" : "Giải thể nhóm";
+    const content = newAdminId
+      ? "Bạn chắc chắn thoát nhóm"
+      : "Bạn chắc chắn giải thể nhóm";
     const isConfirm = true;
 
     const confirm = {
       title,
       content,
-      onConfirm: confirmHanlde,
+      onConfirm: newAdminId ? confirmFranchiesHanlde : confirmDeleteGroupHanlde,
       isOpenConfirm: isConfirm,
     };
     dispatch(modalSliceAction.setOpenConfirm(confirm));

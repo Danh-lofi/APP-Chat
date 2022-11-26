@@ -19,6 +19,7 @@ import { io } from "socket.io-client";
 import FormatDate from "../../../method/FormatDate";
 import { groupAction } from "../../../store/groupSlice";
 import friendApi from "../../../api/friendApi";
+import ListFriendAddGroup from "../../list-friend/ListFriendAddGroup";
 const AddFriendToGroup = ({ onClose }) => {
   // Redux
   const dispatch = useDispatch();
@@ -196,7 +197,7 @@ const AddFriendToGroup = ({ onClose }) => {
         )}
         <div className="listFriend">
           <p className="label">Bạn bè</p>
-          <ListFriendCreateGroup
+          <ListFriendAddGroup
             user={user}
             changeLoading={changeLoadingHandle}
             setMembers={setMembers}

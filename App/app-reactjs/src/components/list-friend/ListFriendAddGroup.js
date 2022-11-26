@@ -5,7 +5,7 @@ import { userActions } from "../../store/userSlice";
 import UserChat from "../userchat/UserChat";
 import "./listfriend.scss";
 
-const ListFriendCreateGroup = (props) => {
+const ListFriendAddGroup = (props) => {
   const { user, members, infoGroup } = props;
   // State
   const [listFriend, setListFriend] = useState([]);
@@ -17,15 +17,24 @@ const ListFriendCreateGroup = (props) => {
   const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
 
   useEffect(() => {
-    props.changeLoading();
+    // props.changeLoading();
     const getListFriends = async () => {
       const data = await friendApi.getFriend(accessToken);
       props.changeLoading();
-      console.log(data.data.listFriend);
-      setListFriend(data.data.listFriend);
+
+      // Set list friend có trong group
+      let listFriendNotAdd = data.data.listFriend;
+      console.log("infoGroup: ");
+      console.log(infoGroup);
+      infoGroup.listIdUserInGroup.forEach((id) => {
+        listFriendNotAdd = listFriendNotAdd.filter((user) => {
+          return id.id !== user._id;
+        });
+      });
+      setListFriend(listFriendNotAdd);
     };
     getListFriends();
-    props.changeLoading();
+    // props.changeLoading();
   }, []);
 
   const changeActiveFriendHandle = (index) => {
@@ -68,4 +77,4 @@ const ListFriendCreateGroup = (props) => {
   return <div className="list__friend__group__container">{List}</div>;
 };
 
-export default ListFriendCreateGroup;
+export default ListFriendAddGroup;

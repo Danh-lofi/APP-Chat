@@ -63,6 +63,19 @@ const groupApi = {
       }
     );
   },
+  franchiesAdmin: (groupId, newAdminId) => {
+    const url = `/groupChat/franchies`;
+    return axiosClient.post(url, {
+      groupId,
+      newAdminId,
+    });
+  },
+  deleteGroup: (groupId) => {
+    const url = `/groupChat/delete`;
+    return axiosClient.post(url, {
+      groupId,
+    });
+  },
 };
 
 export default groupApi;

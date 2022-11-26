@@ -166,6 +166,19 @@ const GroupChatController = {
       console.log("loi");
     }
   },
+  franchiesAdmin: async (req, res) => {
+    const { groupId, newAdminId } = req.body;
+    console.log("groupId", groupId);
+    try {
+      await GroupChatModel.findOneAndUpdate(
+        { _id: groupId },
+        { adminGroup: newAdminId }
+      );
+      res.status(200).send({ message: "Nhượng quyền thành công" });
+    } catch (error) {
+      res.status(502).send({ error });
+    }
+  },
   leaveGroup: async (req, res) => {
     const user = req.user;
     const meId = user._id;
@@ -367,6 +380,31 @@ const GroupChatController = {
         .status(200)
         .json({ message: "them vao nhom chat thanh cong", insert });
     }
+  },
+  deleteGroup: async (req, res) => {
+    console.log(
+      "---------------------------Delete Group------------------------"
+    );
+    const idGroup = req.body.groupId;
+    try {
+      const group = await GroupChatModel.findOne({ _id: idGroup });
+      const memberChat = group.memberChat;
+      for (const member of memberChat) {
+        console.log("member:");
+        console.log(member);
+
+        const data = await UserModel.findOneAndUpdate(
+          { _id: member.id },
+          { $pull: { groups: { id: mongoose.Types.ObjectId(idGroup) } } }
+        );
+        console.log("DATA:");
+        console.log(data);
+      }
+      await GroupChatModel.deleteOne({ _id: idGroup });
+    } catch (error) {
+      res.status(502).json({ message: "Xóa thất bại" });
+    }
+    res.status(204).json({ message: "Xóa thành công" });
   },
 };
 

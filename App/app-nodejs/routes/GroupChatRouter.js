@@ -42,6 +42,12 @@ routerGroupChat.post(
   GroupChatController.leaveGroup
 );
 
+// [POST] {groupId, newAdminId}
+routerGroupChat.post("/franchies", GroupChatController.franchiesAdmin);
+
+// [POST] { groupId}
+routerGroupChat.post("/delete", GroupChatController.deleteGroup);
+
 routerGroupChat.put("/renameGroupChat", GroupChatController.renameGroupChat);
 
 // _id: idGroup, idUserDeleted

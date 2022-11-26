@@ -6,7 +6,9 @@ import {
   faUserGroup,
   faBan,
   faDownload,
+  faKey,
 } from "@fortawesome/free-solid-svg-icons";
+import { faKeycdn } from "@fortawesome/free-brands-svg-icons";
 import "./ProfileGroup.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { modalSliceAction } from "../../../store/modalSlice";
@@ -24,6 +26,7 @@ const ProfileGroup = () => {
   // State
   const [listMember, setListMember] = useState([]);
   const [totalMember, setTotalMember] = useState();
+  const [newAdminGroup, setNewAdminGroup] = useState();
   //
   // Token
   const accessToken = JSON.parse(localStorage.getItem("user")).accessToken;
@@ -37,6 +40,7 @@ const ProfileGroup = () => {
   // effect
   useEffect(() => {
     // if()
+    setNewAdminGroup(groupInfo.adminGroup);
     setListMember(groupInfo.memberInfoChat);
     setTotalMember(groupInfo.memberInfoChat.length);
   }, [groupInfo.memberInfoChat]);
@@ -107,11 +111,12 @@ const ProfileGroup = () => {
     /* [INPUT]: AccessToken, groupId, newAdminId
       - Nếu là admin hiện bảng danh sách nhượng quyền admin
       - Không là admin hiện modal xác nhận
+      - Không nhượng quyền giải tán nhóm
     */
     const groupId = groupInfo._id;
 
     // Là admin
-    if (user._id === groupInfo.adminGroup) {
+    if (user._id === newAdminGroup) {
       dispatch(
         modalSliceAction.setOpenFranchiesAdmin({ isOpen: true, groupInfo })
       );
@@ -137,8 +142,28 @@ const ProfileGroup = () => {
       dispatch(groupAction.setIdGroupDeleted(groupId));
     }
   };
-  // Render
+  // Nhượng quyền admin
+  const franchiesAdminGroupHandle = (newAdminId) => {
+    const groupId = groupInfo._id;
+    const confirmHanlde = () => {
+      groupApi.franchiesAdmin(groupId, newAdminId);
+      setNewAdminGroup(newAdminId);
+    };
 
+    const title = "Chuyển trưởng nhóm";
+    const content = "Bạn chắc chắn chuyển nhóm";
+    const isConfirm = true;
+
+    const confirm = {
+      title,
+      content,
+      onConfirm: confirmHanlde,
+      isOpenConfirm: isConfirm,
+    };
+    dispatch(modalSliceAction.setOpenConfirm(confirm));
+    // Render lại list group
+  };
+  // Render
   // Danh sách thành viên
   const ListFriend = listMember.map((member) => {
     if (member._id === user._id) {
@@ -149,15 +174,30 @@ const ProfileGroup = () => {
           <img src={member.avatar} alt="avatar"></img>
           <p className="name_member">{member.name}</p>
         </div>
-        {member._id === adminGroup ? (
-          <span> Trưởng nhóm</span>
+        {member._id === newAdminGroup ? (
+          <div class="tag_member__container">
+            <FontAwesomeIcon
+              title="Trưởng nhóm"
+              className="icon tag_member__lead"
+              icon={faKey}
+            />
+            <span> Trưởng nhóm</span>
+          </div>
         ) : adminGroup === user._id ? (
-          <FontAwesomeIcon
-            title="Xóa khỏi nhóm"
-            className="icon"
-            icon={faTrash}
-            onClick={() => deleteFriendFromGroupHandle(member._id)}
-          />
+          <div>
+            <FontAwesomeIcon
+              title="Nhượng trưởng nhóm"
+              className="icon tag_member__franchies"
+              icon={faKeycdn}
+              onClick={() => franchiesAdminGroupHandle(member._id)}
+            />
+            <FontAwesomeIcon
+              title="Xóa khỏi nhóm"
+              className="icon"
+              icon={faTrash}
+              onClick={() => deleteFriendFromGroupHandle(member._id)}
+            />
+          </div>
         ) : (
           ""
         )}

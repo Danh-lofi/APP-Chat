@@ -72,6 +72,7 @@ const ChatBox = (props) => {
   const friend = useSelector((state) => state.user.friend);
   // const group = useSelector((state) => state.user.group);
   const group = useSelector((state) => state.group.group);
+
   const dispatch = useDispatch();
   //
 
@@ -158,7 +159,7 @@ const ChatBox = (props) => {
           setChatId(chat.data._id);
           return;
         }
-        if (group) {
+        if (group._id) {
           const chat = await chatApi.getGroupChat(group._id);
           setChatId(chat.data._id);
           return;
@@ -225,7 +226,7 @@ const ChatBox = (props) => {
     }`;
     if (data.status === 200) {
       let members;
-      if (group) {
+      if (group._id) {
         members = group.memberChat.filter((member) => member.id !== user._id);
       }
 
@@ -234,7 +235,7 @@ const ChatBox = (props) => {
           chatId,
           senderId: user._id,
           text: message,
-          receiverId: group ? members : friend._id,
+          receiverId: group._id ? members : friend._id,
           time,
         });
       }
@@ -296,7 +297,7 @@ const ChatBox = (props) => {
       }`;
       if (data.status === 200) {
         let members;
-        if (group) {
+        if (group._id) {
           members = group.memberChat.filter((member) => member.id !== user._id);
         }
 
@@ -304,7 +305,7 @@ const ChatBox = (props) => {
           chatId,
           senderId: user._id,
           text: data.data.result.text,
-          receiverId: group ? members : friend._id,
+          receiverId: group._id ? members : friend._id,
           isFileWord,
           isImg,
           type,
@@ -362,14 +363,14 @@ const ChatBox = (props) => {
       }`;
       if (data.status === 200) {
         let members;
-        if (group) {
+        if (group._id) {
           members = group.memberChat.filter((member) => member.id !== user._id);
         }
         socket.current.emit("send-message", {
           chatId,
           senderId: user._id,
           text: data.data.result.text,
-          receiverId: group ? members : friend._id,
+          receiverId: group._id ? members : friend._id,
           isImg,
           isFile,
           time,

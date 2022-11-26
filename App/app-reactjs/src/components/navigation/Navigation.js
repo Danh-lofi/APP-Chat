@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./navigation.scss";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -41,6 +41,10 @@ const Box = styled(animated.div)`
 
 const Navigation = () => {
   const dispatch = useDispatch();
+  // Redux
+  const user = useSelector((state) => state.user.user);
+
+  //
 
   const config = { tension: 300, friction: 30 };
   const initialStyles = {
@@ -139,10 +143,7 @@ const Navigation = () => {
             onHide={onHide}
           >
             <div className="navigation__bottom__user">
-              <img
-                src="https://s120-ava-talk.zadn.vn/b/9/b/a/6/120/473b8d61137b99d8000663d47e7437c9.jpg"
-                alt="avatar"
-              />
+              <img src={user.avatar} alt="avatar" />
             </div>
           </Tippy>
         </div>
