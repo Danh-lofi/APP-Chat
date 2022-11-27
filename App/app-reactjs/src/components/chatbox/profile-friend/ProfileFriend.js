@@ -43,7 +43,6 @@ const ProfileFriend = (props) => {
   const confirmHandle = async () => {
     try {
       const data = await friendApi.deleteFriend(accessToken, _id);
-      console.log(data);
       toast.success("Xóa thành công");
     } catch (error) {}
   };

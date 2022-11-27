@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import friendApi from "../../api/friendApi";
 import { userActions } from "../../store/userSlice";
 import UserChat from "../userchat/UserChat";
@@ -15,6 +15,7 @@ const ListFriend = (props) => {
 
   // Redux
   const dispatch = useDispatch();
+  const userAccept = useSelector((state) => state.friend.userAccept);
   //
 
   // Event
@@ -34,6 +35,12 @@ const ListFriend = (props) => {
     getListFriends();
     props.changeLoading();
   }, []);
+
+  // Set lại list khi có user chấp nhận lời mời kết bạn
+  useEffect(() => {
+    console.log(userAccept);
+    setListFriend((friends) => [...friends, userAccept]);
+  }, [userAccept]);
 
   // Render list
   const List = listFriend.map((friend, index) => {

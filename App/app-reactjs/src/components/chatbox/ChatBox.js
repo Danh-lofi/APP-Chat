@@ -148,7 +148,8 @@ const ChatBox = (props) => {
   useEffect(() => {
     socket.current.on("accept-require-friend", (data) => {
       toast.success(`${data.user.name} vừa đồng ý kết bạn`);
-      // dispatch(friendSliceAction.setUserEvicted(data));
+
+      dispatch(friendSliceAction.setUserAccept(data.user));
     });
   }, [receivedMessage]);
 

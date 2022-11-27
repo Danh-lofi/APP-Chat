@@ -29,10 +29,6 @@ const ListInvite = (props) => {
   //
   // Set lại list khi có thêm yêu cầu kết bạn
   useEffect(() => {
-    console.log("isEvicted");
-    console.log(isEvicted);
-    console.log("userRequired");
-    console.log(userRequired);
     if (isEvicted) {
       const listNotEvicted = listFriend.filter(
         (item) => item.username !== userRequired.username
@@ -47,7 +43,7 @@ const ListInvite = (props) => {
     props.changeLoading();
     const getListFriends = async () => {
       const data = await friendApi.getInvitesFriend(user._id);
-      console.log(data);
+
       props.changeLoading();
       setListFriend(data.data.listUser);
     };
@@ -58,14 +54,8 @@ const ListInvite = (props) => {
 
   // Xử lí đồng ý kết bạn
   const acceptRequestFriendHandle = async (idRequest, friend) => {
-    console.log("friend: ");
-    console.log(friend);
-    // Gửi id của yêu cầu
-    console.log("idRequest: ");
-    console.log(idRequest);
     try {
       const data = await friendApi.acceptFriend(idRequest);
-      console.log(data);
       if (data.status === 200) {
         toast.success("Kết bạn thành công");
         // Set lại danh sách yêu cầu
