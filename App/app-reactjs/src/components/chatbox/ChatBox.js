@@ -67,6 +67,9 @@ const ChatBox = (props) => {
   const [ariaExpanded, setAriaExpanded] = useState("");
   const [more, setMore] = useState(false);
   const [isProfileFriend, setIsProfileFriend] = useState(false);
+  const [images, setImages] = useState();
+  const [files, setFiles] = useState();
+
   //
   // Redux
   const friend = useSelector((state) => state.user.friend);
@@ -176,8 +179,6 @@ const ChatBox = (props) => {
   // Nhận lại id người bị xóa
   useEffect(() => {
     socket.current.on("receive-delete-member-from-group", (data) => {
-      console.log("Id group bị xóa:");
-      console.log(data);
       dispatch(groupAction.setIdGroupDeleted(data));
     });
   }, [receivedMessage]);
@@ -185,8 +186,6 @@ const ChatBox = (props) => {
   // Nhận lại list member ngoại trừ người bị xóa
   useEffect(() => {
     socket.current.on("receive-delete-member", (data) => {
-      console.log("List mới sau khi xóa:");
-      console.log(data);
       dispatch(groupAction.setMemberGroup(data));
     });
   }, [receivedMessage]);
@@ -201,6 +200,18 @@ const ChatBox = (props) => {
       }
       const messagesData = await messageApi.getMessages(chatId);
       setMessgages(messagesData.data);
+      const listImage = messagesData.data.filter(
+        (message) => message.isImg === true
+      );
+      setImages(listImage);
+      const listFile = messagesData.data.filter(
+        (message) =>
+          message.isFileExel ||
+          message.isFilePdf ||
+          message.isFilePowP ||
+          message.isFileWord
+      );
+      setFiles(listFile);
     };
     getAllMessages(chatId);
   }, [chatId]);
@@ -608,7 +619,11 @@ const ChatBox = (props) => {
         <NonChatBox />
       )}
       <div className={`profile-friend ${!isProfileFriend ? "not-active" : ""}`}>
-        {friend ? <ProfileFriend /> : <ProfileGroup />}
+        {friend ? (
+          <ProfileFriend images={images} files={files} />
+        ) : (
+          <ProfileGroup images={images} files={files} />
+        )}
       </div>
     </div>
   );

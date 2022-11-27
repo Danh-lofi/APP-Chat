@@ -13,7 +13,9 @@ import "./ProfileFriend.scss";
 import { useDispatch, useSelector } from "react-redux";
 import friendApi from "../../../api/friendApi";
 import { modalSliceAction } from "../../../store/modalSlice";
-const ProfileFriend = () => {
+const ProfileFriend = (props) => {
+  const { images, files } = props;
+
   // Redux
   const dispatch = useDispatch();
   // AccessToken
@@ -95,58 +97,35 @@ const ProfileFriend = () => {
           <div className="contain_media_friend">
             <p>Media</p>
             <div className="contain_media">
-              <div className="media">
-                <img src={avatar} alt=""></img>
-              </div>
-              <div className="media">
-                <img src={avatar} alt=""></img>
-              </div>
-              <div className="media">
-                <img src={avatar} alt=""></img>
-              </div>
-              <div className="media">
-                <img src={avatar} alt=""></img>
-              </div>
-              <div className="media">
-                <img src={avatar} alt=""></img>
-              </div>
-              <div className="media">
-                <img src={avatar} alt=""></img>
-              </div>
-              <div className="media">
-                <img src={avatar} alt=""></img>
-              </div>
-              <div className="media">
-                <img src={avatar} alt=""></img>
-              </div>
+              {images
+                ? images.map((image) => (
+                    <div className="media" key={image._id}>
+                      <img src={image.text} alt=""></img>
+                    </div>
+                  ))
+                : ""}
             </div>
           </div>
           <div className="contain_files_friends">
             <p className="contain_files_friends__title">File đã gửi</p>
-            <div className="file_contain">
-              <div className="file">
-                <div className="file_infor">
-                  <p className="file_name">tailieu.docs</p>
-                  <p className="size_name">1.50MB</p>
-                </div>
-                <div className="file_action">
-                  <FontAwesomeIcon className="icon" icon={faDownload} />
-                  <FontAwesomeIcon className="icon" icon={faTrash} />
-                </div>
-              </div>
-            </div>
-            <div className="file_contain">
-              <div className="file">
-                <div className="file_infor">
-                  <p className="file_name">tailieu.docs</p>
-                  <p className="size_name">1.50MB</p>
-                </div>
-                <div className="file_action">
-                  <FontAwesomeIcon className="icon" icon={faDownload} />
-                  <FontAwesomeIcon className="icon" icon={faTrash} />
-                </div>
-              </div>
-            </div>
+            {files
+              ? files.map((file) => (
+                  <a href={file.text} className="file_contain" key={file._id}>
+                    <div className="file">
+                      <div className="file_infor">
+                        <p className="file_name">
+                          {file.fileName}.{file.type}
+                        </p>
+                        {/* <p className="size_name">1.50MB</p> */}
+                      </div>
+                      <div className="file_action">
+                        <FontAwesomeIcon className="icon" icon={faDownload} />
+                        <FontAwesomeIcon className="icon" icon={faTrash} />
+                      </div>
+                    </div>
+                  </a>
+                ))
+              : ""}
           </div>
         </div>
       </div>

@@ -112,44 +112,6 @@ const Profile = (props) => {
                 <p>{gender}</p>
               </div>
             </div>
-            <div className="body__media_contain">
-              <p>Media</p>
-              <div className="media_contain">
-                <div className="media__img_contain">
-                  <img src="https://assets.ey.com/content/dam/ey-sites/ey-com/en_gl/topics/global-review/2019/ey-staff-at-event.jpg"></img>
-                </div>
-                <div className="media__img_contain">
-                  <img src="https://assets.ey.com/content/dam/ey-sites/ey-com/en_gl/topics/global-review/2019/ey-staff-at-event.jpg"></img>
-                </div>
-              </div>
-            </div>
-            <div className="body__files_contain">
-              <p>Files</p>
-              <div className="files__contain">
-                <div className="files__file_cotain">
-                  <div className="file_infor">
-                    <p className="file_name">tailieu.docs</p>
-                    <p className="size_name">1.50MB</p>
-                  </div>
-                  <div className="file_action">
-                    <FontAwesomeIcon className="icon" icon={faDownload} />
-                    <FontAwesomeIcon className="icon" icon={faTrash} />
-                  </div>
-                </div>
-              </div>
-              <div className="files__contain">
-                <div className="files__file_cotain">
-                  <div className="file_infor">
-                    <p className="file_name">tailieu.docs</p>
-                    <p className="size_name">1.50MB</p>
-                  </div>
-                  <div className="file_action">
-                    <FontAwesomeIcon className="icon" icon={faDownload} />
-                    <FontAwesomeIcon className="icon" icon={faTrash} />
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

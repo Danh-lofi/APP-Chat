@@ -18,7 +18,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { groupAction } from "../../../store/groupSlice";
 import { io } from "socket.io-client";
 
-const ProfileGroup = () => {
+const ProfileGroup = (props) => {
+  const { images, files } = props;
+
   // Socket
   const socket = useRef();
   socket.current = io("ws://localhost:3001");
@@ -241,58 +243,61 @@ const ProfileGroup = () => {
         <div className="contain_media_friend">
           <p>Media</p>
           <div className="contain_media">
-            <div className="media">
-              <img src={imgGroupChat} alt=""></img>
-            </div>
-            <div className="media">
-              <img src={imgGroupChat} alt=""></img>
-            </div>
-            <div className="media">
-              <img src={imgGroupChat} alt=""></img>
-            </div>
-            <div className="media">
-              <img src={imgGroupChat} alt=""></img>
-            </div>
-            <div className="media">
-              <img src={imgGroupChat} alt=""></img>
-            </div>
-            <div className="media">
-              <img src={imgGroupChat} alt=""></img>
-            </div>
-            <div className="media">
-              <img src={imgGroupChat} alt=""></img>
-            </div>
-            <div className="media">
-              <img src={imgGroupChat} alt=""></img>
-            </div>
+            {images
+              ? images.map((image) => (
+                  <div className="media" key={image._id}>
+                    <img src={image.text} alt=""></img>
+                  </div>
+                ))
+              : ""}
           </div>
+          {/* <div className="contain_media">
+            <div className="media">
+              <img src={imgGroupChat} alt=""></img>
+            </div>
+            <div className="media">
+              <img src={imgGroupChat} alt=""></img>
+            </div>
+            <div className="media">
+              <img src={imgGroupChat} alt=""></img>
+            </div>
+            <div className="media">
+              <img src={imgGroupChat} alt=""></img>
+            </div>
+            <div className="media">
+              <img src={imgGroupChat} alt=""></img>
+            </div>
+            <div className="media">
+              <img src={imgGroupChat} alt=""></img>
+            </div>
+            <div className="media">
+              <img src={imgGroupChat} alt=""></img>
+            </div>
+            <div className="media">
+              <img src={imgGroupChat} alt=""></img>
+            </div>
+          </div> */}
         </div>
         <div className="contain_files_friends">
           <p>File đã gửi</p>
-          <div className="file_contain">
-            <div className="file">
-              <div className="file_infor">
-                <p className="file_name">tailieu.docs</p>
-                <p className="size_name">1.50MB</p>
-              </div>
-              <div className="file_action">
-                <FontAwesomeIcon className="icon" icon={faDownload} />
-                <FontAwesomeIcon className="icon" icon={faTrash} />
-              </div>
-            </div>
-          </div>
-          <div className="file_contain">
-            <div className="file">
-              <div className="file_infor">
-                <p className="file_name">tailieu.docs</p>
-                <p className="size_name">1.50MB</p>
-              </div>
-              <div className="file_action">
-                <FontAwesomeIcon className="icon" icon={faDownload} />
-                <FontAwesomeIcon className="icon" icon={faTrash} />
-              </div>
-            </div>
-          </div>
+          {files
+            ? files.map((file) => (
+                <a href={file.text} className="file_contain" key={file._id}>
+                  <div className="file">
+                    <div className="file_infor">
+                      <p className="file_name">
+                        {file.fileName}.{file.type}
+                      </p>
+                      {/* <p className="size_name">1.50MB</p> */}
+                    </div>
+                    <div className="file_action">
+                      <FontAwesomeIcon className="icon" icon={faDownload} />
+                      <FontAwesomeIcon className="icon" icon={faTrash} />
+                    </div>
+                  </div>
+                </a>
+              ))
+            : ""}
         </div>
       </div>
     </div>

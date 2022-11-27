@@ -150,15 +150,20 @@ h2 {
 }
 
 .contain_media {
-    margin-left: 10px;
+    margin: 10px 20px 20px;
     display: flex;
     flex-wrap: wrap;
-
+    max-height: 220px;
+    overflow: scroll;
+    scrollbar-width: thin;
+    ::-webkit-scrollbar {
+            width: 2px !important;
+        }
     .media {
         margin-left: 10px;
         width: 60px;
         height: 60px;
-        margin: 5px;
+        margin: 8px 5px;
 
         img {
             width: 100%;
@@ -169,7 +174,8 @@ h2 {
 }
 
 .file_contain {
-    // margin-left: 10px;
+    text-decoration: none;
+    margin: 0 2rem;
     display: flex;
     flex-direction: column;
 
@@ -178,6 +184,7 @@ h2 {
     }
 
     .file {
+        padding: 0 1rem;
         margin: .5rem 0;
         // width: 100px;
         .file_infor {
@@ -188,6 +195,7 @@ h2 {
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                color: #333;
             }
         }
 
@@ -217,4 +225,44 @@ h2 {
 
 .contain_list_tag{
     margin: 10px 0;
+}
+
+
+// Scroll bar
+.profile_friend_container *::-webkit-scrollbar {
+    border-radius: 0;
+    width: 2px;
+    height: 10px;
+    scrollbar-width: none;
+    
+}
+
+.profile_friend_container *::-webkit-scrollbar {
+    border-radius: 0;
+    width: 2px;
+    height: 10px;
+    scrollbar-width: none;
+  
+}
+
+.profile_friend_container *::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .15);
+    // background-color: $primary-color;
+}
+
+.profile_friend_container *::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .15);
+    // background-color: $primary-color;
+}
+
+.profile_friend_container *::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.profile_friend_container *::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
 }

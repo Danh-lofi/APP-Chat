@@ -46,22 +46,24 @@ img {
 // Scroll bar
 html *::-webkit-scrollbar {
   border-radius: 0;
-  width: 8px;
+  width: 4px;
 }
 
 html *::-webkit-scrollbar {
   border-radius: 0;
-  width: 8px;
+  width: 4px;
 }
 
 html *::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: rgba(0, 0, 0, .15);
+  // background-color: rgba(0, 0, 0, .15);
+  background-color: $primary-color;
 }
 
 html *::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: rgba(0, 0, 0, .15);
+  // background-color: rgba(0, 0, 0, .15);
+  background-color: $primary-color;
 }
 
 html *::-webkit-scrollbar-track {
