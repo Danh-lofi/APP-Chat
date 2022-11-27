@@ -46,7 +46,9 @@ const User = new Schema({
   },
   coverImg: {
     type: String,
-    default: "",
+    default:
+      "https://media.istockphoto.com/id/1360794070/vector/concept-of-future-digital-technology-metaverse-colorful-background-vector-illustration-eps10.jpg?s=612x612&w=0&k=20&c=muAKVP1-6rwJs5JWn4qb-OlXeait5_2ZZ8IO-vq9NsU=",
+    required: false,
   },
   friends: [],
   groups: [],
@@ -63,15 +65,7 @@ const User = new Schema({
     type: String,
     required: false,
   },
-  avatar: {
-    type: String,
-    required: false,
-  },
-  coverImg: {
-    type: String,
-    required: false,
-  },
-  friends: [],
+
   idRequest: {
     type: String,
   },

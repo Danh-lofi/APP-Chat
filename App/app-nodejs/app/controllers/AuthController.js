@@ -23,7 +23,6 @@ const AutherController = {
   login: async (req, res, next) => {
     const username = req.body.username;
     const password = req.body.password;
-    console.log("username: " + username + " password:" + password);
 
     // Truy xuất db
     const user = await UserModel.findOne({ username: username });
@@ -75,21 +74,20 @@ const AutherController = {
 
   // POST (username,password)
   // Đăng kí
-  register: (req, res, next) => {
-    const username = req.body.username.toLowerCase();
-    const hashPassword = bcrypt.hashSync(req.body.password, 10);
+  register: async (req, res, next) => {
+    const { username, password } = req.body;
 
     const newUser = new UserModel({
       username: username,
-      password: hashPassword,
+      password: password,
     });
-    newUser.save((err) => {
-      if (err) {
-        return res.status(400).send("Có lỗi khi tạo " + err);
-      }
+    try {
+      await newUser.save();
       const user = { username, password: req.body.password };
       return res.status(200).json({ user });
-    });
+    } catch (error) {
+      res.status(400).send("Có lỗi khi tạo " + err);
+    }
   },
   registerApp: async (req, res, next) => {
     try {

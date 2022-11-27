@@ -8,8 +8,8 @@ import "./Register_info.scss";
 import { info, login, registerInfo } from "../../store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register_info = (props) => {
   const [name, setName] = useState("");
@@ -21,13 +21,15 @@ const Register_info = (props) => {
   const navigate = useNavigate();
   const userRegister = useSelector((state) => state.user.user);
   useEffect(() => {
-    if(userRegister) {
-      toast.success('Đăng kí thành công')
+    if (userRegister) {
+      toast.success("Đăng kí thành công");
     }
-  }, [userRegister]) 
+  }, [userRegister]);
   const username = userRegister.username;
   const password = userRegister.password;
   const submitHandle = () => {
+    console.log("userRegister", userRegister);
+
     const user = {
       username,
       name,
@@ -40,6 +42,7 @@ const Register_info = (props) => {
         // Đăng kí thành công
 
         dispatch(login({ username, password })).then((res) => {
+          console.log("res.payload", res.payload);
           if (res.payload.status !== 200) {
             return;
           }
@@ -86,7 +89,7 @@ const Register_info = (props) => {
 
   return (
     <div className="login">
-       <ToastContainer />
+      <ToastContainer />
       <div className="login__container">
         <div className="login__title">
           <h3 className="login__title__main">Thông tin tài khoản</h3>

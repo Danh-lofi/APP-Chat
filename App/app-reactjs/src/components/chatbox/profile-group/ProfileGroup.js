@@ -207,7 +207,7 @@ const ProfileGroup = () => {
   return (
     <div className="profile_friend_container">
       <ToastContainer />
-      <div className="header">
+      <div className="profile_friend_container__header">
         <h2>Thông tin nhóm</h2>
       </div>
       <div className="infor">
