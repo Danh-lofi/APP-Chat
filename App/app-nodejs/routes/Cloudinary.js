@@ -6,6 +6,7 @@ import { uploadCloud } from "../config/cloudynary/cloudinary.config.js";
 const routerCloudinary = express.Router();
 
 routerCloudinary.get("/images", CloudinaryController.images);
+
 routerCloudinary.post(
   "/upload",
   authMiddleware.authApp,

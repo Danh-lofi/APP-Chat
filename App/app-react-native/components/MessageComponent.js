@@ -6,6 +6,8 @@ import { min } from "react-native-reanimated";
 import { ApiGetUser } from "../api/ApiUser";
 
 export default function MessageComponent({ item, idUser, onPress }) {
+  console.log(item);
+  const { _id, chatId, senderId, fileName, isImg, type, text } = item;
   const status = item.senderId !== idUser;
   const [statusTouch, setStatusTouch] = useState(false);
   const [disTime, setDisTime] = useState("");
@@ -129,15 +131,45 @@ export default function MessageComponent({ item, idUser, onPress }) {
           <Pressable
             style={
               status
-                ? styles.mmessage
+                ? [
+                    styles.mmessage,
+                    isImg
+                      ? {
+                          backgroundColor: "rgba(255,255,255,0)",
+                          marginRight: 10,
+                        }
+                      : styles.mmessage,
+                  ]
                 : [
                     styles.mmessage,
-                    { backgroundColor: "rgb(194, 243, 194)", marginRight: 10 },
+                    !isImg
+                      ? {
+                          backgroundColor: "rgb(194, 243, 194)",
+                          marginRight: 10,
+                        }
+                      : {
+                          backgroundColor: "rgba(255,255,255,0)",
+                          marginRight: 10,
+                        },
                   ]
             }
             onPress={touchMess}
           >
-            <Text>{item.text}</Text>
+            {isImg ? (
+              <View style={{ height: 100, width: 100 }}>
+                <Image
+                  style={{
+                    flex: 1,
+                    height: null,
+                    width: null,
+                    resizeMode: "contain",
+                  }}
+                  source={{ uri: text }}
+                />
+              </View>
+            ) : (
+              <Text>{item.text}</Text>
+            )}
           </Pressable>
         </View>
         {statusTouch === true ? (

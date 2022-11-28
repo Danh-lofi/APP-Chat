@@ -99,7 +99,6 @@ const SC_Chat = ({ navigation, route }) => {
     };
 
     const data = await messageApi.addMessage(messageSender);
-    console.log("200----------");
 
     const hour =
       new Date().getHours() < 10
@@ -114,7 +113,6 @@ const SC_Chat = ({ navigation, route }) => {
     const time = `${hour}:${mins}`;
 
     if (data.status === 200) {
-      console.log("--------200----------");
       if (message !== null) {
         socket.emit("send-message", {
           chatId,
@@ -133,77 +131,98 @@ const SC_Chat = ({ navigation, route }) => {
     }
 
     setMessage("");
-
-    console.log({
-      message,
-      idUser,
-      timestamp: { hour, mins },
-    });
   };
 
   const chooseImg = async () => {
     let rs = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
+      // allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
       base64: true,
     });
 
+    let uri = rs.uri;
+    let fileExtension = uri.substr(uri.lastIndexOf(".") + 1);
+    const isImg = rs.type == "image" ? true : false;
+    const type = fileExtension;
+
+    const base64Img = `data:image/jpg;base64,${rs.base64}`;
+    const accessToken = await AsyncStorage.getItem("token");
+    const fileName = rs.uri.substring(
+      rs.uri.lastIndexOf("/") + 1,
+      rs.uri.length
+    );
+
     if (rs.cancelled === false) {
-      // console.log(rs);
-      // console.log(rs.uri);
-      const name = rs.uri;
-      const lastDot = name.lastIndexOf(".");
-
-      const fileName = name.substring(0, lastDot);
-      const type = name.substring(lastDot + 1).toLowerCase();
-
-      const isImg =
-        type == "png" || type == "jpg" || type == "JPG" || type == "PNG"
-          ? true
-          : false;
-      const isFile =
-        type == "docx" || type == "ptxx" || type == "pdf" ? true : false;
-
-      const messageSender = {
+      const data = await cloudinaryApi.cloudinaryUpload(
+        base64Img,
+        accessToken,
         chatId,
-        senderId: idUser,
-        text: message,
-        isImg,
-        isFile,
-      };
-
-      const test = name.substring(name.lastIndexOf(":") + 4);
-
-      // console.log(test);
-
-      const dataImg = {
-        data: rs.base64,
-        token: token,
-        chatId: chatId,
-        type: type,
-        fileName: fileName,
-      };
-
-      // const data = await cloudinaryApi.cloudinaryUpload(
-      //   rs,
-      //   token,
-      //   chatId,
-      //   type,
-      //   fileName
-      // );
-
-      const data = await cloudinaryApi.upLoad(dataImg);
-
-      if (data.status === 200) {
-        // console.log(data);
-        // console.log(messageSender);
-        console.log("thanh cong");
-      } else {
-        console.log("upload khong thanh cong");
-      }
+        type,
+        fileName
+      );
+      console.log("data:", data);
     }
+    // if (rs.cancelled === false) {
+    //   const base64Img = `data:image/jpg;base64,${rs.base64}`;
+    //   const accessToken = await AsyncStorage.getItem("token");
+
+    //   const data = await cloudinaryApi.cloudinaryUpload(
+    //     base64Img,
+    //     accessToken,
+    //     chatId,
+    //     type,
+    //     fileName,
+    //     isFileWord,
+    //     isFilePdf,
+    //     isFilePowP,
+    //     isFileExel
+    //   );
+    //   // console.log(rs);
+    //   // console.log(rs.uri);
+    //   // const name = rs.uri;
+    //   // const lastDot = name.lastIndexOf(".");
+    //   // const fileName = name.substring(0, lastDot);
+    //   // const type = name.substring(lastDot + 1).toLowerCase();
+    //   // const isImg =
+    //   //   type == "png" || type == "jpg" || type == "JPG" || type == "PNG"
+    //   //     ? true
+    //   //     : false;
+    //   // const isFile =
+    //   //   type == "docx" || type == "ptxx" || type == "pdf" ? true : false;
+    //   // const messageSender = {
+    //   //   chatId,
+    //   //   senderId: idUser,
+    //   //   text: message,
+    //   //   isImg,
+    //   //   isFile,
+    //   // };
+    //   // const test = name.substring(name.lastIndexOf(":") + 4);
+    //   // // console.log(test);
+    //   // const dataImg = {
+    //   //   data: rs.base64,
+    //   //   token: token,
+    //   //   chatId: chatId,
+    //   //   type: type,
+    //   //   fileName: fileName,
+    //   // };
+    //   // // const data = await cloudinaryApi.cloudinaryUpload(
+    //   // //   rs,
+    //   // //   token,
+    //   // //   chatId,
+    //   // //   type,
+    //   // //   fileName
+    //   // // );
+    //   // const data = await cloudinaryApi.upLoad(dataImg);
+    //   // if (data.status === 200) {
+    //   //   // console.log(data);
+    //   //   // console.log(messageSender);
+    //   //   console.log("thanh cong");
+    //   // } else {
+    //   //   console.log("upload khong thanh cong");
+    //   // }
+    // }
 
     // console.log(rs.base64);
     // setImage(rs.base64);
@@ -216,7 +235,7 @@ const SC_Chat = ({ navigation, route }) => {
   // get id room chat
   useEffect(() => {
     if (idUser === "" || idFriend === "") {
-      console.log("khong thuc hien");
+      // console.log("khong thuc hien");
     } else {
       const idRoomChat = async () => {
         // const roomChat = await chatApi.getChat(idUser, idFriend);
@@ -224,13 +243,13 @@ const SC_Chat = ({ navigation, route }) => {
         await chatApi
           .getChat(idUser, idFriend)
           .then((res) => {
-            console.log("khong null");
+            // console.log("khong null");
             setChatId(res.data._id);
             setWellCome("");
             setSttWell(true);
           })
           .catch((err) => {
-            console.log("null");
+            // console.log("null");
             setWellCome("Các bạn hiện chưa kết nối với nhau!");
             setSttWell(false);
           });
@@ -261,7 +280,7 @@ const SC_Chat = ({ navigation, route }) => {
         return;
       }
       const messagesData = await messageApi.getMessages(chatId);
-      console.log("message: ");
+      // console.log("message: ");
       // console.log(messagesData.data);
       setChatMessages(messagesData.data);
     };
@@ -271,8 +290,6 @@ const SC_Chat = ({ navigation, route }) => {
   // Get the message from socket server
   useEffect(() => {
     socket.on("recieve-message", (data) => {
-      console.log("data");
-      console.log(data);
       setChatMessages((chatMessages) => [...chatMessages, data]);
     });
   }, [socket]);

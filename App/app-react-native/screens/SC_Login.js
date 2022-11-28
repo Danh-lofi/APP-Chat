@@ -222,10 +222,10 @@ const SC_Login = ({ navigation }) => {
 
               {/* button login */}
               <View style={styles.wrapBtnLogin}>
-                {username === "" ||
-                password === "" ||
-                statusNumberPhone === false ||
-                statusPassword === false ? (
+                {username === "" || password === "" ? (
+                  // ||
+                  // statusNumberPhone === false ||
+                  // statusPassword === false
                   <TouchableOpacity
                     disabled
                     style={[styles.btnLogin, { backgroundColor: "#6b706c" }]}
