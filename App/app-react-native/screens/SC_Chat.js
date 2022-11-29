@@ -153,6 +153,7 @@ const SC_Chat = ({ navigation, route }) => {
       rs.uri.lastIndexOf("/") + 1,
       rs.uri.length
     );
+    console.log(fileName);
 
     if (rs.cancelled === false) {
       const data = await cloudinaryApi.cloudinaryUpload(
@@ -160,10 +161,15 @@ const SC_Chat = ({ navigation, route }) => {
         accessToken,
         chatId,
         type,
-        fileName
+        fileName,
+        isFileWord,
+        isFilePdf,
+        isFilePowP,
+        isFileExel
       );
       console.log("data:", data);
     }
+
     // if (rs.cancelled === false) {
     //   const base64Img = `data:image/jpg;base64,${rs.base64}`;
     //   const accessToken = await AsyncStorage.getItem("token");

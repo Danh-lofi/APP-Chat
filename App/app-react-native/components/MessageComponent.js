@@ -4,15 +4,33 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { min } from "react-native-reanimated";
 import { ApiGetUser } from "../api/ApiUser";
+import word from "../assets/word.png";
+import excel from "../assets/excel.png";
+import pp from "../assets/pp.png";
+import pdf from "../assets/pdf.jpg";
 
 export default function MessageComponent({ item, idUser, onPress }) {
-  console.log(item);
-  const { _id, chatId, senderId, fileName, isImg, type, text } = item;
+  console.log("item:", item);
+  const {
+    _id,
+    chatId,
+    senderId,
+    fileName,
+    isImg,
+    type,
+    text,
+    isFileExcel,
+    isFilePdf,
+    isFileWord,
+    isFilePowP,
+  } = item;
   const status = item.senderId !== idUser;
   const [statusTouch, setStatusTouch] = useState(false);
   const [disTime, setDisTime] = useState("");
   const [avatar, setAvatar] = useState();
   const [id, setId] = useState("");
+  let isFile = isFileExcel || isFilePdf || isFileWord || isFilePowP;
+  console.log("IsFile:", isFile);
 
   const getAvatar = async () => {
     setAvatar(await AsyncStorage.getItem("avatar"));
@@ -166,6 +184,39 @@ export default function MessageComponent({ item, idUser, onPress }) {
                   }}
                   source={{ uri: text }}
                 />
+              </View>
+            ) : isFile ? (
+              <View
+                style={{
+                  height: 50,
+                  width: 150,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                {isFileWord ? (
+                  <Image source={word} style={{ height: 35, width: 35 }} />
+                ) : (
+                  ""
+                )}
+                {isFilePowP ? (
+                  <Image source={pp} style={{ height: 35, width: 35 }} />
+                ) : (
+                  ""
+                )}
+                {isFileExcel ? (
+                  <Image source={excel} style={{ height: 35, width: 35 }} />
+                ) : (
+                  ""
+                )}
+                {isFilePdf ? (
+                  <Image source={pdf} style={{ height: 35, width: 35 }} />
+                ) : (
+                  ""
+                )}
+                <Text style={{ fontSize: 12, marginLeft: 5, maxWidth: 100 }}>
+                  {fileName}
+                </Text>
               </View>
             ) : (
               <Text>{item.text}</Text>
