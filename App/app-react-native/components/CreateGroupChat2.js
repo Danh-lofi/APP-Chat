@@ -17,7 +17,7 @@ import ApiLoadGroupChat from "../api/LoadGroupChat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SearchFriendBar from "./SearchFriendBar";
 
-const CreateGroupChat = ({ setVisible }) => {
+const CreateGroupChat2 = ({ setVisible }) => {
   const [groupName, setGroupName] = useState("");
   const [infor, setInfor] = useState([]);
   let aMembers = [];
@@ -61,10 +61,10 @@ const CreateGroupChat = ({ setVisible }) => {
 
   const handleCreateRoom = async () => {
     const id = await AsyncStorage.getItem("idUser");
+    const token = await AsyncStorage.getItem("token");
     aMembers.unshift({ id: id });
     const data = {
       nameGroupChat: groupName,
-      adminGroup: id,
       memberChat: aMembers,
     };
 
@@ -79,24 +79,26 @@ const CreateGroupChat = ({ setVisible }) => {
         // ngày mai code tiếp
       }
       try {
-        await ApiLoadGroupChat.createGroup(data).then(async (res) => {
+        await ApiLoadGroupChat.createGroup(token, data).then(async (res) => {
           console.log("tao group thanh cong");
           console.log(res.data._id);
-          socket.emit("createGroupChat", data);
-          for (let i = 0; i < aMembers.length; i++) {
-            console.log(i);
-            console.log("hihi");
-          }
+          const arr = [];
+          const idAdmin = res.data.adminGroup;
+          const group = res.data;
+          console.log("group");
+          console.log(group);
+          console.log("idAdmin");
+          console.log(idAdmin);
+          // tao group
+          socket.emit("send-notication-group", {
+            listIdUser: res.data.memberChat,
+            group,
+          });
         });
       } catch (error) {
         console.log("Khong tao duoc group: " + error);
       }
-
-      // test();
       closeModal();
-      //   console.log("infor");
-
-      //   console.log(data);
     }
   };
 
@@ -108,6 +110,7 @@ const CreateGroupChat = ({ setVisible }) => {
   }, [socket]);
 
   const handleClick = (item) => {
+    // for(let i = 0;)
     aMembers.push({
       id: item._id,
     });
@@ -152,4 +155,4 @@ const CreateGroupChat = ({ setVisible }) => {
   );
 };
 
-export default CreateGroupChat;
+export default CreateGroupChat2;

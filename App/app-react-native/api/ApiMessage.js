@@ -9,4 +9,9 @@ export const messageApi = {
     const url = `messages/${chatId}`;
     return apiGet.get(url, {});
   },
+
+  getOneMessage: (chatId) => {
+    const url = `messages/getOneNewMessage/${chatId}`;
+    return apiGet.get(url, {});
+  },
 };

@@ -7,6 +7,12 @@ const routerCloudinary = express.Router();
 
 routerCloudinary.get("/images", CloudinaryController.images);
 routerCloudinary.post(
+  "/m-upload",
+  authMiddleware.authApp,
+  CloudinaryController.upload,
+  MessageController.addMessage
+);
+routerCloudinary.post(
   "/upload",
   authMiddleware.isAuth,
   CloudinaryController.upload,

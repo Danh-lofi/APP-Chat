@@ -9,9 +9,9 @@ import {
   Image,
   ImageBackground,
 } from "react-native";
-import { AddNewIcon } from "./IconBottomTabs";
+import { XIcon } from "./IconBottomTabs";
 
-const SearchFriendBar = ({ listInfor, onPress }) => {
+const MemberBar = ({ listInfor, onPress }) => {
   return (
     <View style={styles.aMess}>
       <View style={styles.aMess_avt}>
@@ -22,7 +22,7 @@ const SearchFriendBar = ({ listInfor, onPress }) => {
           <Text style={styles.txtNameMess}>{listInfor.name}</Text>
         </View>
         <TouchableOpacity style={styles.xxxDiff} onPress={onPress}>
-          <AddNewIcon color="black" size={22} />
+          <XIcon color="black" size={22} />
         </TouchableOpacity>
       </View>
     </View>
@@ -40,16 +40,16 @@ const styles = StyleSheet.create({
   aMess_avt: {
     justifyContent: "center",
     alignItems: "center",
-    width: "25%",
+    flexGrow: 1,
   },
 
   aMess_right: {
     flexDirection: "row",
+    flexGrow: 9,
     height: "100%",
     marginLeft: 10,
     borderColor: "#b6b9ba",
     borderBottomWidth: 1,
-    width: "70%",
   },
 
   wrapAvatarZL: {
@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
   name_and_disMess: {
     flexDirection: "column",
     justifyContent: "center",
-    width: "90%",
+    flexGrow: 5,
+    backgroundColor: "white",
   },
 
   txtNameMess: {
@@ -78,7 +79,8 @@ const styles = StyleSheet.create({
   },
 
   xxxDiff: {
-    width: "10%",
+    flexGrow: 2,
+    maxWidth: 60,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -88,4 +90,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchFriendBar;
+export default MemberBar;

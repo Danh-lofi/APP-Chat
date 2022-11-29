@@ -1,4 +1,5 @@
 import UserModel from "../models/User.js";
+import mongoose from "mongoose";
 const UserController = {
   update: (req, res, next) => {
     const user = req.user;
@@ -73,6 +74,32 @@ const UserController = {
       res.status(200).json({ user, isExist });
     } catch (error) {
       res.status(404).send(error);
+    }
+  },
+  getProfileUserFromId: async (req, res) => {
+    const { id } = req.params;
+    console.log(id);
+
+    const data = await UserModel.findById({
+      _id: mongoose.Types.ObjectId(id),
+    }).select([
+      "_id",
+      "username",
+      "name",
+      "birthDate",
+      "gender",
+      "address",
+      "introducePersonal",
+      "avatar",
+      "coverImg",
+      "friends",
+      "groups",
+    ]);
+
+    if (!data) {
+      res.status(500).json("null");
+    } else {
+      res.status(200).json(data);
     }
   },
 };

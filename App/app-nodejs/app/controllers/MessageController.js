@@ -44,6 +44,22 @@ const MessageController = {
       res.status(500).json(error);
     }
   },
+
+  getOneNewMessage: async (req, res) => {
+    const { chatId } = req.params;
+    console.log("chatId");
+    console.log(chatId);
+    try {
+      const rs = await MessageModel.findOne({ chatId })
+        .sort({
+          createdAt: -1,
+        })
+        .limit(1);
+      res.status(200).json(rs);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
 };
 
 export default MessageController;

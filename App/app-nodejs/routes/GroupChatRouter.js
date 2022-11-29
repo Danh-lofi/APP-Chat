@@ -1,5 +1,6 @@
 import express from "express";
 import CloudinaryController from "../app/controllers/CloudinaryController.js";
+// import CloudinaryController from "../app/controllers/CloudinaryController.js";
 import GroupChatController from "../app/controllers/GroupChatController.js";
 import authMiddleware from "../app/middleware/authMiddleware.js";
 
@@ -12,8 +13,15 @@ routerGroupChat.post(
   GroupChatController.createGroupChat,
   GroupChatController.updateGroupChatInUser
 );
+routerGroupChat.post(
+  "/m-createGroup",
+  authMiddleware.authApp,
+  // CloudinaryController.uploadAvatar,
+  GroupChatController.createGroupChat,
+  GroupChatController.updateGroupChatInUser
+);
 routerGroupChat.get(
-  "/getGroupChat",
+  "/m-getGroupChat",
   authMiddleware.authApp,
   GroupChatController.getGroupChat
 );
@@ -26,6 +34,15 @@ routerGroupChat.get(
   authMiddleware.isAuth,
   GroupChatController.getGroupChat
 );
+routerGroupChat.get(
+  "/m-get-info-group/:idGroup",
+  GroupChatController.getInfoGroup
+);
+routerGroupChat.get(
+  "/m-getAllGroup",
+  authMiddleware.authApp,
+  GroupChatController.getGroupChat
+);
 routerGroupChat.put(
   "/updateGroupChatInUser",
   GroupChatController.updateGroupChatInUser
@@ -35,10 +52,20 @@ routerGroupChat.post(
   authMiddleware.isAuth,
   GroupChatController.deleteGroupChat
 );
+routerGroupChat.post(
+  "/m-deleteMember",
+  authMiddleware.authApp,
+  GroupChatController.deleteGroupChat
+);
 // [POST] {accessToken, groupId, newAdminId}
 routerGroupChat.post(
   "/leaveGroup",
   authMiddleware.isAuth,
+  GroupChatController.leaveGroup
+);
+routerGroupChat.post(
+  "/m-leaveGroup",
+  authMiddleware.authApp,
   GroupChatController.leaveGroup
 );
 
@@ -68,5 +95,7 @@ routerGroupChat.put(
   GroupChatController.addUsersToGroup,
   GroupChatController.updateGroupInUsers
 );
+
+routerGroupChat.get("/:idGroupChat", GroupChatController.getMemberInGroupChat);
 
 export default routerGroupChat;

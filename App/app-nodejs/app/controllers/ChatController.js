@@ -62,7 +62,8 @@ const ChatController = {
         res.status(200).json(chat);
       } else {
         console.log("chua tao");
-        res.status(402).send("chua tao");
+        // res.status(402).send("chua tao");
+        res.status(402).json(chat);
       }
     } catch (error) {
       res.status(500).json(error);

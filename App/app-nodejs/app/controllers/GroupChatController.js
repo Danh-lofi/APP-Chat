@@ -11,7 +11,7 @@ const GroupChatController = {
     const { nameGroupChat, memberChat, avatar } = req.body;
 
     if (memberChat.length < 3) {
-      return res.status(400).send("Nhóm chat phải từ từ3 thành viên trở lên!");
+      return res.status(400).send("Nhóm chat phải từ từ 3 thành viên trở lên!");
     }
 
     const groupChat = new GroupChatModel({
@@ -43,6 +43,49 @@ const GroupChatController = {
 
     res.status(200).json({ listGroup });
   },
+  getInfoGroup: async (req, res) => {
+    const { idGroup } = req.params;
+    const id = mongoose.Types.ObjectId(idGroup);
+
+    console.log(idGroup);
+    try {
+      const group = await GroupChatModel.findOne({ _id: id });
+      console.log("group: ");
+      console.log(group);
+      if (!group) {
+        return res.status(404).json({ message: "Group not found" });
+      }
+      res.status(200).json(group);
+    } catch (error) {
+      res.status(402).json({ message: error });
+    }
+  },
+
+  getMemberInGroupChat: async (req, res) => {
+    const { idGroupChat } = req.params;
+    console.log(idGroupChat);
+
+    const rs = await GroupChatModel.findById({
+      _id: mongoose.Types.ObjectId(idGroupChat),
+    });
+
+    if (!rs) {
+      res.status(400).json({ mess: "Khong co group" });
+    } else {
+      const listUser = rs.memberChat;
+      const listMemberChat = [];
+
+      for (const idUser of listUser) {
+        const mb = await UserModel.findById({
+          _id: mongoose.Types.ObjectId(idUser.id),
+        });
+        listMemberChat.push(mb);
+      }
+
+      res.status(200).json(listMemberChat);
+    }
+  },
+
   getInfoGroup: async (req, res) => {
     const { idGroup } = req.params;
     const id = mongoose.Types.ObjectId(idGroup);
@@ -406,6 +449,10 @@ const GroupChatController = {
     }
     res.status(204).json({ message: "Xóa thành công" });
   },
+
+  // getInforGroup: async (req, res) => {
+  //   console.log(req.params);
+  // }
 };
 
 export default GroupChatController;

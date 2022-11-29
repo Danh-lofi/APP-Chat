@@ -13,5 +13,10 @@ routerUser.post(
 );
 
 routerUser.get("/:username.:idGroup", UserController.findUserExistInGroup);
+routerUser.post("/m-update", authMiddleware.isAuth, UserController.update);
+routerUser.get(
+  "/getProfileUserFromId/:id",
+  UserController.getProfileUserFromId
+);
 
 export default routerUser;
