@@ -13,7 +13,7 @@ import { AddNewIcon } from "./IconBottomTabs";
 
 const SearchFriendBar = ({ listInfor, onPress }) => {
   return (
-    <TouchableOpacity style={styles.aMess} onPress={onPress}>
+    <View style={styles.aMess}>
       <View style={styles.aMess_avt}>
         <Image source={{ uri: listInfor.avatar }} style={styles.wrapAvatarZL} />
       </View>
@@ -21,11 +21,11 @@ const SearchFriendBar = ({ listInfor, onPress }) => {
         <View style={styles.name_and_disMess}>
           <Text style={styles.txtNameMess}>{listInfor.name}</Text>
         </View>
-        <View style={styles.xxxDiff}>
+        <TouchableOpacity style={styles.xxxDiff} onPress={onPress}>
           <AddNewIcon color="black" size={22} />
-        </View>
+        </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 

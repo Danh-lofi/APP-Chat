@@ -26,6 +26,56 @@ const FriendController = {
     }
     res.status(200).json({ listFriend });
   },
+  deleteFriend: async (req, res) => {
+    // Input: friendId, accessToken
+    const user = req.user;
+    const meId = user._id.toString();
+    const friendId = req.body.friendId;
+    console.log("friendId: " + friendId);
+    console.log("MeId: ");
+    console.log(meId.toString());
+    try {
+      const userMe = await UserModel.findOneAndUpdate(
+        { _id: friendId },
+        { $pull: { friends: { id: meId } } }
+      );
+      const userFriend = await UserModel.findOneAndUpdate(
+        { _id: meId },
+        { $pull: { friends: { id: friendId } } }
+      );
+    } catch (error) {
+      return res.status(402).send({ message: "Xóa thất bại!!!" });
+    }
+    res.status(200).send({ message: "Xóa thành công!!!" });
+  },
+  getUserByUsername: async (req, res, next) => {
+    const username = req.params.username;
+
+    const user = await UserModel.findOne({ username: username });
+    if (!user) {
+      res.status(404).send(user);
+      return;
+    }
+    if (!next) {
+      res.status(200).send(user);
+    } else {
+      req.userFriend = user;
+      next();
+    }
+  },
+  getUserById: async (req, res) => {
+    const id = req.params.id;
+    console.log("id");
+    console.log(id);
+    const user = await UserModel.findOne({ _id: id });
+    console.log("user");
+    console.log(user);
+    if (!user) {
+      res.status(404).send(user);
+      return;
+    }
+    res.status(200).send(user);
+  },
 };
 
 export default FriendController;

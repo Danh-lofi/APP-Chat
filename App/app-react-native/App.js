@@ -15,6 +15,8 @@ import { color } from "react-native-reanimated";
 import Animated from "react-native-reanimated";
 import SC_Chat from "./screens/SC_Chat";
 import { InformationFriendChat } from "./screens/InformationFriendChat";
+import { InformationGroupChat } from "./screens/InformationGroupChat";
+import { CreateGroupChat } from "./screens/CreateGroupChat";
 
 // npm install @react-navigation/stack
 // npx expo install react-native-gesture-handler or npm install react-native-gesture-handler
@@ -130,6 +132,16 @@ const App = () => {
         <RootStack.Screen
           name="InformationFriendChat"
           component={InformationFriendChat}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="InformationGroupChat"
+          component={InformationGroupChat}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="CreateGroupChat"
+          component={CreateGroupChat}
           options={{ headerShown: false }}
         />
       </RootStack.Navigator>

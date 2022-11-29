@@ -27,7 +27,7 @@ const cloudinaryApi = {
       },
       {
         headers: {
-          x_authorization: accessToken,
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );

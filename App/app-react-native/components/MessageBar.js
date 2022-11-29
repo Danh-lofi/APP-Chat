@@ -13,11 +13,13 @@ import {
 import { chatApi } from "../api/ApiChat";
 import { messageApi } from "../api/ApiMessage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import socket from "../utils/socket";
 
 const MessageBar = ({ listInfor, onPress }) => {
   const [chatId, setChatId] = useState("");
   const [disMess, setDisMess] = useState("");
   const [disTime, setDisTime] = useState("");
+  const [chatMessages, setChatMessages] = useState([]);
   // const [idUser, setIdUser] = useState("");
 
   // const getIdUser = async () => {
@@ -28,6 +30,25 @@ const MessageBar = ({ listInfor, onPress }) => {
   // useEffect(() => {
   //   getIdUser();
   // }, []);
+
+  // const getMessOnSocket = async () => {
+  //   const idUser = await AsyncStorage.getItem("idUser");
+  //   socket.on("recieve-message", (data) => {
+  //     console.log("data");
+  //     console.log(data.text);
+  //     console.log(data.senderId + " " + idUser);
+  //     if (idUser !== "") {
+  //       if (data.senderId === idUser) {
+  //         setDisMess("Bạn: " + data.text);
+  //         setDisTime(data.time);
+  //       } else {
+  //         setDisMess("Bạn: " + data.text);
+  //         setDisTime(data.time);
+  //       }
+  //     }
+  //     setChatMessages((chatMessages) => [...chatMessages, data]);
+  //   });
+  // };
 
   const getOneMess = async () => {
     const idUser = await AsyncStorage.getItem("idUser");
@@ -107,6 +128,11 @@ const MessageBar = ({ listInfor, onPress }) => {
   useEffect(() => {
     getOneMess();
   }, [chatId]); // ?
+
+  // useEffect(() => {
+  //   //getMessOnSocket();
+  //   getOneMess();
+  // }, [socket]);
 
   return (
     <TouchableOpacity style={styles.aMess} onPress={onPress}>

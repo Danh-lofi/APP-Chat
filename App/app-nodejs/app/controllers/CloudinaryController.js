@@ -1,6 +1,6 @@
 import cloudinary from "../../config/cloudynary/cloudinary.config.js";
 import cloudinaryConfig from "../../config/cloudynary/cloudinary.config.js";
-import UploadedFile from "../models/File.js";
+// import UploadedFile from "../models/File.js";
 
 import { fileTypeFromStream } from "file-type";
 
@@ -17,6 +17,7 @@ const CloudinaryController = {
   },
   upload: async (req, res, next) => {
     try {
+      console.log("Upload");
       console.log(req.body.chatId);
       const fileStr = req.body.data;
       const type = req.body.type;
@@ -35,7 +36,8 @@ const CloudinaryController = {
       // console.log(uploadResponse);
       req.body.senderId = req.user.id;
       req.body.text = uploadResponse.url;
-      if (type == "png" || type == "jpg") req.body.isImg = true;
+      if (type == "png" || type == "jpg" || type == "jpeg")
+        req.body.isImg = true;
       req.body.chatId = req.body.chatId;
       req.body.type = req.body.type;
       req.body.fileName = req.body.fileName;

@@ -42,6 +42,35 @@ const socket = (io) => {
       // }
       io.emit("recieve-message", data);
     });
+
+    // Socket gửi thông báo tạo vào nhóm cho các user
+    // INPUT: Array id người nhận, dữ liệu của group
+    //
+    socket.on("send-notication-group", (data) => {
+      console.log(
+        "--------------------send-notication-group------------------------------"
+      );
+      console.log("Data: ");
+      console.log(data);
+
+      const { listIdUser, group } = data;
+
+      listIdUser.forEach((idUser) => {
+        const user = activeUsers.find((user) => user.userId === idUser.id);
+        console.log("Sending from socket to :", idUser.id);
+        // if (user) {
+        //   io.to(user.socketId).emit("receive-notication-group", group);
+        // }
+        io.emit("receive-notication-group", group);
+      });
+
+      console.log("group");
+      console.log(group);
+
+      console.log(
+        "--------------------End---send-notication-group------------------------------"
+      );
+    });
   });
 };
 

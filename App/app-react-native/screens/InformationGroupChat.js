@@ -9,14 +9,18 @@ import {
   Dimensions,
   ScrollView,
   FlatList,
+  Pressable,
 } from "react-native";
 import FileComponent from "../components/FileComponent";
 import {
+  AddNewIcon,
   BackIcon,
   BellIcon,
   BlockIcon,
   FileIcon,
   GeneralGroupIcon,
+  LeaveGroup,
+  ListMember,
   NextIcon,
   NotificationIcon,
   PersonalIcon,
@@ -24,6 +28,8 @@ import {
 } from "../components/IconBottomTabs";
 import ImageComponent from "../components/ImageComponent";
 import { ApiGetUser } from "../api/ApiUser";
+import ApiLoadGroupChat from "../api/LoadGroupChat";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
 const size = 22;
@@ -46,25 +52,30 @@ const DATA = [
   },
 ];
 
-export const InformationFriendChat = ({ navigation, route }) => {
-  const idFriend = route.params;
+export const InformationGroupChat = ({ navigation, route }) => {
+  console.log(route.params);
+  const idGroup = route.params;
   const [name, setName] = useState();
   const [bio, setBio] = useState();
   const [avatar, setAvatar] = useState();
+  const [idUser, setIdUser] = useState();
+  const [idAdmin, setIdAdmin] = useState();
 
   useEffect(() => {
     const getProfile = async () => {
-      if (idFriend.idFriend === "") {
+      setIdUser(await AsyncStorage.getItem("idUser"));
+      if (idGroup.idGroup === "") {
         console.log("id null");
       } else {
-        const data = await ApiGetUser.getProfileUserFromId(idFriend.idFriend);
+        const data = await ApiLoadGroupChat.getInforGroupChat(idGroup.idGroup);
         if (data.data === null) {
           console.log("Khong lay duoc du lieu");
         } else {
-          setAvatar(data.data.avatar);
-          setName(data.data.name);
-          setBio(data.data.introducePersonal);
-          console.log(data.data.name);
+          setAvatar(data.data.imgGroupChat);
+          setName(data.data.nameGroupChat);
+          setIdAdmin(data.data.adminGroup);
+          //   setBio(data.data.introducePersonal);
+          console.log(data.data);
         }
       }
     };
@@ -100,8 +111,11 @@ export const InformationFriendChat = ({ navigation, route }) => {
             resizeMode={"stretch"}
           />
           <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Text>{name}</Text>
-            <Text>{bio}</Text>
+            <Pressable>
+              <Text style={{ fontSize: 16, fontWeight: "500", color: "#000" }}>
+                {name}
+              </Text>
+            </Pressable>
           </View>
           <View
             style={{
@@ -122,18 +136,21 @@ export const InformationFriendChat = ({ navigation, route }) => {
               <SearchICon color="#000" size={size} />
               <Text style={{ textAlign: "center" }}>Tìm tin nhắn</Text>
             </TouchableOpacity>
+            {idAdmin === idUser ? (
+              <TouchableOpacity
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
 
-            <TouchableOpacity
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-
-                width: "20%",
-              }}
-            >
-              <PersonalIcon color="#000" size={size} />
-              <Text style={{ textAlign: "center" }}>Trang cá nhân</Text>
-            </TouchableOpacity>
+                  width: "20%",
+                }}
+              >
+                <AddNewIcon color="#000" size={size} />
+                <Text style={{ textAlign: "center" }}>Thêm thành viên</Text>
+              </TouchableOpacity>
+            ) : (
+              ""
+            )}
 
             <TouchableOpacity
               style={{
@@ -154,8 +171,8 @@ export const InformationFriendChat = ({ navigation, route }) => {
                 width: "20%",
               }}
             >
-              <BlockIcon color="#000" size={size} />
-              <Text style={{ textAlign: "center" }}>Chặn</Text>
+              <LeaveGroup color="#000" size={size} />
+              <Text style={{ textAlign: "center" }}>Rời nhóm</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -163,6 +180,48 @@ export const InformationFriendChat = ({ navigation, route }) => {
       <View
         style={{ width: "100%", height: 5, backgroundColor: "#ccc" }}
       ></View>
+
+      {/*  */}
+      <View style={{ paddingHorizontal: 24, marginTop: 15 }}>
+        <TouchableOpacity
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 5,
+            borderBottomWidth: 1,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            {/* <ListMember color="#009EFF" size={50} /> */}
+            <Image source={require("../assets/skill.png")} />
+            <Text
+              style={{
+                fontSize: 18,
+                color: "#000",
+                fontWeight: "600",
+                marginLeft: 10,
+              }}
+            >
+              Danh sách thành viên
+            </Text>
+          </View>
+          <View
+            style={{
+              position: "absolute",
+              right: 0,
+              top: "35%",
+            }}
+          >
+            <NextIcon color="#000" size={50} />
+          </View>
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.content}>
         {/* img da gui */}
         <View style={styles.listImg}>
@@ -186,47 +245,6 @@ export const InformationFriendChat = ({ navigation, route }) => {
           />
         </View>
       </View>
-
-      {/*  */}
-      {/* <View style={{ paddingHorizontal: 24, marginTop: 15 }}>
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingVertical: 5,
-            borderBottomWidth: 1,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <GeneralGroupIcon color="#009EFF" size={50} />
-            <Text
-              style={{
-                fontSize: 18,
-                color: "#000",
-                fontWeight: "600",
-                marginLeft: 10,
-              }}
-            >
-              Nhóm chung
-            </Text>
-          </View>
-          <View
-            style={{
-              position: "absolute",
-              right: 0,
-              top: "35%",
-            }}
-          >
-            <NextIcon color="#000" size={50} />
-          </View>
-        </TouchableOpacity>
-       
-      </View> */}
     </SafeAreaView>
   );
 };
@@ -256,7 +274,7 @@ const styles = StyleSheet.create({
   informationMain: {
     justifyContent: "center",
     alignItems: "center",
-    height: "35%",
+    height: "30%",
     // borderBottomWidth: 1,
   },
 

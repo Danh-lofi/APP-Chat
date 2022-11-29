@@ -2,35 +2,34 @@ import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { min } from "react-native-reanimated";
+import { cos, min } from "react-native-reanimated";
 import { ApiGetUser } from "../api/ApiUser";
 
-export default function MessageComponent({ item, idUser, onPress }) {
+export default function MessageComponent({ item, idUser, onPress, statusG }) {
+  console.log("item");
+  console.log(item);
+  const { _id, chatId, senderId, fileName, isImg, type, text } = item;
   const status = item.senderId !== idUser;
   const [statusTouch, setStatusTouch] = useState(false);
   const [disTime, setDisTime] = useState("");
   const [avatar, setAvatar] = useState();
-  const [id, setId] = useState("");
+  const [name, setName] = useState();
 
   const getAvatar = async () => {
-    setAvatar(await AsyncStorage.getItem("avatar"));
-    // console.log("item.senderId");
-    // console.log(item.senderId);
-    // if (item.senderId === "") {
-    //   console.log("null");
-    // } else {
-    //   const data = await ApiGetUser.getProfileUserFromId({
-    //     id: item.senderId,
-    //   });
-
-    //   if (!data) {
-    //     setAvatar(await AsyncStorage.getItem("avatar"));
-    //   } else {
-    //     setAvatar(data.data.avatar);
-    //     console.log("data.data.avatar");
-    //     console.log(data.data.avatar);
-    //   }
-    // }
+    console.log(statusG);
+    if (item.senderId === "") {
+      console.log("id null");
+    } else {
+      if (status) {
+        const data = await ApiGetUser.getProfileUserFromId(item.senderId);
+        if (data.data === null) {
+          console.log("Khong lay duoc du lieu");
+        } else {
+          setAvatar(data.data.avatar);
+          setName(data.data.name);
+        }
+      }
+    }
   };
 
   useEffect(() => {
@@ -96,18 +95,11 @@ export default function MessageComponent({ item, idUser, onPress }) {
             : [styles.mmessageWrapper, { alignItems: "flex-end" }]
         }
       >
+        {status && statusG === 1 ? <Text>{name}</Text> : ""}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           {status ? (
-            // <Ionicons
-            //   name="person-circle-outline"
-            //   size={30}
-            //   color="black"
-            //   style={styles.mavatar}
-            // />
             <Image
-              source={{
-                uri: avatar,
-              }}
+              source={{ uri: avatar }}
               style={{
                 width: 30,
                 height: 30,
@@ -117,27 +109,51 @@ export default function MessageComponent({ item, idUser, onPress }) {
               resizeMode="cover"
             />
           ) : (
-            // <Ionicons
-            //   name="person-circle-outline"
-            //   size={30}
-            //   color="red"
-            //   style={styles.mavatar}
-            // />
             ""
           )}
 
           <Pressable
             style={
               status
-                ? styles.mmessage
+                ? [
+                    styles.mmessage,
+                    isImg
+                      ? {
+                          backgroundColor: "rgba(255,255,255,0)",
+                          marginRight: 0,
+                        }
+                      : styles.mmessage,
+                  ]
                 : [
                     styles.mmessage,
-                    { backgroundColor: "rgb(194, 243, 194)", marginRight: 10 },
+                    !isImg
+                      ? {
+                          backgroundColor: "rgb(194, 243, 194)",
+                          marginRight: 0,
+                        }
+                      : {
+                          backgroundColor: "rgba(255,255,255,0)",
+                          marginRight: 0,
+                        },
                   ]
             }
             onPress={touchMess}
           >
-            <Text>{item.text}</Text>
+            {isImg ? (
+              <View style={{ height: 200, width: 100 }}>
+                <Image
+                  style={{
+                    flex: 1,
+                    height: "100%",
+                    width: "100%",
+                  }}
+                  source={{ uri: text }}
+                  resizeMode={"contain"}
+                />
+              </View>
+            ) : (
+              <Text>{item.text}</Text>
+            )}
           </Pressable>
         </View>
         {statusTouch === true ? (

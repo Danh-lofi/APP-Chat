@@ -5,24 +5,30 @@ import UserModel from "../models/User.js";
 
 const GroupChatController = {
   createGroupChat: async (req, res, next) => {
-    const nameGroupChat = req.body.nameGroupChat;
-    const adminGroup = req.body.adminGroup;
-    const memberChat = req.body.memberChat;
+    //
+
+    const adminGroup = req.user._id;
+    // const { nameGroupChat, memberChat, avatar } = req.body;
+    const { nameGroupChat, memberChat } = req.body;
 
     if (memberChat.length < 3) {
-      return res.status(400).send("Nhóm chat phải từ từ3 thành viên trở lên!");
+      return res.status(400).send("Nhóm chat phải từ từ 3 thành viên trở lên!");
     }
 
     const groupChat = new GroupChatModel({
       nameGroupChat: nameGroupChat,
       adminGroup: adminGroup,
       memberChat: memberChat,
+      // imgGroupChat: avatar,
     });
 
     try {
       const rs = await groupChat.save();
       req.body.idGroupChat = rs._id;
       req.body.listIdUser = rs.memberChat;
+      req.body.group = rs;
+      console.log("req.body.group");
+      console.log(req.body.group);
       next();
     } catch (error) {
       res.status(406).json(error);
@@ -66,11 +72,29 @@ const GroupChatController = {
     }
   },
 
-  updateGroupChatInUser: async (req, res) => {
+  getInfoGroup: async (req, res) => {
+    const { idGroup } = req.params;
+    const id = mongoose.Types.ObjectId(idGroup);
+
+    console.log(idGroup);
+    try {
+      const group = await GroupChatModel.findOne({ _id: id });
+      console.log("group: ");
+      console.log(group);
+      if (!group) {
+        return res.status(404).json({ message: "Group not found" });
+      }
+      res.status(200).json(group);
+    } catch (error) {
+      res.status(402).json({ message: error });
+    }
+  },
+
+  updateGroupChatInUser: async (req, res, next) => {
     const listIdUser = req.body.listIdUser;
     const idGroupChat = req.body.idGroupChat;
-    console.log(idGroupChat);
-    console.log(listIdUser);
+    const group = req.body.group;
+
     const oGroups = { id: idGroupChat };
     // const idUser = req.body.idUser;
     for (const idUser of listIdUser) {
@@ -79,25 +103,153 @@ const GroupChatController = {
           { _id: idUser.id },
           { $push: { groups: oGroups } }
         );
-
-        // res.status(200).json({ rs, message: "Thanh cong" });
       } catch (error) {
         res.status(407).json({ error, message: "Khong thanh cong" });
       }
     }
-    res.status(200).json({ message: "Thanh cong" });
 
-    // UserModel.findOneAndUpdate(
-    //   { _id: idUser },
-    //   { $push: { groups: oGroups } },
-    //   function (error, success) {
-    //     if (error) {
-    //       console.log("Khong thanh cong: " + error);
-    //     } else {
-    //       console.log("Thanh cong " + success);
-    //     }
-    //   }
-    // );
+    // Create chat
+
+    const isGroup = true;
+    const idGroup = group._id.toString();
+
+    const members = [idGroup];
+
+    const newChat = new ChatModel({
+      members,
+      isGroup,
+    });
+    try {
+      const result = await newChat.save();
+    } catch (error) {
+      res.status(500).json(error);
+    }
+
+    res.status(200).json(group);
+  },
+  deleteUserFromGroupChat: async (req, res, next) => {
+    const idGroupChat = req.body._id;
+    const idUserDeleted = req.body.idUserDeleted;
+    console.log("---------------Delete User Group---------------------");
+    console.log("idGroupChat: ");
+    console.log(idGroupChat);
+    console.log("idUserDeleted: ");
+    console.log(idUserDeleted);
+
+    const remove = await GroupChatModel.findByIdAndUpdate(
+      idGroupChat,
+      {
+        $pull: {
+          memberChat: { id: idUserDeleted },
+        },
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!remove) {
+      res.status(408).json({ message: "xoa khong thanh cong" });
+      throw new Error("Chat Not Found");
+    } else {
+      req.body.idGroupChat = idGroupChat;
+      req.body.idUserDeleted = idUserDeleted;
+      next();
+      // res.status(200).json({ message: "xoa thanh cong", remove });
+    }
+  },
+  deleteGroupChat: async (req, res) => {
+    const user = req.user;
+    const meId = user._id;
+    const groupId = req.body.groupId;
+    const groupChat = await GroupChatModel.findOne({ _id: groupId });
+    const _groupId = groupChat._id;
+    const groupChatAdminId = groupChat.adminGroup;
+    const userDeleteId = req.body.userDeleteId;
+    try {
+      if (meId == groupChatAdminId) {
+        await GroupChatModel.findOneAndUpdate(
+          { _id: groupId },
+          { $pull: { memberChat: { id: userDeleteId } } }
+        );
+        await UserModel.findOneAndUpdate(
+          { _id: userDeleteId },
+          { $pull: { groups: { id: _groupId } } }
+        );
+        res
+          .status(200)
+          .send(
+            "groupId: " +
+              groupId +
+              "+" +
+              "admin: " +
+              groupChatAdminId +
+              "+" +
+              "id bi xoa: " +
+              userDeleteId
+          );
+      } else {
+        res.send("ban khong phai admin");
+      }
+    } catch (error) {
+      console.log("loi");
+    }
+  },
+  franchiesAdmin: async (req, res) => {
+    const { groupId, newAdminId } = req.body;
+    console.log("groupId", groupId);
+    try {
+      await GroupChatModel.findOneAndUpdate(
+        { _id: groupId },
+        { adminGroup: newAdminId }
+      );
+      res.status(200).send({ message: "Nhượng quyền thành công" });
+    } catch (error) {
+      res.status(502).send({ error });
+    }
+  },
+  leaveGroup: async (req, res) => {
+    const user = req.user;
+    const meId = user._id;
+    const groupId = req.body.groupId;
+    const groupChat = await GroupChatModel.findOne({ _id: groupId });
+    const _groupId = groupChat._id;
+    const groupChatAdminId = groupChat.adminGroup;
+    const newAdminId = req.body.newAdminId;
+
+    console.log("----LEAVE GROUP----------");
+    console.log(meId);
+    try {
+      if (meId == groupChatAdminId) {
+        await GroupChatModel.findOneAndUpdate(
+          { _id: groupId },
+          { $pull: { memberChat: { id: meId.toString() } } }
+        );
+        await UserModel.findOneAndUpdate(
+          { _id: meId },
+          { $pull: { groups: { id: mongoose.Types.ObjectId(_groupId) } } }
+        );
+        await GroupChatModel.findOneAndUpdate(
+          { _id: groupId },
+          { adminGroup: newAdminId }
+        );
+        res
+          .status(200)
+          .send("admin da roi khoi nhom va admin moi la: " + "newAdminId");
+      }
+      if (meId != groupChatAdminId) {
+        await GroupChatModel.findOneAndUpdate(
+          { _id: groupId },
+          { $pull: { memberChat: { id: meId } } }
+        );
+        await UserModel.findOneAndUpdate(
+          { _id: meId },
+          { $pull: { groups: { id: _groupId } } }
+        );
+      }
+    } catch (error) {
+      console.log("loi");
+    }
   },
 
   renameGroupChat: async (req, res) => {
@@ -128,44 +280,9 @@ const GroupChatController = {
     // }
   },
 
-  deleteUserFromGroupChat: async (req, res, next) => {
-    const idGroupChat = req.body._id;
-    const idUserDeleted = req.body.idUserDeleted;
-
-    console.log("idUserDeleted");
-    console.log(idUserDeleted);
-
-    const remove = await GroupChatModel.findByIdAndUpdate(
-      idGroupChat,
-      {
-        $pull: {
-          memberChat: { id: idUserDeleted },
-        },
-      },
-      {
-        new: true,
-      }
-    );
-
-    if (!remove) {
-      res.status(408).json({ message: "xoa khong thanh cong" });
-      throw new Error("Chat Not Found");
-    } else {
-      req.body.idGroupChat = idGroupChat;
-      req.body.idUserDeleted = idUserDeleted;
-      next();
-      // res.status(200).json({ message: "xoa thanh cong", remove });
-    }
-  },
-
   updateUserWhenDelete: async (req, res) => {
     const idGroupChat = req.body.idGroupChat;
     const idUserDeleted = req.body.idUserDeleted;
-
-    console.log("---------");
-    console.log(idGroupChat);
-    console.log(idUserDeleted);
-    console.log("---------");
 
     const removeGroup = await UserModel.findByIdAndUpdate(
       idUserDeleted,
@@ -191,9 +308,6 @@ const GroupChatController = {
     const idGroupChat = req.body.idGroupChat;
     const idUser = req.body.idUser;
 
-    console.log(idGroupChat);
-    console.log(idUser);
-
     const added = await GroupChatModel.findByIdAndUpdate(
       idGroupChat,
       {
@@ -216,15 +330,64 @@ const GroupChatController = {
       // res.status(200).json({ message: "them thanh cong", added });
     }
   },
+  addUsersToGroup: async (req, res, next) => {
+    const { idGroupChat, listIdUser } = req.body;
+    console.log("ADD User To Group");
+    console.log("idGroupChat:");
+    console.log(idGroupChat);
+    console.log("listIdUser:");
+    console.log(listIdUser);
+    if (!listIdUser || !idGroupChat) {
+      res.status(404).json({ message: "Khong tim thay list id hay id group" });
+      return;
+    }
+    for (const id of listIdUser) {
+      try {
+        const added = await GroupChatModel.findByIdAndUpdate(
+          { _id: idGroupChat },
+          {
+            $push: {
+              memberChat: { id: id.id },
+            },
+          },
+          {
+            new: true,
+          }
+        );
+      } catch (error) {
+        res.status(401).send({ message: error });
+      }
+    }
+    req.body.idGroupChat = idGroupChat;
+    req.body.listIdUser = listIdUser;
+    next();
+  },
+  updateGroupInUsers: async (req, res) => {
+    const { listIdUser, idGroupChat } = req.body;
+
+    for (const id of listIdUser) {
+      try {
+        const insert = await UserModel.findByIdAndUpdate(
+          { _id: id.id },
+          {
+            $push: {
+              groups: { id: mongoose.Types.ObjectId(idGroupChat) },
+            },
+          },
+          {
+            new: true,
+          }
+        );
+      } catch (error) {
+        res.status(401).send({ message: error });
+      }
+    }
+    res.status(200).json({ message: "them vao nhom chat thanh cong" });
+  },
 
   updateGroupInUser: async (req, res) => {
     const idGroupChatInsert = req.body.idGroupChat;
     const idUserNeedInsert = req.body.idUser;
-
-    console.log("---------");
-    console.log(idGroupChatInsert);
-    console.log(idUserNeedInsert);
-    console.log("---------");
 
     const insert = await UserModel.findByIdAndUpdate(
       idUserNeedInsert,
@@ -246,6 +409,31 @@ const GroupChatController = {
         .status(200)
         .json({ message: "them vao nhom chat thanh cong", insert });
     }
+  },
+  deleteGroup: async (req, res) => {
+    console.log(
+      "---------------------------Delete Group------------------------"
+    );
+    const idGroup = req.body.groupId;
+    try {
+      const group = await GroupChatModel.findOne({ _id: idGroup });
+      const memberChat = group.memberChat;
+      for (const member of memberChat) {
+        console.log("member:");
+        console.log(member);
+
+        const data = await UserModel.findOneAndUpdate(
+          { _id: member.id },
+          { $pull: { groups: { id: mongoose.Types.ObjectId(idGroup) } } }
+        );
+        console.log("DATA:");
+        console.log(data);
+      }
+      await GroupChatModel.deleteOne({ _id: idGroup });
+    } catch (error) {
+      res.status(502).json({ message: "Xóa thất bại" });
+    }
+    res.status(204).json({ message: "Xóa thành công" });
   },
 
   // getInforGroup: async (req, res) => {

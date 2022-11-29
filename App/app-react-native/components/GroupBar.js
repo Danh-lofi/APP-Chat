@@ -17,34 +17,20 @@ const GroupBar = ({ listInfor, onPress }) => {
   const [chatId, setChatId] = useState();
   const [disMess, setDisMess] = useState();
   const [disTime, setDisTime] = useState("");
-  // const [idUser, setIdUser] = useState("");
-
-  // useEffect(() => {
-  //   const getIdUser = async () => {
-  //     setIdUser(await AsyncStorage.getItem("idUser"));
-  //   };
-  //   getIdUser();
-  // }, []);
-
   const getOneMess = async () => {
+    console.log("GROUP BAR HOAT DONG 2");
     const idUser = await AsyncStorage.getItem("idUser");
-    // console.log("idUser");
-    // console.log(idUser);
+
     if (idUser === "") {
     } else {
-      // const roomChat = await chatApi.getChat(idUser, listInfor._id);
       setChatId(listInfor._id);
-      console.log("chatId");
-      console.log(chatId);
 
       const messagesData = await messageApi.getOneMessage(chatId);
 
       if (messagesData.data === null) {
-        // console.log("null");
         setDisMess("Các bạn chưa có cuộc trò chuyện nào !");
         setDisTime("");
       } else {
-        // console.log(messagesData.data);
         const date = new Date(messagesData.data.createdAt);
         let hour = date.getHours();
         let minute = date.getMinutes();
@@ -57,11 +43,7 @@ const GroupBar = ({ listInfor, onPress }) => {
         setDisTime(hour + ":" + minute);
 
         if (messagesData.data.senderId === idUser) {
-          // console.log("messagesData.data");
-          // console.log("Ban: " + messagesData.data.text);
-          // setDisMess("Bạn: " + messagesData.data.text);
           if (messagesData.data.isImg === true) {
-            // console.log("Hinh anh");
             setDisMess("Bạn đã gửi 1 hình ảnh!");
           } else if (
             (messagesData.data.isImg === undefined &&
@@ -70,18 +52,12 @@ const GroupBar = ({ listInfor, onPress }) => {
             messagesData.data.isFilePowP === true ||
             messagesData.data.isFileExel === true
           ) {
-            // console.log("File");
             setDisMess("Bạn đã gửi 1 file!");
           } else {
-            // console.log("text");
             setDisMess("Bạn: " + messagesData.data.text);
           }
         } else {
-          // console.log("messagesData.data");
-          // console.log(messagesData.data.text);
-          // setDisMess(messagesData.data.text);
           if (messagesData.data.isImg === true) {
-            // console.log("Hinh anh");
             setDisMess("Đã gửi 1 hình ảnh!");
           } else if (
             (messagesData.data.isImg === undefined &&
@@ -90,10 +66,8 @@ const GroupBar = ({ listInfor, onPress }) => {
             messagesData.data.isFilePowP === true ||
             messagesData.data.isFileExel === true
           ) {
-            // console.log("File");
             setDisMess("Đã gửi 1 file!");
           } else {
-            // console.log("text");
             setDisMess(messagesData.data.text);
           }
         }
@@ -102,6 +76,7 @@ const GroupBar = ({ listInfor, onPress }) => {
   };
 
   useEffect(() => {
+    console.log("GROUP BAR HOAT DONG 1");
     getOneMess();
   }, [chatId]); // ?
 

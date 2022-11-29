@@ -7,9 +7,13 @@ const ApiLoadGroupChat = {
     return await apiGet.get(url, token);
   },
 
-  createGroup: async (data) => {
+  createGroup: async (token, data) => {
     const url = `/groupChat/createGroup`;
-    return await apiGet.post(url, data);
+    return await apiGet.post(
+      url,
+      { nameGroupChat: data.nameGroupChat, memberChat: data.memberChat },
+      token
+    );
   },
 
   getMemberGroupChat: async (idGroupChat) => {
@@ -20,6 +24,11 @@ const ApiLoadGroupChat = {
   deleteUserFromGroupChat: async (data) => {
     const url = `/groupChat/deleteUserFromGroupChat`;
     return await apiGet.put(url, data);
+  },
+
+  getInforGroupChat: async (idGroup) => {
+    const url = `/groupChat/get-info-group/${idGroup}`;
+    return await apiGet.get(url, {});
   },
 };
 

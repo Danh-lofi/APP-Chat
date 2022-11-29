@@ -4,7 +4,10 @@ import authMiddleware from "../app/middleware/authMiddleware.js";
 
 const routerUser = express.Router();
 
-routerUser.post("/update", authMiddleware.isAuth, UserController.update);
-routerUser.get("/getProfileUserFromId", UserController.getProfileUserFromId);
+routerUser.post("/m-update", authMiddleware.isAuth, UserController.update);
+routerUser.get(
+  "/getProfileUserFromId/:id",
+  UserController.getProfileUserFromId
+);
 
 export default routerUser;

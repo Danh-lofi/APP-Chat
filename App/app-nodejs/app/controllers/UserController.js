@@ -38,7 +38,7 @@ const UserController = {
   },
 
   getProfileUserFromId: async (req, res) => {
-    const id = req.body.id;
+    const { id } = req.params;
     console.log(id);
 
     const data = await UserModel.findById({

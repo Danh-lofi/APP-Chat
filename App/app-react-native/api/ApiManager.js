@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import queryString from "query-string";
 
-const URL = "http://192.168.1.3:3001";
+const URL = "http://192.168.1.14:3001";
 
 const ApiManager = axios.create({
   //baseURL: "http://localhost:3001", ///api/users
