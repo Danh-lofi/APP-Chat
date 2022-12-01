@@ -9,6 +9,7 @@ import {
   Dimensions,
   ScrollView,
   FlatList,
+  Alert,
 } from "react-native";
 import FileComponent from "../components/FileComponent";
 import {
@@ -24,6 +25,10 @@ import {
 } from "../components/IconBottomTabs";
 import ImageComponent from "../components/ImageComponent";
 import { ApiGetUser } from "../api/ApiUser";
+import GlobalStyles from "../components/GlobalStyles";
+import { TestGetFromHeroku } from "../api/ApiUser";
+import ApiLoadFriend from "../api/ApiLoadFriend";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
 const size = 22;
@@ -58,21 +63,41 @@ export const InformationFriendChat = ({ navigation, route }) => {
         console.log("id null");
       } else {
         const data = await ApiGetUser.getProfileUserFromId(idFriend.idFriend);
+        const data2 = await TestGetFromHeroku.getTest(idFriend.idFriend);
+        console.log(data2.data);
         if (data.data === null) {
           console.log("Khong lay duoc du lieu");
         } else {
           setAvatar(data.data.avatar);
           setName(data.data.name);
           setBio(data.data.introducePersonal);
-          console.log(data.data.name);
         }
       }
     };
     getProfile();
   }, []);
 
+  const handleDeleteFriend = async () => {
+    const token = await AsyncStorage.getItem("token");
+    console.log(token + " " + idFriend.idFriend);
+    if (idFriend.idFriend === "") {
+      console.log("id null");
+    } else {
+      const deleteFriend = await ApiLoadFriend.deleteFriend(
+        token,
+        idFriend.idFriend
+      );
+      if (deleteFriend.status === 200) {
+        Alert.alert("Xoa thanh cong");
+        navigation.replace("BottomTabsNavigator");
+      } else {
+        console.log("Xoa Khong Thanh Cong!");
+      }
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, GlobalStyles.droidSafeArea]}>
       <View style={styles.tabBarChat}>
         <TouchableOpacity
           style={[styles.icon, { flexDirection: "row" }]}
@@ -153,6 +178,7 @@ export const InformationFriendChat = ({ navigation, route }) => {
                 alignItems: "center",
                 width: "20%",
               }}
+              onPress={() => handleDeleteFriend()}
             >
               <BlockIcon color="#000" size={size} />
               <Text style={{ textAlign: "center" }}>Chặn</Text>

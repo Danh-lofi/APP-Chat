@@ -3,12 +3,12 @@ import ApiManager from "./ApiManager";
 
 const ApiLoadGroupChat = {
   getGroupChat: async (token) => {
-    const url = `/groupChat/getGroupChat`;
+    const url = `/groupChat/m-getGroupChat`;
     return await apiGet.get(url, token);
   },
 
   createGroup: async (token, data) => {
-    const url = `/groupChat/createGroup`;
+    const url = `/groupChat/m-createGroup`;
     return await apiGet.post(
       url,
       { nameGroupChat: data.nameGroupChat, memberChat: data.memberChat },
@@ -27,8 +27,23 @@ const ApiLoadGroupChat = {
   },
 
   getInforGroupChat: async (idGroup) => {
-    const url = `/groupChat/get-info-group/${idGroup}`;
+    const url = `/groupChat/m-get-info-group/${idGroup}`;
     return await apiGet.get(url, {});
+  },
+  leaveGroup: (token, groupId, newAdminId) => {
+    const url = `/groupChat/m-leaveGroup`;
+    return apiGet.post(url, {
+      token,
+      groupId,
+      newAdminId,
+    });
+  },
+
+  deleteGroup: (groupId) => {
+    const url = `/groupChat/delete`;
+    return apiGet.post(url, {
+      groupId,
+    });
   },
 };
 

@@ -71,6 +71,9 @@ const User = new Schema({
     required: false,
   },
   friends: [],
+  idRequest: {
+    type: String,
+  },
 });
 
 User.pre("save", async function (next) {

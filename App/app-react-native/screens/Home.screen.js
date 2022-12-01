@@ -12,9 +12,15 @@ import {
   FlatList,
   RefreshControl,
   Dimensions,
+  TextInput,
 } from "react-native";
 import GlobalStyles from "../components/GlobalStyles";
-import { SearchICon, QRIcon, AddNewIcon } from "../components/IconBottomTabs";
+import {
+  SearchICon,
+  QRIcon,
+  AddNewIcon,
+  XIcon,
+} from "../components/IconBottomTabs";
 import MessageBar from "../components/MessageBar";
 import GroupBar from "../components/GroupBar";
 import { PhoneBook } from "./PhoneBook.screen";
@@ -25,13 +31,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import CreateGroupChat from "../components/CreateGroupChat2";
 import socket from "../utils/socket";
 import Modal from "react-native-modal";
+import FriendBar from "../components/FriendBar";
+import friendApi from "../api/ApiRequestFriend";
+import { chatApi } from "../api/ApiChat";
 
 const size = 22;
 
 // test Touch text search
-function alert(item) {
-  Alert.alert(item.name);
-}
+// function alert(item) {
+//   Alert.alert(item.name);
+// }
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight =
@@ -51,10 +60,19 @@ export const Home = ({ navigation, route }) => {
   const [visible, setVisible] = useState(false);
   let temp1 = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [modalSearch, setModalSearch] = useState(false);
+  const [valueSearch, setValueSearch] = useState();
+  const [listUser, setListUser] = useState([]);
+  const [listSearch, setListSearch] = useState([]);
+  const [id, setId] = useState("");
+  const [modalNotification, setModalNotification] = useState(false);
+  const [requestFriends, setRequestFriends] = useState([]);
+  const [notification, setNotification] = useState("");
 
   console.log(
     "------------------------------------------------------------------"
   );
+  // console.log(listSearch);
 
   const handleCreateGroupChat = () => setVisible(true);
 
@@ -83,8 +101,8 @@ export const Home = ({ navigation, route }) => {
 
     await ApiProfile.profile2(token)
       .then((res) => {
-        console.log("2: " + token);
-        console.log(res.data);
+        setId(res.data._id);
+
         setUser(res.data);
       })
       .catch((err) => {
@@ -100,8 +118,6 @@ export const Home = ({ navigation, route }) => {
     const token = await AsyncStorage.getItem("token");
     await ApiLoadFriend.getFriend(token)
       .then((res) => {
-        console.log("get friend");
-        console.log(res.data.listFriend);
         setInfor(
           res.data.listFriend.filter((element) => {
             return element !== null;
@@ -114,11 +130,10 @@ export const Home = ({ navigation, route }) => {
 
     await ApiLoadGroupChat.getGroupChat(token)
       .then((res) => {
-        console.log("get group chat");
         const ff = res.data.listGroup.filter((element) => {
           return element !== null;
         });
-        console.log(ff);
+
         setListGroup(
           res.data.listGroup.filter((element) => {
             return element !== null;
@@ -130,13 +145,24 @@ export const Home = ({ navigation, route }) => {
       });
   }, []);
 
+  const reGetFriend = async () => {
+    const token = await AsyncStorage.getItem("token");
+    await ApiLoadFriend.getFriend(token)
+      .then((res) => {
+        setInfor(
+          res.data.listFriend.filter((element) => {
+            return element !== null;
+          })
+        );
+      })
+      .catch((err) => {
+        console.log("405");
+      });
+  };
+
   useEffect(() => {
     getFriend();
   }, []);
-
-  function test1() {
-    Alert.alert(temp);
-  }
 
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -159,8 +185,8 @@ export const Home = ({ navigation, route }) => {
           imgGroupChat: group.imgGroupChat,
         },
       ]);
-      console.log("socket group: ");
-      console.log(group);
+      // console.log("socket group: ");
+      // console.log(group);
     });
   }, [socket]);
 
@@ -173,18 +199,204 @@ export const Home = ({ navigation, route }) => {
     setModalVisible(!isModalVisible);
   };
 
+  const openModalSearch = () => {
+    setListSearch([]);
+    setValueSearch("");
+    setModalSearch(!modalSearch);
+  };
+
+  const openModalNotification = () => {
+    setModalNotification(!modalNotification);
+  };
+
+  useEffect(() => {
+    // const id = user._id;
+    const getAllUser = async () => {
+      if (id === "" || id === null || id === undefined) {
+        console.log("111111111111111111111111111111");
+      } else {
+        const data = await ApiUser.getAllUser(id);
+
+        setListUser(data.data.users);
+      }
+    };
+    getAllUser();
+  }, [id]);
+
+  useEffect(() => {
+    if (valueSearch === "") {
+      setListSearch([]);
+    } else {
+      var makeQuery = function (property, regexp) {
+        // return a callback function for filter, see MDC docs for Array.filter
+        return function (elem, index, array) {
+          return elem[property].search(regexp) !== -1;
+        };
+      };
+
+      var re = new RegExp(valueSearch, "i");
+
+      if (isNaN(valueSearch)) {
+        var q = makeQuery("name", re);
+        let length = infor.filter(q).length;
+        setListSearch(infor.filter(q));
+      } else {
+        let obj = listUser.find((o) => o.username === valueSearch);
+        if (obj === undefined) {
+          setListSearch([]);
+        } else {
+          setListSearch([obj]);
+        }
+      }
+    }
+  }, [valueSearch]);
+
+  useEffect(() => {
+    const getRequestFriend = async () => {
+      if (id === "" || id === null || id === undefined) {
+        // console.log("33333333333333333333");
+        setRequestFriends([]);
+      } else {
+        const data = await friendApi.getInvitesFriend(id);
+        if (data) {
+          console.log("44444444444");
+          console.log(data.data.listUser);
+          setRequestFriends(data.data.listUser);
+        } else {
+          console.log("khong co du lieu");
+        }
+      }
+    };
+
+    getRequestFriend();
+  }, [id]);
+
+  const deninedRequestFriendHandle = async (idRequest, friend) => {
+    const data = await friendApi.declineFriend(idRequest);
+    try {
+      if (data.status === 200) {
+        console.log("Từ chối thành công");
+        // Set lại list
+        const listRemoveUserAccept = requestFriends.filter(
+          (user) => user.username !== friend.username
+        );
+        setRequestFriends(listRemoveUserAccept);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const acceptRequestFriendHandle = async (idRequest, friend) => {
+    console.log(friend._id + " " + user._id);
+    try {
+      const data = await friendApi.acceptFriend(idRequest);
+      if (data.status === 200) {
+        const dataChat = {
+          senderId: friend._id,
+          receiveId: user._id,
+        };
+        const creChat = await chatApi.createChat(dataChat);
+        if (creChat.status === 200) {
+          console.log("Kết bạn thành công");
+          reGetFriend();
+        } else {
+          console.log("chua tao phong chat");
+        }
+
+        // Set lại danh sách yêu cầu
+        const listRemoveUserAccept = requestFriends.filter(
+          (user) => user.username !== friend.username
+        );
+        setRequestFriends(listRemoveUserAccept);
+        // Gửi thông báo bạn bè kb thành công socket
+        socket.emit("send-require-friend", {
+          userFind: friend,
+          user: user,
+          isAccept: true,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const RequestFriendBar = ({ requestFriends }) => {
+    const idRequest = requestFriends.idRequest;
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          borderColor: "#b6b9ba",
+          borderBottomWidth: 1,
+        }}
+      >
+        <View style={styles.aMess}>
+          <View style={styles.aMess_avt}>
+            <Image
+              source={{ uri: requestFriends.avatar }}
+              style={styles.wrapAvatarZL}
+            />
+          </View>
+          <View style={styles.aMess_right}>
+            <View style={styles.name_and_disMess}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <Text> {requestFriends.name} đã gửi lời mời kết bạn</Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                width: "40%",
+                justifyContent: "space-evenly",
+                //   backgroundColor: "red",
+              }}
+            >
+              <TouchableOpacity
+                onPress={() =>
+                  acceptRequestFriendHandle(idRequest, requestFriends)
+                }
+              >
+                <Image source={require("../assets/accept.png")} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  deninedRequestFriendHandle(idRequest, requestFriends)
+                }
+              >
+                <Image source={require("../assets/cancel.png")} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  useEffect(() => {
+    console.log("SOCKET KET BAN HOAT DONG");
+    socket.on("recieve-require-friend", (data) => {
+      setNotification(`${data.name} vừa mới gửi lời mời kết bạn`);
+      console.log(data);
+    });
+  }, [socket]);
+
   return (
     <SafeAreaView style={[styles.container, GlobalStyles.droidSafeArea]}>
       <View style={styles.tabBarSearch}>
         <TouchableOpacity style={styles.icon}>
           <SearchICon color="white" size={size} />
         </TouchableOpacity>
-        <Pressable style={styles.wrapTextSearch} onPress={test1}>
+        <Pressable style={styles.wrapTextSearch} onPress={openModalSearch}>
           <Text style={styles.txtSearch}>Tìm kiếm</Text>
         </Pressable>
-        <TouchableOpacity style={styles.icon}>
-          {/* <QRIcon color="white" size={size} /> */}
-          {/* <Image source={require("../assets/bell1.png")} /> */}
+        <TouchableOpacity style={styles.icon} onPress={openModalNotification}>
           <Image source={require("../assets/bell.png")} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.icon} onPress={toggleModal}>
@@ -279,6 +491,127 @@ export const Home = ({ navigation, route }) => {
           </View>
         </Modal>
       </View>
+
+      {/* modal search */}
+      <View>
+        <Modal
+          isVisible={modalSearch}
+          onBackdropPress={() => setModalSearch(false)}
+          deviceWidth={deviceWidth}
+          deviceHeight={deviceHeight}
+        >
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#fff",
+              padding: 24,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                width: 50,
+                height: 50,
+                position: "absolute",
+                top: 10,
+                right: 10,
+              }}
+              onPress={openModalSearch}
+            >
+              <XIcon color="#000" size={22} />
+            </TouchableOpacity>
+            {/*  */}
+            <View style={[styles.tabBarSearch, { marginTop: 50 }]}>
+              <TouchableOpacity style={styles.icon}>
+                <SearchICon color="#000" size={size} />
+              </TouchableOpacity>
+              <TextInput
+                style={styles.wrapTextSearch}
+                placeholder="Tìm kiếm"
+                value={valueSearch}
+                placeholderTextColor="#000"
+                onChangeText={(obj) => setValueSearch(obj)}
+              />
+              <TouchableOpacity
+                style={{
+                  padding: 10,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image source={require("../assets/bell.png")} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.listRs}>
+              <Text>Danh sach tim thay</Text>
+              <View style={{ height: "90%" }}>
+                {valueSearch === "" ? (
+                  ""
+                ) : (
+                  <FlatList
+                    data={listSearch}
+                    keyExtractor={(item) => item._id}
+                    renderItem={({ item }) => (
+                      <FriendBar users={item} idUser={user._id} />
+                    )}
+                  />
+                )}
+                {/* <FriendBar /> */}
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
+
+      {/* modal thong bao */}
+      <View>
+        <Modal
+          isVisible={modalNotification}
+          onBackdropPress={() => setModalNotification(false)}
+          deviceWidth={deviceWidth}
+          deviceHeight={deviceHeight}
+          style={{
+            justifyContent: "flex-start",
+            alignItems: "flex-end",
+            marginTop: 50,
+            // marginRight: "20%",
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              // height: auto,
+              backgroundColor: "#fff",
+              padding: 12,
+              justifyContent: "center",
+            }}
+          >
+            {requestFriends.length === 0 ? (
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                {notification === "" ? (
+                  <Text>Không có yêu cầu kết bạn nào !</Text>
+                ) : (
+                  <Text>{notification}</Text>
+                )}
+              </View>
+            ) : (
+              <View>
+                <FlatList
+                  data={requestFriends}
+                  keyExtractor={(item) => item._id}
+                  renderItem={({ item }) => (
+                    <RequestFriendBar requestFriends={item} />
+                  )}
+                />
+                {notification === "" ? "" : <Text>{notification}</Text>}
+              </View>
+            )}
+            <View></View>
+          </View>
+        </Modal>
+      </View>
     </SafeAreaView>
   );
 };
@@ -323,5 +656,60 @@ const styles = StyleSheet.create({
   listMess: {
     flex: 1,
     marginVertical: 2,
+  },
+
+  aMess: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  aMess_avt: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "25%",
+  },
+
+  aMess_right: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: "100%",
+    marginLeft: 5,
+    width: "75%",
+  },
+
+  wrapAvatarZL: {
+    width: 50,
+    height: 50,
+    borderRadius: 500,
+    borderWidth: 1,
+    borderColor: "black",
+    marginVertical: 10,
+  },
+
+  name_and_disMess: {
+    flexDirection: "column",
+    justifyContent: "center",
+    width: "60%",
+  },
+
+  txtNameMess: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+
+  txtDisMess: {
+    fontSize: 15,
+    opacity: 0.5,
+  },
+
+  xxxDiff: {
+    width: "10%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  txtTimeMess: {
+    textAlign: "center",
   },
 });
