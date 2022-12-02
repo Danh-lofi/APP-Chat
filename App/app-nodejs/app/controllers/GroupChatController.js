@@ -5,8 +5,6 @@ import UserModel from "../models/User.js";
 
 const GroupChatController = {
   createGroupChat: async (req, res, next) => {
-    //
-
     const adminGroup = req.user._id;
     const { nameGroupChat, memberChat, avatar } = req.body;
 
@@ -26,6 +24,7 @@ const GroupChatController = {
       req.body.idGroupChat = rs._id;
       req.body.listIdUser = rs.memberChat;
       req.body.group = rs;
+
       next();
     } catch (error) {
       res.status(406).json(error);
@@ -254,12 +253,13 @@ const GroupChatController = {
       if (meId != groupChatAdminId) {
         await GroupChatModel.findOneAndUpdate(
           { _id: groupId },
-          { $pull: { memberChat: { id: meId } } }
+          { $pull: { memberChat: { id: meId.toString() } } }
         );
         await UserModel.findOneAndUpdate(
           { _id: meId },
           { $pull: { groups: { id: _groupId } } }
         );
+        res.status(201).send("roi thanh cong");
       }
     } catch (error) {
       console.log("loi");

@@ -10,6 +10,11 @@ routerRequestFriend.get(
   RequestFriendController.getListRequest,
   UserController.getListUserFromId
 );
+// new
+routerRequestFriend.get(
+  "/getIdRequest/:id",
+  RequestFriendController.getIdRequest
+);
 routerRequestFriend.post("/accept", RequestFriendController.acceptFriend);
 routerRequestFriend.post("/decline", RequestFriendController.declineFriend);
 routerRequestFriend.post("/send", RequestFriendController.sendRequestFriend);
@@ -18,6 +23,12 @@ routerRequestFriend.post("/send", RequestFriendController.sendRequestFriend);
 routerRequestFriend.get(
   "/check/:username",
   authMiddleware.isAuth,
+  FriendController.getUserByUsername,
+  RequestFriendController.checkRequestFriend
+);
+routerRequestFriend.get(
+  "/m-check/:username",
+  authMiddleware.authApp,
   FriendController.getUserByUsername,
   RequestFriendController.checkRequestFriend
 );

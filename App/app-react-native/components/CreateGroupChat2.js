@@ -51,14 +51,6 @@ const CreateGroupChat2 = ({ setVisible }) => {
     setVisible(false);
   };
 
-  const test = () => {
-    console.log("runnnnnn");
-    socket.on("listGroup", (data) => {
-      console.log("socket group: ");
-      console.log(data);
-    });
-  };
-
   const handleCreateRoom = async () => {
     const id = await AsyncStorage.getItem("idUser");
     const token = await AsyncStorage.getItem("token");
@@ -101,13 +93,6 @@ const CreateGroupChat2 = ({ setVisible }) => {
       closeModal();
     }
   };
-
-  useEffect(() => {
-    socket.on("listGroup", (data) => {
-      console.log("socket group: ");
-      console.log(data);
-    });
-  }, [socket]);
 
   const handleClick = (item) => {
     // for(let i = 0;)

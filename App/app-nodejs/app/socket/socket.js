@@ -20,8 +20,37 @@ const socket = (io) => {
       io.emit("get-users", activeUsers);
     });
 
-    // send message to a specific user
+    // // send message to a specific user
+    // socket.on("send-message", (data) => {
+    //   console.log(data);
+    //   const { receiverId } = data;
+    //   if (Array.isArray(receiverId)) {
+    //     receiverId.forEach((userReceiver) => {
+    //       const user = activeUsers.find(
+    //         (user) => user.userId === userReceiver.id
+    //       );
+    //       console.log("-----------Socket send mesage-------------------");
+    //       console.log(user);
+    //       if (user) {
+    //         // gửi cho các users ngoại trừ sender
+    //         //io.to(user.socketId).emit("recieve-message", data);
+    //         io.emit("recieve-message", data);
+    //       }
+    //     });
+    //   } else {
+    //     const user = activeUsers.find((user) => user.userId === receiverId);
+    //     console.log("Sending from socket to :", receiverId);
+    //     console.log("Data: ", data);
+    //     console.log(user);
+    //     if (user) {
+    //       // gửi cho các users ngoại trừ sender
+    //       // io.to(user.socketId).emit("recieve-message", data);
+    //       io.emit("recieve-message", data);
+    //     }
+    //   }
+    // });
     socket.on("send-message", (data) => {
+      console.log("-----------Socket send mesage-------------------");
       console.log(data);
       const { receiverId } = data;
       if (Array.isArray(receiverId)) {

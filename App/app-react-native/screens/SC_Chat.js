@@ -325,6 +325,9 @@ const SC_Chat = ({ navigation, route }) => {
               { paddingVertical: 15, paddingHorizontal: 10 },
             ]}
           >
+            <View style={{ alignItems: "center" }}>
+              {statusG === 0 ? "" : <Text>Đã rời khỏi nhóm</Text>}
+            </View>
             {chatMessages[0] ? (
               <FlatList
                 data={chatMessages}

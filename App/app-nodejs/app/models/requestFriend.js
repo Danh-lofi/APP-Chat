@@ -1,23 +1,15 @@
 import mongoose from "mongoose";
+const ObjectId = mongoose.Types.ObjectId;
 
-const RequestFriendSchema = new mongoose.Schema(
+const FriendRequestSchema = new mongoose.Schema(
   {
-    senderId: {
-      type: String,
-      required: true,
-    },
-    receiverId: {
-      type: String,
-      required: true,
-    },
+    senderId: ObjectId,
+    receiverId: ObjectId,
   },
   {
     timestamps: true,
   }
 );
 
-const RequestFriendModel = mongoose.model(
-  "friendrequests",
-  RequestFriendSchema
-);
-export default RequestFriendModel;
+const FriendRequestModel = mongoose.model("FriendRequest", FriendRequestSchema);
+export default FriendRequestModel;

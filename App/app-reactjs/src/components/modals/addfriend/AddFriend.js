@@ -74,9 +74,9 @@ const AddFriend = ({ onClose }) => {
   }, [isRequired]);
   //
 
-  socket.current = io("ws://suar-app.herokuapp.com/");
+  // socket.current = io("ws://suar-app.herokuapp.com/");
 
-  // socket.current = io("ws://localhost:3001");
+  socket.current = io("ws://localhost:3001");
 
   //Event: Tìm bạn bè
   const submitButtonHandle = async () => {

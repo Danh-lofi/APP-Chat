@@ -37,11 +37,11 @@ const FriendController = {
     try {
       const userMe = await UserModel.findOneAndUpdate(
         { _id: friendId },
-        { $pull: { friends: { id: meId } } }
+        { $pull: { friends: { id: mongoose.Types.ObjectId(meId) } } } // obj id
       );
       const userFriend = await UserModel.findOneAndUpdate(
         { _id: meId },
-        { $pull: { friends: { id: friendId } } }
+        { $pull: { friends: { id: mongoose.Types.ObjectId(friendId) } } } // obj id
       );
     } catch (error) {
       return res.status(402).send({ message: "Xóa thất bại!!!" });

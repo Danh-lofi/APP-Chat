@@ -35,8 +35,8 @@ export const ApiUser = {
     return ApiManager.post(url, data);
   },
 
-  getAllUser: async () => {
-    return await ApiManager.get(`/getAllUser`);
+  getAllUser: async (id) => {
+    return await ApiManager.get(`/getAllUser/${id}`, {});
   },
 };
 
@@ -94,6 +94,13 @@ export const ApiProfile = {
 export const ApiGetUser = {
   getProfileUserFromId: (id) => {
     const url = `/user/getProfileUserFromId/${id}`;
+    return apiGet.get(url, {});
+  },
+};
+
+export const TestGetFromHeroku = {
+  getTest: (id) => {
+    const url = `https://suar-app.herokuapp.com/user/getProfileUserFromId/${id}`;
     return apiGet.get(url, {});
   },
 };

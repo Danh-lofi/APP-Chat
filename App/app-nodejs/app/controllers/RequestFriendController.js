@@ -1,11 +1,15 @@
 import RequestFriendModel from "../models/requestFriend.js";
 import UserModel from "../models/User.js";
+import mongoose from "mongoose";
 const RequestFriendController = {
   getListRequest: async (req, res, next) => {
     console.log("Get List Requets: ");
 
     const id = req.params.id;
-    const listRequest = await RequestFriendModel.find({ receiverId: id });
+    console.log("id nguoi nhan: " + id);
+    const listRequest = await RequestFriendModel.find({
+      receiverId: mongoose.Types.ObjectId(id),
+    });
     // List request
 
     // Chuyển đổi list requets thành user
@@ -26,6 +30,18 @@ const RequestFriendController = {
 
     next();
     // Gửi chuyển cho userController response cho client
+  },
+  getIdRequest: async (req, res) => {
+    const id = req.params.id;
+    const idRequest = await RequestFriendModel.find({
+      receiverId: mongoose.Types.ObjectId(id),
+    });
+
+    if (!idRequest) {
+      res.status(500).json("null");
+    } else {
+      res.status(200).json(idRequest);
+    }
   },
   acceptFriend: async (req, res) => {
     const idRequest = req.body.idRequest;

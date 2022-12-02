@@ -9,9 +9,9 @@ import {
   Image,
   ImageBackground,
 } from "react-native";
-import { AddNewIcon } from "./IconBottomTabs";
+import { AddNewIcon, XIcon } from "./IconBottomTabs";
 
-const SearchFriendBar = ({ listInfor, onPress }) => {
+const SearchFriendBar = ({ listInfor, onPress, statusClick }) => {
   return (
     <View style={styles.aMess}>
       <View style={styles.aMess_avt}>
@@ -24,6 +24,15 @@ const SearchFriendBar = ({ listInfor, onPress }) => {
         <TouchableOpacity style={styles.xxxDiff} onPress={onPress}>
           <AddNewIcon color="black" size={22} />
         </TouchableOpacity>
+        {/* {statusClick === false ? (
+          <TouchableOpacity style={styles.xxxDiff} onPress={onPress}>
+            <AddNewIcon color="black" size={22} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.xxxDiff} onPress={onPress}>
+            <XIcon color="black" size={22} />
+          </TouchableOpacity>
+        )} */}
       </View>
     </View>
   );
