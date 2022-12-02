@@ -101,6 +101,7 @@ export const Home = ({ navigation, route }) => {
 
     await ApiProfile.profile2(token)
       .then((res) => {
+        console.log("105");
         setId(res.data._id);
 
         setUser(res.data);
@@ -118,6 +119,7 @@ export const Home = ({ navigation, route }) => {
     const token = await AsyncStorage.getItem("token");
     await ApiLoadFriend.getFriend(token)
       .then((res) => {
+        console.log("122");
         setInfor(
           res.data.listFriend.filter((element) => {
             return element !== null;
@@ -130,6 +132,7 @@ export const Home = ({ navigation, route }) => {
 
     await ApiLoadGroupChat.getGroupChat(token)
       .then((res) => {
+        console.log("135");
         const ff = res.data.listGroup.filter((element) => {
           return element !== null;
         });
@@ -149,6 +152,7 @@ export const Home = ({ navigation, route }) => {
     const token = await AsyncStorage.getItem("token");
     await ApiLoadFriend.getFriend(token)
       .then((res) => {
+        console.log("155");
         setInfor(
           res.data.listFriend.filter((element) => {
             return element !== null;
@@ -216,6 +220,7 @@ export const Home = ({ navigation, route }) => {
         console.log("111111111111111111111111111111");
       } else {
         const data = await ApiUser.getAllUser(id);
+        console.log("223");
 
         setListUser(data.data.users);
       }
@@ -258,6 +263,7 @@ export const Home = ({ navigation, route }) => {
         setRequestFriends([]);
       } else {
         const data = await friendApi.getInvitesFriend(id);
+        console.log("266");
         if (data) {
           console.log("44444444444");
           console.log(data.data.listUser);

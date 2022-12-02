@@ -12,7 +12,7 @@ const cloudinaryApi = {
     isFilePowP,
     isFileExel
   ) => {
-    const url = "/cloudinary/upload";
+    const url = "/cloudinary/m-upload";
     return apiGet.post(
       url,
       {

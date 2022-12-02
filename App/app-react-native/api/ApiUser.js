@@ -78,8 +78,8 @@ export const ApiProfile = {
     //   },
     // });
     return axios.create({
-      baseURL: "http://192.168.1.14:3001/me",
-      // baseURL: "http://localhost:3001/me",
+      // baseURL: "http://172.16.20.69:3001/me",
+      baseURL: "https://suar-app.herokuapp.com/me",
       headers: {
         Authorization: `Bearer ${token}`,
       },

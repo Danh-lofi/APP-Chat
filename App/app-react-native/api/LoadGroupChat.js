@@ -45,6 +45,27 @@ const ApiLoadGroupChat = {
       groupId,
     });
   },
+
+  addUsersToGroup: (idGroupChat, listIdUser) => {
+    const url = `/groupChat/add-users`;
+    return apiGet.put(url, { idGroupChat, listIdUser });
+  },
+
+  franchiesAdmin: (groupId, newAdminId) => {
+    const url = `/groupChat/franchies`;
+    return apiGet.post(url, {
+      groupId,
+      newAdminId,
+    });
+  },
+
+  deleteMemberFromGroup: (idGroup, idUserDeleted) => {
+    const url = `/groupChat/deleteUserFromGroupChat`;
+    return apiGet.put(url, {
+      _id: idGroup,
+      idUserDeleted,
+    });
+  },
 };
 
 export default ApiLoadGroupChat;

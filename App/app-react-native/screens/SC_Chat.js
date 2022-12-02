@@ -144,6 +144,7 @@ const SC_Chat = ({ navigation, route }) => {
     );
 
     if (rs.cancelled === false) {
+      console.log("1");
       const data = await cloudinaryApi.cloudinaryUpload(
         base64Img,
         token,
@@ -151,6 +152,8 @@ const SC_Chat = ({ navigation, route }) => {
         type,
         fileName
       );
+
+      // console.log(data);
 
       const hour =
         new Date().getHours() < 10

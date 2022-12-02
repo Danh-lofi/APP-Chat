@@ -95,8 +95,13 @@ export const CreateGroupChat = ({ navigation }) => {
   };
 
   const ListFriend = () => (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      <View style={{ marginTop: 20, marginRight: 20 }}>
+    <View style={{ flex: 1, backgroundColor: "#fff", marginBottom: 150 }}>
+      <View
+        style={{
+          // marginTop: 20,
+          marginRight: 20,
+        }}
+      >
         <FlatList
           data={infor}
           keyExtractor={(item) => item._id}
@@ -251,7 +256,7 @@ export const CreateGroupChat = ({ navigation }) => {
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
-        style={{ marginTop: 5 }}
+        style={{ marginTop: 5, flex: 1, backgroundColor: "red" }}
       />
     </SafeAreaView>
   );
