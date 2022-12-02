@@ -48,6 +48,28 @@ const FriendController = {
     }
     res.status(200).send({ message: "Xóa thành công!!!" });
   },
+  deleteFriendWeb: async (req, res) => {
+    // Input: friendId, accessToken
+    const user = req.user;
+    const meId = user._id.toString();
+    const friendId = req.body.friendId;
+    console.log("friendId: " + friendId);
+    console.log("MeId: ");
+    console.log(meId.toString());
+    try {
+      const userMe = await UserModel.findOneAndUpdate(
+        { _id: friendId },
+        { $pull: { friends: { id: meId } } }
+      );
+      const userFriend = await UserModel.findOneAndUpdate(
+        { _id: meId },
+        { $pull: { friends: { id: friendId } } }
+      );
+    } catch (error) {
+      return res.status(402).send({ message: "Xóa thất bại!!!" });
+    }
+    res.status(200).send({ message: "Xóa thành công!!!" });
+  },
   getUserByUsername: async (req, res, next) => {
     const username = req.params.username;
 

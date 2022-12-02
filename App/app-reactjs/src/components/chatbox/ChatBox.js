@@ -95,8 +95,8 @@ const ChatBox = (props) => {
 
   // // Connect to Socket.io
   useEffect(() => {
-    // socket.current = io("ws://suar-app.herokuapp.com/");
-    socket.current = io("ws://localhost:3001");
+    socket.current = io("ws://suar-app.herokuapp.com/");
+    // socket.current = io("ws://localhost:3001");
 
     socket.current.emit("new-user-add", user._id);
     socket.current.on("get-users", (users) => {

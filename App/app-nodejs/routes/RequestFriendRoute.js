@@ -10,6 +10,12 @@ routerRequestFriend.get(
   RequestFriendController.getListRequest,
   UserController.getListUserFromId
 );
+
+routerRequestFriend.get(
+  "m/:id",
+  RequestFriendController.getListRequest,
+  UserController.getListUserFromId
+);
 // new
 routerRequestFriend.get(
   "/getIdRequest/:id",

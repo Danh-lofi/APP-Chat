@@ -31,9 +31,9 @@ const ModalGroup = ({ onClose }) => {
   //
   // Socket
   const socket = useRef();
-  // socket.current = io("ws://suar-app.herokuapp.com/");
+  socket.current = io("ws://suar-app.herokuapp.com/");
 
-  socket.current = io("ws://localhost:3001");
+  // socket.current = io("ws://localhost:3001");
 
   //
 

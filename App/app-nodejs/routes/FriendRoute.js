@@ -21,7 +21,7 @@ routerFriend.get("/id/:id", FriendController.getUserById);
 routerFriend.post(
   "/deleteFriend",
   authMiddleware.isAuth,
-  FriendController.deleteFriend
+  FriendController.deleteFriendWeb
 );
 
 export default routerFriend;
