@@ -23,7 +23,9 @@ const ProfileGroup = (props) => {
 
   // Socket
   const socket = useRef();
-  socket.current = io("ws://localhost:3001");
+  // socket.current = io("ws://localhost:3001");
+  socket.current = io("ws://suar-app.herokuapp.com/");
+
   //
   // State
   const [listMember, setListMember] = useState([]);

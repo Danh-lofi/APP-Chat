@@ -1,7 +1,8 @@
 import axios from "axios";
 import queryString from "query-string";
 
-const URL = "http://localhost:3001";
+// const URL = "http://localhost:3001";
+const URL = "https://suar-app.herokuapp.com/";
 
 const axiosClients = axios.create({
   baseURL: URL,
