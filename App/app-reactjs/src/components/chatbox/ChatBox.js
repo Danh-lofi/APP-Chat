@@ -47,6 +47,7 @@ import { friendSliceAction } from "../../store/friendSlice";
 import { groupAction } from "../../store/groupSlice";
 import ListGroupChat from "../listchat/ListGroupChat";
 import friendApi from "../../api/friendApi";
+import NoneMessage from "./non-message/NoneMessage";
 
 const ChatBox = (props) => {
   // Ref
@@ -69,6 +70,7 @@ const ChatBox = (props) => {
   const [isProfileFriend, setIsProfileFriend] = useState(false);
   const [images, setImages] = useState();
   const [files, setFiles] = useState();
+  const [isMessage, setIsMessage] = useState();
 
   //
   // Redux
@@ -95,8 +97,8 @@ const ChatBox = (props) => {
 
   // // Connect to Socket.io
   useEffect(() => {
-    socket.current = io("ws://suar-app.herokuapp.com/");
-    // socket.current = io("ws://localhost:3001");
+    // socket.current = io("ws://app-chat-node.onrender.com/");
+    socket.current = io("ws://localhost:3001");
 
     socket.current.emit("new-user-add", user._id);
     socket.current.on("get-users", (users) => {
@@ -202,6 +204,8 @@ const ChatBox = (props) => {
         return;
       }
       const messagesData = await messageApi.getMessages(chatId);
+
+      messagesData.data.length === 0 ? setIsMessage(false) : setIsMessage(true);
       setMessgages(messagesData.data);
       const listImage = messagesData.data.filter(
         (message) => message.isImg === true
@@ -227,6 +231,7 @@ const ChatBox = (props) => {
 
   // Send Message
   const sendMessageHandle = async () => {
+    setIsMessage(true);
     const messageSender = {
       chatId,
       senderId: user._id,
@@ -330,7 +335,7 @@ const ChatBox = (props) => {
           fileName,
         });
       }
-      // console.log(messages);
+
       setMessgages((messages) => [
         ...messages,
         { ...messageSender, time, text: data.data.result.text },
@@ -495,7 +500,12 @@ const ChatBox = (props) => {
             </div>
           </div>
 
-          <div className="chatBox_content">
+          <div
+            className={`chatBox_content ${
+              !isMessage ? "chatBox_content__none-message" : ""
+            }`}
+          >
+            {!isMessage && <NoneMessage user={user} friend={friend} />}
             {friend ? (
               <ListChat
                 messages={messages}

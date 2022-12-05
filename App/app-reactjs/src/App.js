@@ -14,6 +14,7 @@ import AddFriend from "./components/modals/addfriend/AddFriend";
 import AddFriendToGroup from "./components/modals/addfriendtogroup/AddFriendToGroup";
 import ConfirmModal from "./components/modals/confirm/ConfirmModal";
 import FranchiesAdmin from "./components/modals/franchiseadmin/FranchiesAdmin";
+import Loading from "./components/modals/loading/Loading";
 
 function App() {
   // state
@@ -54,6 +55,7 @@ function App() {
   return (
     <div className="App">
       {/* Modal */}
+      {loading && <Loading />}
       {isOpenAddGroup ? <AddFriendToGroup /> : ""}
       {isOpenFranchiesAdmin ? <FranchiesAdmin /> : ""}
       {isOpenChangeProfile ? (
@@ -111,7 +113,7 @@ function App() {
                 path={route.path}
                 element={
                   <LayoutAuth isRegister={isRegister}>
-                    <Page />
+                    <Page onLoading={changeLoadingHandle} />
                   </LayoutAuth>
                 }
               ></Route>

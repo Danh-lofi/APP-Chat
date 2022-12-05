@@ -126,6 +126,9 @@
         position: relative;
         overflow-x: hidden;
         overflow-y: auto;
+        &__none-message{
+            @include flex(center, center);
+        }
     }
 
     &_footer {

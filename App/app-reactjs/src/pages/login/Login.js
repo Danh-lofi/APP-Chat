@@ -27,11 +27,15 @@ const Login = (props) => {
   }, []);
 
   const submitHandle = () => {
+    props.onLoading(true);
     dispatch(login({ username, password })).then((res) => {
       console.log(res);
       // Đăng nhập thành công
       if (res.payload.status === 200) {
-        navigate("/profile");
+        setTimeout(() => {
+          props.onLoading(false);
+          navigate("/profile");
+        }, 500);
       }
       // Đăng nhập thất bại
       if (res.payload.status === 404) {
