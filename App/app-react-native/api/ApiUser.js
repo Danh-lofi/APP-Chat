@@ -1,5 +1,6 @@
 import axios from "axios";
 import ApiManager, { apiGet } from "./ApiManager";
+import { baseURL } from "./URL/url";
 
 // dong tam lai
 //
@@ -35,8 +36,8 @@ export const ApiUser = {
     return ApiManager.post(url, data);
   },
 
-  getAllUser: async (id) => {
-    return await ApiManager.get(`/getAllUser/${id}`, {});
+  getAllUser: async (token) => {
+    return await apiGet.get(`/getAllUser`, token);
   },
 };
 
@@ -57,13 +58,13 @@ export const ApiUser = {
 
 export const ApiRegisterUser = {
   checkExistAccount: (data) => {
-    const url = `/checkExistAccount`;
+    const url = `/forgot/verify`;
     return ApiManager.post(url, data);
   },
 
   register: (data) => {
-    const url = `/register`;
-    return ApiManager.post(url, data);
+    const url = `/app/register`;
+    return apiGet.post(url, data);
   },
 };
 
@@ -78,8 +79,8 @@ export const ApiProfile = {
     //   },
     // });
     return axios.create({
-      // baseURL: "http://172.16.20.69:3001/me",
-      baseURL: "https://suar-app.herokuapp.com/me",
+      baseURL: baseURL,
+      // baseURL: "https://suar-app.herokuapp.com/me",
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -7,9 +7,10 @@ import bcrypt from "bcrypt";
 const AutherController = {
   getAllUser: async (req, res, next) => {
     const { id } = req.params;
+    const user = req.user;
     try {
       const users = await UserModel.find({
-        _id: { $nin: mongoose.Types.ObjectId(id) },
+        _id: { $nin: mongoose.Types.ObjectId(user._id) },
       }).select([
         "_id",
         "username",
@@ -74,7 +75,7 @@ const AutherController = {
     } else {
       refreshToken = user.refreshToken;
     }
-    return res.json({
+    return res.status(200).json({
       msg: "Đăng nhập thành công.",
       accessToken,
       refreshToken,
@@ -101,6 +102,7 @@ const AutherController = {
     });
   },
   registerApp: async (req, res, next) => {
+    console.log(req.body);
     try {
       const user = new UserModel(req.body);
       await user.save();
@@ -114,7 +116,7 @@ const AutherController = {
     const username = req.body.username;
     UserModel.findOne({ username }).then((user) => {
       if (user) {
-        res.status(409).send("Tài khoản này đã tồn tại!");
+        res.status(403).send("Tài khoản này đã tồn tại!");
       } else {
         res.status(200).send("Tài khoản này chưa tồn tại!");
       }
@@ -126,7 +128,7 @@ const AutherController = {
       if (user) {
         res.status(200).send({ username });
       } else {
-        res.status(402).send("Tài khoản này chưa tồn tại!");
+        res.status(204).send("Tài khoản này chưa tồn tại!");
       }
     });
   },

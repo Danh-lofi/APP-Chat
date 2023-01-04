@@ -6,8 +6,6 @@ import { cos, min } from "react-native-reanimated";
 import { ApiGetUser } from "../api/ApiUser";
 
 export default function MessageComponent({ item, idUser, onPress, statusG }) {
-  console.log("item");
-  console.log(item);
   const { _id, chatId, senderId, fileName, isImg, type, text } = item;
   const status = item.senderId !== idUser;
   const [statusTouch, setStatusTouch] = useState(false);
@@ -16,7 +14,6 @@ export default function MessageComponent({ item, idUser, onPress, statusG }) {
   const [name, setName] = useState();
 
   const getAvatar = async () => {
-    console.log(statusG);
     if (item.senderId === "") {
       console.log("id null");
     } else {
@@ -37,22 +34,19 @@ export default function MessageComponent({ item, idUser, onPress, statusG }) {
   }, [item.chatId]);
 
   const touchMess = () => {
-    console.log(item);
-
     if (statusTouch === true) {
       setStatusTouch(false);
       clearInterval();
     } else {
       if (item.time === undefined) {
         setStatusTouch(true);
-        console.log("item.createdAt");
-        console.log(item.createdAt);
+
         const date = new Date(item.createdAt);
-        console.log(date.getDate());
+
         let day = date.getDate() - 1;
         let month = date.getMonth() + 1;
         let year = date.getFullYear();
-        console.log(typeof day);
+
         let hour = date.getHours();
         let minute = date.getMinutes();
 
@@ -74,7 +68,6 @@ export default function MessageComponent({ item, idUser, onPress, statusG }) {
         );
         const timeOut = setTimeout(() => {
           setStatusTouch(false);
-          console.log("5 giay");
         }, 5000);
 
         return () => {
@@ -120,7 +113,7 @@ export default function MessageComponent({ item, idUser, onPress, statusG }) {
                     isImg
                       ? {
                           backgroundColor: "rgba(255,255,255,0)",
-                          marginRight: 0,
+                          marginLeft: -20,
                         }
                       : styles.mmessage,
                   ]
@@ -140,10 +133,10 @@ export default function MessageComponent({ item, idUser, onPress, statusG }) {
             onPress={touchMess}
           >
             {isImg ? (
-              <View style={{ height: 200, width: 100 }}>
+              <View style={{ height: 200, width: 200 }}>
                 <Image
                   style={{
-                    flex: 1,
+                    // flex: 1,
                     height: "100%",
                     width: "100%",
                   }}

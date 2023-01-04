@@ -25,13 +25,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ApiProfile, ApiUser } from "../api/ApiUser";
 import { chatApi } from "../api/ApiChat";
 import { messageApi } from "../api/ApiMessage";
-import cloudinaryApi from "../api/cloudinaryApi";
 import axios from "axios";
 import MessageComponent from "../components/MessageComponent";
 import ModalMemberGroupChat from "../components/ModalMemberGroupChat";
 import socket from "../utils/socket";
 import * as ImagePicker from "expo-image-picker";
 import GlobalStyles from "../components/GlobalStyles";
+import { firebase } from "../config";
+import Modal from "react-native-modal";
+import LoadingCircle from "../components/LoadingCircle";
+import { apiFirebase } from "../api/ApiFirebase";
+import LoadingCircleSnail from "../components/LoadingCircleSnail";
+import uuid from "uuid";
 
 const size = 24;
 
@@ -52,6 +57,10 @@ const SC_Chat = ({ navigation, route }) => {
   const [wellCome, setWellCome] = useState("");
   const [sttWell, setSttWell] = useState();
   const messagesEndRef = useRef(null);
+  const [sendMessImg, setSendMessImg] = useState();
+  const [modalLoading, setModalLoading] = useState(false);
+  const [messageGetFromSocket, setMessageGetFromSocket] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // const handleOpenMemberChat = () => setVisible(true);
 
@@ -108,53 +117,55 @@ const SC_Chat = ({ navigation, route }) => {
           text: message,
           receiverId: idFriend,
           time,
+          isImg: false,
         });
       }
 
-      // setChatMessages((chatMessages) => [
-      //   ...chatMessages,
-      //   { ...messageSender, time },
-      // ]);
+      setChatMessages((chatMessages) => [
+        ...chatMessages,
+        { ...messageSender, time },
+      ]);
       setMessage("");
     }
 
     setMessage("");
   };
 
-  const chooseImg = async () => {
-    let rs = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      // allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-      base64: true,
+  async function uploadImageAsync(uri, fileName) {
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function (e) {
+        // console.log(e);
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+      xhr.send(null);
     });
 
-    let uri = rs.uri;
+    const ref = firebase.storage().ref().child(`MessageImage/${fileName}`);
+    const snapshot = await ref.put(blob);
 
-    let fileExtension = uri.substring(uri.lastIndexOf(".") + 1);
-    const isImg = rs.type == "image" ? true : false;
-    const type = fileExtension;
+    // We're done with the blob, close and release it
+    blob.close();
 
-    const base64Img = `data:image/jpg;base64,${rs.base64}`;
-    const token = await AsyncStorage.getItem("token");
-    const fileName = rs.uri.substring(
-      rs.uri.lastIndexOf("/") + 1,
-      rs.uri.length
-    );
+    return await snapshot.ref.getDownloadURL();
+  }
 
-    if (rs.cancelled === false) {
-      console.log("1");
-      const data = await cloudinaryApi.cloudinaryUpload(
-        base64Img,
-        token,
-        chatId,
-        type,
-        fileName
-      );
+  const chooseImg = async () => {
+    let rs = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      // base64: true,
+    });
 
-      // console.log(data);
-
+    if (!rs.canceled) {
+      setModalLoading(true);
       const hour =
         new Date().getHours() < 10
           ? `0${new Date().getHours()}`
@@ -166,30 +177,128 @@ const SC_Chat = ({ navigation, route }) => {
           : `${new Date().getMinutes()}`;
 
       const time = `${hour}:${mins}`;
-      const messageSender = {
-        chatId,
-        senderId: idUser,
-        text: message,
-        isImg,
-      };
-      if (data.status === 200) {
-        socket.emit("send-message", {
+      const uri = rs.assets[0].uri;
+
+      let fileExtension = uri.substring(uri.lastIndexOf(".") + 1);
+      const isImg = rs.assets[0].type == "image" ? true : false;
+      const type = fileExtension;
+
+      const token = await AsyncStorage.getItem("token");
+      const fileName = uri.substring(uri.lastIndexOf("/") + 1, uri.length);
+
+      const uploadUrl = await uploadImageAsync(uri, fileName);
+
+      if (uploadUrl.length !== 0) {
+        const data = {
+          chatId,
+          text: uploadUrl,
+          type,
+          fileName,
+        };
+
+        const messageSender = {
           chatId,
           senderId: idUser,
-          text: data.data.result.text,
-          receiverId: idFriend,
-          isImg,
-          time,
-        });
+          text: uploadUrl,
+          isImg: true,
+        };
+        const result = await apiFirebase.uploadMessageImage(token, data);
+        if (result.status === 200) {
+          socket.emit("send-message", {
+            chatId,
+            senderId: idUser,
+            text: uploadUrl,
+            receiverId: idFriend,
+            isImg: true,
+            time,
+          });
+        } else {
+          Alert.alert("Khong gui duoc hinh anh!");
+        }
+        setChatMessages((chatMessages) => [
+          ...chatMessages,
+          { ...messageSender, time },
+        ]);
+      } else {
+        Alert.alert("Khong gui duoc hinh anh");
       }
 
-      // setChatMessages((messages) => [
-      //   ...messages,
-      //   { ...messageSender, time, text: data.data.result.text },
-      // ]);
-      setMessage("");
+      setModalLoading(false);
     }
   };
+
+  const sendImg = async () => {
+    chooseImg();
+    // console.log(sendMessImg);
+  };
+
+  // cach cu
+  // const chooseImg = async () => {
+  //   let rs = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     // allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //     base64: true,
+  //   });
+
+  //   let uri = rs.uri;
+
+  //   let fileExtension = uri.substring(uri.lastIndexOf(".") + 1);
+  //   const isImg = rs.type == "image" ? true : false;
+  //   const type = fileExtension;
+
+  //   const base64Img = `data:image/jpg;base64,${rs.base64}`;
+  //   const token = await AsyncStorage.getItem("token");
+  //   const fileName = rs.uri.substring(
+  //     rs.uri.lastIndexOf("/") + 1,
+  //     rs.uri.length
+  //   );
+
+  //   if (rs.canceled === false) {
+  //     const data = await cloudinaryApi.cloudinaryUpload(
+  //       base64Img,
+  //       token,
+  //       chatId,
+  //       type,
+  //       fileName
+  //     );
+
+  //     const hour =
+  //       new Date().getHours() < 10
+  //         ? `0${new Date().getHours()}`
+  //         : `${new Date().getHours()}`;
+
+  //     const mins =
+  //       new Date().getMinutes() < 10
+  //         ? `0${new Date().getMinutes()}`
+  //         : `${new Date().getMinutes()}`;
+
+  //     const time = `${hour}:${mins}`;
+  //     const messageSender = {
+  //       chatId,
+  //       senderId: idUser,
+  //       text: message,
+  //       isImg,
+  //     };
+  //     if (data.status === 200) {
+  //       socket.emit("send-message", {
+  //         chatId,
+  //         senderId: idUser,
+  //         text: data.data.result.text,
+  //         receiverId: idFriend,
+  //         isImg,
+  //         time,
+  //       });
+  //     }
+
+  //     // setChatMessages((messages) => [
+  //     //   ...messages,
+  //     //   { ...messageSender, time, text: data.data.result.text },
+  //     // ]);
+  //     setMessage("");
+  //   }
+  // };
 
   const handleNewImg = async () => {};
 
@@ -231,6 +340,7 @@ const SC_Chat = ({ navigation, route }) => {
 
   // get all messages from chat id
   useEffect(() => {
+    setLoading(true);
     const getAllMessages = async (chatId) => {
       if (!chatId) {
         setChatId(null);
@@ -241,24 +351,31 @@ const SC_Chat = ({ navigation, route }) => {
       setChatMessages(messagesData.data);
     };
     getAllMessages(chatId);
+    setLoading(false);
   }, [chatId]);
 
   // Get the message from socket server
   useEffect(() => {
     socket.on("recieve-message", (data) => {
-      console.log("---------------data--------------");
-      console.log(data);
-      setChatMessages((chatMessages) => [...chatMessages, data]);
+      setMessageGetFromSocket(data);
     });
   }, [socket]);
+
+  useEffect(() => {
+    messageGetFromSocket &&
+      setChatMessages((prev) => [...prev, messageGetFromSocket]);
+  }, [messageGetFromSocket]);
 
   const touchMess = (item) => {};
 
   const informationChat = () => {
     if (statusG === 0) {
-      navigation.navigate("InformationFriendChat", { idFriend: idFriend });
+      navigation.navigate("InformationFriendChat", {
+        idFriend: idFriend,
+        chatId: chatId,
+      });
     } else {
-      navigation.navigate("InformationGroupChat", { idGroup: chatId });
+      navigation.navigate("InformationGroupChat", { idGroup: chatId, avatar });
     }
   };
 
@@ -329,21 +446,23 @@ const SC_Chat = ({ navigation, route }) => {
             ]}
           >
             <View style={{ alignItems: "center" }}>
-              {statusG === 0 ? "" : <Text>Đã rời khỏi nhóm</Text>}
+              {/* {statusG === 0 ? "" : <Text>Đã rời khỏi nhóm</Text>} */}
             </View>
             {chatMessages[0] ? (
-              <FlatList
-                data={chatMessages}
-                keyExtractor={(item) => item._id}
-                renderItem={({ item }) => (
-                  <MessageComponent
-                    item={item}
-                    idUser={idUser}
-                    statusG={statusG}
-                    onPress={() => touchMess(item)}
-                  />
-                )}
-              />
+              <View>
+                <FlatList
+                  data={chatMessages}
+                  keyExtractor={(item) => item._id}
+                  renderItem={({ item }) => (
+                    <MessageComponent
+                      item={item}
+                      idUser={idUser}
+                      statusG={statusG}
+                      onPress={() => touchMess(item)}
+                    />
+                  )}
+                />
+              </View>
             ) : (
               <View
                 style={{
@@ -435,7 +554,7 @@ const SC_Chat = ({ navigation, route }) => {
                     alignItems: "center",
                     marginLeft: 10,
                   }}
-                  onPress={chooseImg}
+                  onPress={sendImg}
                 >
                   <ImgIcon color="#4eac6dd4" size={40} />
                 </TouchableOpacity>
@@ -445,6 +564,26 @@ const SC_Chat = ({ navigation, route }) => {
         </View>
       </View>
       {/* {visible ? <ModalMemberGroupChat setVisible={setVisible} /> : ""} */}
+      {/* modal loading */}
+      <View>
+        <Modal
+          isVisible={modalLoading}
+          onBackdropPress={() => setModalLoading(false)}
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {/* <LoadingCircle /> */}
+            <LoadingCircle />
+          </View>
+        </Modal>
+      </View>
     </SafeAreaView>
   );
 };

@@ -1,10 +1,12 @@
 const socket = (io) => {
   let activeUsers = [];
+  let scId = "";
   io.on("connection", (socket) => {
     // add new User
     socket.on("new-user-add", (newUserId) => {
       // if user is not added previously
       if (!activeUsers.some((user) => user.userId === newUserId)) {
+        scId = socket.id;
         activeUsers.push({ userId: newUserId, socketId: socket.id });
         console.log("New User Connected", activeUsers);
       }
@@ -56,12 +58,16 @@ const socket = (io) => {
       const user = activeUsers.find((user) => user.userId === receiverId);
       console.log("Sending from socket to :", receiverId);
       console.log("Data: ", data);
+      console.log("-------");
       console.log(user);
-      // if (user) {
-      //   // gửi cho các users ngoại trừ sender
-      //   io.to(user.socketId).emit("recieve-message", data);
-      // }
-      io.emit("recieve-message", data);
+      console.log("-------");
+      if (user) {
+        // gửi cho các users ngoại trừ sender
+        io.to(user.socketId).emit("recieve-message", data);
+      }
+      // io.broadcast.emit("recieve-message", data);
+      // io.to(`${user.socketId}`).emit("recieve-message", data);
+      // socket.broadcast.emit("recieve-message", data);
     });
 
     // Socket gửi thông báo tạo vào nhóm cho các user
@@ -93,7 +99,7 @@ const socket = (io) => {
       console.log(
         "--------------------send-require-friend------------------------------"
       );
-      console.log(data);
+      console.log(data.isDeclined);
 
       const user = activeUsers.find(
         (user) => user.userId === data.userFind._id
@@ -103,13 +109,16 @@ const socket = (io) => {
       if (user) {
         if (data.isDeclined) {
           io.to(user.socketId).emit("declined-require-friend", data.user);
+          // io.emit("recieve-require-friend", data.user);
         } else if (data.isAccept) {
+          // io.emit("recieve-require-friend", { user: data.user });
           io.to(user.socketId).emit("accept-require-friend", {
             user: data.user,
           });
         } else {
           // gửi cho các users ngoại trừ sender
           io.to(user.socketId).emit("recieve-require-friend", data.user);
+          // io.emit("recieve-require-friend", data.user);
         }
       }
       console.log(

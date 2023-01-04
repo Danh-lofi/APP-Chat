@@ -17,6 +17,9 @@ import SC_Chat from "./screens/SC_Chat";
 import { InformationFriendChat } from "./screens/InformationFriendChat";
 import { InformationGroupChat } from "./screens/InformationGroupChat";
 import { CreateGroupChat } from "./screens/CreateGroupChat";
+import SC_ListMember from "./screens/SC_ListMember";
+import AddMemberToTheGroup from "./screens/AddMemberToTheGroup";
+import SC_ImageAndFilesSent from "./screens/SC_ImageAndFilesSent";
 
 // npm install @react-navigation/stack
 // npx expo install react-native-gesture-handler or npm install react-native-gesture-handler
@@ -60,13 +63,14 @@ const MainStackScreen = () => {
       <MainStack.Screen
         name="SC_Login"
         component={SC_Login}
-        options={{ title: "Đăng nhập" }}
+        // options={{ title: "Đăng nhập" }}
+        options={{ headerShown: false }}
       />
       <MainStack.Screen
         name="SC_Register"
         component={SC_Register}
-        options={{ title: "Đăng ký" }}
-        // options={{ headerShown: false }}
+        // options={{ title: "Đăng ký" }}
+        options={{ headerShown: false }}
       />
       <MainStack.Screen
         name="SC_OTP"
@@ -142,6 +146,21 @@ const App = () => {
         <RootStack.Screen
           name="CreateGroupChat"
           component={CreateGroupChat}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="SC_ListMember"
+          component={SC_ListMember}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="AddMemberToTheGroup"
+          component={AddMemberToTheGroup}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="SC_ImageAndFilesSent"
+          component={SC_ImageAndFilesSent}
           options={{ headerShown: false }}
         />
       </RootStack.Navigator>

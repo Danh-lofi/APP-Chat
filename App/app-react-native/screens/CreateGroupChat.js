@@ -19,6 +19,7 @@ import ApiLoadFriend from "../api/ApiLoadFriend";
 import ApiLoadGroupChat from "../api/LoadGroupChat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GlobalStyles from "../components/GlobalStyles";
+import LoadingCircleSnail from "../components/LoadingCircleSnail";
 
 const size = 22;
 
@@ -27,8 +28,10 @@ export const CreateGroupChat = ({ navigation }) => {
   const [valueSearch, setValueSearch] = useState("");
   const [infor, setInfor] = useState([]);
   let aMembers = [];
+  const [loading, setLoading] = useState(false);
 
   const getFriend = useCallback(async () => {
+    setLoading(true);
     const token = await AsyncStorage.getItem("token");
     await ApiLoadFriend.getFriend(token)
       .then((res) => {
@@ -43,6 +46,7 @@ export const CreateGroupChat = ({ navigation }) => {
       .catch((err) => {
         console.log("405");
       });
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -52,6 +56,9 @@ export const CreateGroupChat = ({ navigation }) => {
   const handleCreateRoom = async () => {
     const id = await AsyncStorage.getItem("idUser");
     const token = await AsyncStorage.getItem("token");
+    aMembers = aMembers.filter(
+      (v, i, a) => a.findIndex((v2) => v2.id === v.id) === i
+    );
     aMembers.unshift({ id: id });
     const data = {
       nameGroupChat: nameGroup,
@@ -73,6 +80,7 @@ export const CreateGroupChat = ({ navigation }) => {
           //   group,
           // });
           aMembers = [];
+          setNameGroup("");
           Alert.alert("Tao group thanh cong");
         });
       } catch (error) {
@@ -95,23 +103,29 @@ export const CreateGroupChat = ({ navigation }) => {
   };
 
   const ListFriend = () => (
-    <View style={{ flex: 1, backgroundColor: "#fff", marginBottom: 150 }}>
+    <View style={{ flex: 1, backgroundColor: "#ccc", marginBottom: 90 }}>
       <View
         style={{
-          // marginTop: 20,
           marginRight: 20,
+          marginBottom: 100,
         }}
       >
-        <FlatList
-          data={infor}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <SearchFriendBar
-              onPress={() => handleClick(item)}
-              listInfor={item}
-            />
-          )}
-        />
+        {loading === true ? (
+          <View style={{ width: "100%", height: "100%" }}>
+            <LoadingCircleSnail />
+          </View>
+        ) : (
+          <FlatList
+            data={infor}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+              <SearchFriendBar
+                onPress={() => handleClick(item)}
+                listInfor={item}
+              />
+            )}
+          />
+        )}
       </View>
     </View>
   );
@@ -136,7 +150,7 @@ export const CreateGroupChat = ({ navigation }) => {
   ]);
 
   return (
-    <SafeAreaView style={[styles.container, GlobalStyles.droidSafeArea]}>
+    <View style={[styles.container, GlobalStyles.droidSafeArea]}>
       <View style={styles.tabBarChat}>
         <TouchableOpacity
           style={[styles.icon, { flexDirection: "row" }]}
@@ -256,9 +270,9 @@ export const CreateGroupChat = ({ navigation }) => {
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
-        style={{ marginTop: 5, flex: 1, backgroundColor: "red" }}
+        style={{ marginTop: 5, flex: 1 }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

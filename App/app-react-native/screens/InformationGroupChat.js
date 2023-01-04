@@ -70,118 +70,70 @@ const deviceHeight =
 
 export const InformationGroupChat = ({ navigation, route }) => {
   const idGroup = route.params;
+  console.log(idGroup.idGroup);
   const [name, setName] = useState("");
-  const [bio, setBio] = useState("");
   const [avatar, setAvatar] = useState();
   const [idUser, setIdUser] = useState("");
   const [idAdmin, setIdAdmin] = useState("");
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [valueSearch, setValueSearch] = useState("");
-  const [listMember, setListMember] = useState([]);
-  const [addListMember, setAddListMember] = useState([]);
-  const [modalAddMember, setModalAddMember] = useState(false);
-  const [infor, setInfor] = useState([]);
-  let aMembers = [];
-  const [friendNotInGroup, setFriendNotInGroup] = useState([]);
-  const [filterBeforeAdd, setFilterBeforeAdd] = useState([]);
-  const [modalTransferRights, setModalTransferRights] = useState(false);
-  const [listMemberNotAdmin, setListMemberNotAdmin] = useState();
+  const [modalUpdateGroup, setModalUpdateGroup] = useState(false);
+  const [newName, setNewName] = useState("");
 
-  const handleClick = (item) => {
-    aMembers.push({
-      id: item._id,
-    });
-  };
+  // const getFriend = useCallback(async () => {
+  //   const token = await AsyncStorage.getItem("token");
+  //   await ApiLoadFriend.getFriend(token)
+  //     .then((res) => {
+  //       // console.log("get friend 2");
+  //       // console.log(res.data.listFriend);
+  //       setInfor(
+  //         res.data.listFriend.filter((element) => {
+  //           return element !== null;
+  //         })
+  //       );
+  //     })
+  //     .catch((err) => {
+  //       console.log("405");
+  //     });
+  // }, []);
 
-  const getFriend = useCallback(async () => {
-    const token = await AsyncStorage.getItem("token");
-    await ApiLoadFriend.getFriend(token)
-      .then((res) => {
-        setInfor(
-          res.data.listFriend.filter((element) => {
-            return element !== null;
-          })
-        );
-      })
-      .catch((err) => {
-        console.log("405");
-      });
-  }, []);
+  // useEffect(() => {
+  //   getFriend();
+  // }, []);
 
-  const getProfile = async () => {
-    setIdUser(await AsyncStorage.getItem("idUser"));
-    // console.log(idGroup.idGroup);
-    if (idGroup.idGroup === "") {
-      console.log("id null");
-    } else {
-      const data = await ApiLoadGroupChat.getInforGroupChat(idGroup.idGroup);
-      if (data.data === null) {
-        console.log("Khong lay duoc du lieu");
+  useEffect(() => {
+    const getProfile = async () => {
+      setIdUser(await AsyncStorage.getItem("idUser"));
+      console.log(idGroup.idGroup);
+      if (idGroup.idGroup === "") {
+        console.log("id null");
       } else {
-        setAvatar(data.data.imgGroupChat);
-        setName(data.data.nameGroupChat);
-        setIdAdmin(data.data.adminGroup);
-        await ApiLoadGroupChat.getMemberGroupChat(data.data._id)
-          .then((res) => {
-            console.log("-=-=--=-=-=-=-=-=-");
-            console.log(res.data.length);
-            setListMember(
-              res.data.filter((element) => {
-                return element !== null;
-              })
-            );
-          })
-          .catch((err) => {
-            console.log("410 " + err);
-          });
+        const data = await ApiLoadGroupChat.getInforGroupChat(idGroup.idGroup);
+        if (data.data === null) {
+          console.log("Khong lay duoc du lieu");
+        } else {
+          setAvatar(data.data.imgGroupChat);
+          setName(data.data.nameGroupChat);
+          setIdAdmin(data.data.adminGroup);
+          // await ApiLoadGroupChat.getMemberGroupChat(data.data._id)
+          //   .then((res) => {
+          //     console.log("-=-=--=-=-=-=-=-=-");
+          //     console.log(res.data.length);
+          //     setListMember(
+          //       res.data.filter((element) => {
+          //         return element !== null;
+          //       })
+          //     );
+          //   })
+          //   .catch((err) => {
+          //     console.log("410 " + err);
+          //   });
+        }
       }
-    }
-  };
-
-  useEffect(() => {
-    getFriend();
-  }, []);
-
-  useEffect(() => {
+    };
     getProfile();
   }, []);
 
-  const getFriendNotInGroup = () => {
-    const results = infor.filter(
-      ({ _id: id1 }) => !listMember.some(({ _id: id2 }) => id2 === id1)
-    );
-    setAddListMember(results);
-  };
-
-  const getListMemberNotAdmin = () => {
-    const rs = listMember.filter((user) => user._id !== idAdmin);
-    setListMemberNotAdmin(rs);
-    console.log(listMemberNotAdmin);
-  };
-
-  useEffect(() => {
-    if (modalTransferRights === true) {
-      getListMemberNotAdmin();
-    }
-  }, [modalTransferRights]);
-
-  useEffect(() => {
-    if (modalAddMember === true) {
-      getFriendNotInGroup();
-    }
-  }, [modalAddMember]);
-
-  const openModalSearch = () => {
-    setModalVisible(!isModalVisible);
-  };
-
-  const openModalAddMember = () => {
-    aMembers = [];
-    setModalAddMember(!modalAddMember);
-  };
-
-  const openModalTransferRights = () => {
-    setModalTransferRights(!modalTransferRights);
+  const openModalUpdateGroup = () => {
+    setModalUpdateGroup(!modalUpdateGroup);
   };
 
   const leaveGroup = async () => {
@@ -193,14 +145,16 @@ export const InformationGroupChat = ({ navigation, route }) => {
         Alert.alert(
           "Ban phai nhuong quyen admin cho 1 thanh vien khac truoc khi roi nhom!"
         );
-        openModalTransferRights();
+        navigation.navigate("SC_ListMember", {
+          idGroup,
+          transferRights: 1,
+        });
       } else {
         const sttLeaveGroup = await ApiLoadGroupChat.leaveGroup(
           token,
           idGroup.idGroup
         );
         if (sttLeaveGroup.status === 201) {
-          console.log("roi nhom thanh cong");
           Alert.alert("Roi nhom thanh cong");
           navigation.replace("BottomTabsNavigator");
         }
@@ -219,171 +173,40 @@ export const InformationGroupChat = ({ navigation, route }) => {
     }
   };
 
-  const ListFriend = () => (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      <View style={{ marginTop: 20, marginRight: 20 }}>
-        <FlatList
-          data={addListMember}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <SearchFriendBar
-              onPress={() => handleClick(item)}
-              listInfor={item}
-            />
-          )}
-        />
-      </View>
-    </View>
-  );
-
-  const ListMemberChat = ({ members, admin, user, onPress }) => {
-    console.log("members");
-    console.log(members.avatar);
-    const [position, setPosition] = useState();
-    useEffect(() => {
-      const setPos = () => {
-        if (admin === members._id) {
-          setPosition("Trưởng nhóm");
-        } else {
-          setPosition("Thành viên");
-        }
-      };
-
-      setPos();
-    }, [members]);
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-          borderColor: "#b6b9ba",
-          borderBottomWidth: 1,
-        }}
-      >
-        <View style={styles.aMess}>
-          <View style={styles.aMess_avt}>
-            <Image
-              source={{ uri: members.avatar }}
-              style={styles.wrapAvatarZL}
-            />
-          </View>
-          <View style={styles.aMess_right}>
-            <View style={styles.name_and_disMess}>
-              <Text numberOfLines={1} style={styles.txtNameMess}>
-                {members.name}
-              </Text>
-              <Text>{position}</Text>
-            </View>
-          </View>
-        </View>
-        <View
-          style={{
-            width: "20%",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {user === admin ? (
-            <TouchableOpacity style={styles.xxxDiff} onPress={onPress}>
-              <XIcon color="#000" size={22} />
-            </TouchableOpacity>
-          ) : (
-            ""
-          )}
-        </View>
-      </View>
-    );
-  };
-
-  const chooseAdmin = async (item) => {
-    const rs = await ApiLoadGroupChat.franchiesAdmin(idGroup.idGroup, item._id);
-    if (rs.status === 200) {
-      Alert.alert("Nhường quyền admin thành công cho " + item.name);
-      getProfile();
-    }
-  };
-
-  const TransferRights = ({ members, onPress }) => {
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-          borderColor: "#b6b9ba",
-          borderBottomWidth: 1,
-        }}
-      >
-        <View style={styles.aMess}>
-          <View style={styles.aMess_avt}>
-            <Image
-              source={{ uri: members.avatar }}
-              style={styles.wrapAvatarZL}
-            />
-          </View>
-          <View style={styles.aMess_right}>
-            <View style={styles.name_and_disMess}>
-              <Text numberOfLines={1} style={styles.txtNameMess}>
-                {members.name}
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View
-          style={{
-            width: "20%",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <TouchableOpacity style={styles.xxxDiff} onPress={onPress}>
-            <Image source={require("../assets/software-engineer.png")} />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
-
-  const addGroup = async () => {
-    if (aMembers.length < 1) {
-      Alert.alert("hay bam vao dau + de them vao danh sach");
-    } else {
-      aMembers = aMembers.filter(
-        (v, i, a) => a.findIndex((v2) => v2.id === v.id) === i
-      );
-      const rs = await ApiLoadGroupChat.addUsersToGroup(
-        idGroup.idGroup,
-        aMembers
-      );
-      if (rs.status === 200) {
-        Alert.alert("Them thanh cong");
-        getProfile();
-      }
-    }
-  };
-
-  const chooseDeleteUser = async (item) => {
-    const rs = await ApiLoadGroupChat.deleteMemberFromGroup(
-      idGroup.idGroup,
-      item._id
-    );
-    if (rs.status === 200) {
-      Alert.alert("Đã xoá " + item.name + " ra khỏi nhóm!");
-      getProfile();
-    } else {
-      Alert.alert("Xoa khong thanh cong");
-    }
-  };
-
   return (
-    <SafeAreaView style={[styles.container, GlobalStyles.droidSafeArea]}>
+    <View style={[styles.container, GlobalStyles.droidSafeArea]}>
       <View style={styles.tabBarChat}>
         <TouchableOpacity
           style={[styles.icon, { flexDirection: "row" }]}
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.goBack("SC_Chat")}
         >
           <BackIcon color="white" size={size} />
           <Text style={{ fontSize: 20, fontWeight: "500", color: "#fff" }}>
             Quay lại
           </Text>
         </TouchableOpacity>
+        {idAdmin === idUser ? (
+          <View style={{ position: "absolute", right: 10 }}>
+            <TouchableOpacity
+              style={[styles.icon, { flexDirection: "row" }]}
+              onPress={openModalUpdateGroup}
+            >
+              <Image source={require("../assets/signature.png")} />
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "500",
+                  color: "#fff",
+                  marginLeft: 15,
+                }}
+              >
+                Sửa
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          ""
+        )}
       </View>
       <View style={styles.informationMain}>
         <View style={styles.wrapAvatar_Name_Bio}>
@@ -423,7 +246,12 @@ export const InformationGroupChat = ({ navigation, route }) => {
 
                   width: "20%",
                 }}
-                onPress={openModalTransferRights}
+                onPress={() =>
+                  navigation.navigate("SC_ListMember", {
+                    idGroup,
+                    transferRights: 1,
+                  })
+                }
               >
                 <Image source={require("../assets/software-engineer.png")} />
                 <Text style={{ textAlign: "center" }}>Nhường quyền </Text>
@@ -450,7 +278,9 @@ export const InformationGroupChat = ({ navigation, route }) => {
 
                   width: "20%",
                 }}
-                onPress={openModalAddMember}
+                onPress={() =>
+                  navigation.navigate("AddMemberToTheGroup", { idGroup })
+                }
               >
                 <AddNewIcon color="#000" size={size} />
                 <Text style={{ textAlign: "center" }}>Thêm thành viên</Text>
@@ -489,73 +319,294 @@ export const InformationGroupChat = ({ navigation, route }) => {
         style={{ width: "100%", height: 5, backgroundColor: "#ccc" }}
       ></View>
 
-      {/*  */}
-      <View style={{ paddingHorizontal: 24, marginTop: 15 }}>
-        <TouchableOpacity
+      <ScrollView
+        style={{
+          paddingHorizontal: 24,
+          height: "100%",
+        }}
+      >
+        {/* tuy chinh */}
+        <View style={{ marginTop: 24 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "600",
+              color: "#6e6d6d",
+            }}
+          >
+            Tuỳ chỉnh nhóm
+          </Text>
+        </View>
+        <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingVertical: 5,
-            borderBottomWidth: 1,
+            marginTop: 5,
+            backgroundColor: "#dbdbdb",
+            borderRadius: 10,
           }}
-          onPress={openModalSearch}
         >
-          <View
+          {/* chu de */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            // onPress={openModalSearch}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              {/* <ListMember color="#009EFF" size={50} /> */}
+              <View style={styles.wrapIconCustomIn4Chat}>
+                <Image source={require("../assets/colour.png")} />
+              </View>
+              <View style={styles.wrapTextCustomIn4Chat}>
+                <Text style={styles.textCustomIn4Chat}>Chủ đề nhóm</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* bieu tuong cam xuc */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            // onPress={openModalSearch}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View style={styles.wrapIconCustomIn4Chat}>
+                <Image source={require("../assets/like.png")} />
+              </View>
+              <View style={styles.wrapTextCustomIn4Chat}>
+                <Text style={styles.textCustomIn4Chat}>Biểu tượng cảm xúc</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* biet danh */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              // marginBottom: 12,
+            }}
+            // onPress={openModalSearch}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View style={[styles.wrapIconCustomIn4Chat]}>
+                <Image source={require("../assets/blocks.png")} />
+              </View>
+              <View
+                style={[styles.wrapTextCustomIn4Chat, { borderBottomWidth: 0 }]}
+              >
+                <Text style={styles.textCustomIn4Chat}>Biệt danh</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* khac */}
+
+        <View style={{ marginTop: 24 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "600",
+              color: "#6e6d6d",
+            }}
+          >
+            Khác
+          </Text>
+        </View>
+        <View
+          style={{
+            marginTop: 5,
+            backgroundColor: "#dbdbdb",
+            borderRadius: 10,
+          }}
+        >
+          {/* Xem danh sach thanh vien chat */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            onPress={() =>
+              navigation.navigate("SC_ListMember", {
+                idGroup,
+                transferRights: 0,
+              })
+            }
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View style={styles.wrapIconCustomIn4Chat}>
+                <Image source={require("../assets/skill.png")} />
+              </View>
+              <View style={styles.wrapTextCustomIn4Chat}>
+                <Text style={styles.textCustomIn4Chat}>
+                  Danh sách thành viên
+                </Text>
+              </View>
+              <View
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: "33%",
+                }}
+              >
+                <NextIcon size={50} color="#000" />
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* Anh va file da gui */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            onPress={() =>
+              navigation.navigate("SC_ImageAndFilesSent", {
+                chatId: idGroup.idGroup,
+              })
+            }
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View style={styles.wrapIconCustomIn4Chat}>
+                <Image source={require("../assets/image.png")} />
+              </View>
+              <View style={styles.wrapTextCustomIn4Chat}>
+                <Text style={styles.textCustomIn4Chat}>Ảnh và file đã gửi</Text>
+              </View>
+              <View
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: "33%",
+                }}
+              >
+                <NextIcon size={50} color="#000" />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+        {/* ---- */}
+
+        {/* ho tro */}
+        <View style={{ marginTop: 24 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "600",
+              color: "#6e6d6d",
+            }}
+          >
+            Hỗ trợ
+          </Text>
+        </View>
+        <View
+          style={{
+            marginTop: 5,
+            backgroundColor: "#dbdbdb",
+            borderRadius: 10,
+            // marginBottom: 24,
+          }}
+        >
+          {/* bao cao */}
+          <TouchableOpacity
             style={{
               flexDirection: "row",
               alignItems: "center",
             }}
           >
-            {/* <ListMember color="#009EFF" size={50} /> */}
-            <Image source={require("../assets/skill.png")} />
-            <Text
+            <View
               style={{
-                fontSize: 18,
-                color: "#000",
-                fontWeight: "600",
-                marginLeft: 10,
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              Danh sách thành viên
-            </Text>
-          </View>
+              <View style={[styles.wrapIconCustomIn4Chat]}>
+                <Image source={require("../assets/warning.png")} />
+              </View>
+              <View
+                style={[styles.wrapTextCustomIn4Chat, { borderBottomWidth: 0 }]}
+              >
+                <Text style={styles.textCustomIn4Chat}>Báo cáo</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+        {/* --- */}
+
+        {/* giai than nhom */}
+        {idAdmin === idUser ? (
           <View
             style={{
-              position: "absolute",
-              right: 0,
-              top: "35%",
+              marginTop: 24,
+              // marginTop: 5,
+              backgroundColor: "#dbdbdb",
+              borderRadius: 10,
+              marginBottom: 48,
             }}
           >
-            <NextIcon color="#000" size={50} />
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onPress={deleteGroup}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <View style={[styles.wrapIconCustomIn4Chat]}>
+                  <Image source={require("../assets/cancel.png")} />
+                </View>
+                <View
+                  style={[
+                    styles.wrapTextCustomIn4Chat,
+                    { borderBottomWidth: 0 },
+                  ]}
+                >
+                  <Text style={styles.textCustomIn4Chat}>Giải tán nhóm</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-      </View>
+        ) : (
+          <View style={{ marginBottom: 48 }}></View>
+        )}
+      </ScrollView>
 
-      <View style={styles.content}>
-        {/* img da gui */}
-        <View style={styles.listImg}>
-          <Text style={styles.textXXX}>Hình ảnh</Text>
-          <FlatList
-            data={DATA}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <ImageComponent />}
-          />
-        </View>
-        {/* file da gui */}
-
-        <View style={{ flex: 1 }}>
-          <Text style={styles.textXXX}>File</Text>
-          <FlatList
-            data={DATA}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <FileComponent />}
-          />
-        </View>
-      </View>
-
-      {idAdmin === idUser ? (
+      {/* {idAdmin === idUser ? (
         <View style={{ paddingHorizontal: 24, marginTop: 15 }}>
           <TouchableOpacity
             style={{
@@ -574,7 +625,6 @@ export const InformationGroupChat = ({ navigation, route }) => {
                 justifyContent: "center",
               }}
             >
-              {/* <ListMember color="#009EFF" size={50} /> */}
               <Image source={require("../assets/cancel.png")} />
               <Text
                 style={{
@@ -591,238 +641,105 @@ export const InformationGroupChat = ({ navigation, route }) => {
         </View>
       ) : (
         ""
-      )}
+      )} */}
 
-      {/* modal danh sach thanh vien */}
+      {/* modal update group */}
       <View>
         <Modal
-          isVisible={isModalVisible}
-          onBackdropPress={() => setModalVisible(false)}
+          isVisible={modalUpdateGroup}
+          onBackdropPress={() => setModalUpdateGroup(false)}
           deviceWidth={deviceWidth}
           deviceHeight={deviceHeight}
         >
           <View
             style={{
-              flex: 1,
+              height: "40%",
               backgroundColor: "#fff",
               padding: 24,
               alignItems: "center",
+              borderRadius: 30,
             }}
           >
-            <Text
-              style={{
-                fontSize: 22,
-                color: "#000",
-                fontWeight: "600",
-                marginLeft: 10,
-              }}
-            >
-              Danh sách thành viên
-            </Text>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                width: 50,
-                height: 50,
-                position: "absolute",
-                top: 10,
-                right: 10,
-              }}
-              onPress={openModalSearch}
-            >
-              <XIcon color="#000" size={22} />
-            </TouchableOpacity>
-            {/*  */}
-            <View style={[styles.tabBarSearch, { marginTop: 50 }]}>
-              <TouchableOpacity style={styles.icon}>
-                <SearchICon color="white" size={size} />
-              </TouchableOpacity>
-              <TextInput
-                style={styles.wrapTextSearch}
-                placeholder="Tìm kiếm thành viên"
-                value={valueSearch}
-                onChangeText={setValueSearch}
-              />
-            </View>
-            <View style={styles.listRs}>
-              <Text style={{ marginVertical: 20 }}>Danh sach thành viên</Text>
-              <View style={{ marginTop: 20 }}>
-                <FlatList
-                  data={listMember}
-                  keyExtractor={(item) => item._id}
-                  renderItem={({ item }) => (
-                    <ListMemberChat
-                      members={item}
-                      admin={idAdmin}
-                      user={idUser}
-                      onPress={() => chooseDeleteUser(item)}
+            <View style={{ width: "100%" }}>
+              <View style={{ width: "100%", alignItems: "center" }}>
+                <TouchableOpacity>
+                  <View
+                    style={{
+                      height: 100,
+                      width: 100,
+                      borderRadius: 50,
+                      overflow: "hidden",
+                      position: "absolute",
+                      bottom: 0,
+                      zIndex: 1,
+                    }}
+                  >
+                    <View
+                      style={{
+                        // backgroundColor: "red",
+                        height: 50,
+                        width: 100,
+                      }}
                     />
-                  )}
+                    <View
+                      style={{
+                        backgroundColor: "rgba(52, 52, 52, 0.6)",
+                        height: 50,
+                        width: 100,
+                        // opacity: 0.5,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={{ color: "#fff", fontWeight: "700" }}>
+                        Sửa
+                      </Text>
+                    </View>
+                  </View>
+                  <Image
+                    source={{ uri: avatar }}
+                    style={[
+                      styles.image,
+                      {
+                        width: 100,
+                        height: 100,
+                        borderRadius: 120,
+                        borderWidth: 4,
+                      },
+                    ]}
+                    resizeMode={"stretch"}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <TextInput
+                  style={styles.inputBorderBottom}
+                  placeholder="Tên mới"
+                  placeholderTextColor="#ccc"
+                  value={newName}
+                  onChangeText={setNewName}
                 />
               </View>
             </View>
-          </View>
-        </Modal>
-      </View>
-
-      {/* modal them thanh vien */}
-      <View>
-        <Modal
-          isVisible={modalAddMember}
-          onBackdropPress={() => setModalAddMember(false)}
-          deviceWidth={deviceWidth}
-          deviceHeight={deviceHeight}
-        >
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: "#fff",
-              padding: 24,
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 22,
-                color: "#000",
-                fontWeight: "600",
-                marginLeft: 10,
-              }}
-            >
-              Danh sách bạn bè
-            </Text>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                width: 50,
-                height: 50,
-                position: "absolute",
-                top: 10,
-                right: 10,
-              }}
-              onPress={openModalAddMember}
-            >
-              <XIcon color="#000" size={22} />
-            </TouchableOpacity>
-            {/*  */}
-            <View style={[styles.tabBarSearch, { marginTop: 50 }]}>
-              <TouchableOpacity style={styles.icon}>
-                <SearchICon color="white" size={size} />
-              </TouchableOpacity>
-              <TextInput
-                style={styles.wrapTextSearch}
-                placeholder="Tìm kiếm thành viên"
-                value={valueSearch}
-                onChangeText={setValueSearch}
-              />
-            </View>
-            <View
-              style={{ width: "100%", marginTop: 24, alignItems: "flex-end" }}
-            >
+            <View>
               <TouchableOpacity
-                style={[
-                  styles.icon,
-                  { flexDirection: "row", backgroundColor: "red" },
-                ]}
-                onPress={addGroup}
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: "#4eac6d",
+                  padding: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 10,
+                }}
               >
-                <Image source={require("../assets/checked.png")} />
-                <Text
-                  style={{
-                    fontSize: 20,
-                    fontWeight: "500",
-                    color: "#fff",
-                    marginLeft: 15,
-                  }}
-                >
-                  Thêm
-                </Text>
+                <Image source={require("../assets/accept.png")} />
+                <Text style={{ fontSize: 16, fontWeight: "500" }}>Xong</Text>
               </TouchableOpacity>
-            </View>
-            <View style={styles.listRs}>
-              <View style={{ marginTop: 20 }}>
-                <ListFriend />
-              </View>
             </View>
           </View>
         </Modal>
       </View>
-
-      {/* modal nhuong quyen */}
-      <View>
-        <Modal
-          isVisible={modalTransferRights}
-          onBackdropPress={() => setModalTransferRights(false)}
-          deviceWidth={deviceWidth}
-          deviceHeight={deviceHeight}
-        >
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: "#fff",
-              padding: 24,
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 22,
-                color: "#000",
-                fontWeight: "600",
-                marginLeft: 10,
-              }}
-            >
-              Danh sách thành viên
-            </Text>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                width: 50,
-                height: 50,
-                position: "absolute",
-                top: 10,
-                right: 10,
-              }}
-              onPress={openModalTransferRights}
-            >
-              <XIcon color="#000" size={22} />
-            </TouchableOpacity>
-            {/*  */}
-            <View style={[styles.tabBarSearch, { marginTop: 50 }]}>
-              <TouchableOpacity style={styles.icon}>
-                <SearchICon color="white" size={size} />
-              </TouchableOpacity>
-              <TextInput
-                style={styles.wrapTextSearch}
-                placeholder="Tìm kiếm thành viên"
-                value={valueSearch}
-                onChangeText={setValueSearch}
-              />
-            </View>
-            <View style={styles.listRs}>
-              <Text style={{ marginVertical: 20 }}>Danh sach thành viên</Text>
-              <View style={{ marginTop: 20 }}>
-                <FlatList
-                  data={listMemberNotAdmin}
-                  keyExtractor={(item) => item._id}
-                  renderItem={({ item }) => (
-                    <TransferRights
-                      members={item}
-                      admin={idAdmin}
-                      user={idUser}
-                      onPress={() => chooseAdmin(item)}
-                    />
-                  )}
-                />
-              </View>
-            </View>
-          </View>
-        </Modal>
-      </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -974,5 +891,56 @@ const styles = StyleSheet.create({
 
   txtTimeMess: {
     textAlign: "center",
+  },
+
+  inputBorderBottom: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: "black",
+    borderBottomColor: "grey",
+    borderBottomWidth: 2,
+    padding: 10,
+    width: "100%",
+    marginVertical: 20,
+  },
+
+  wrapImg: {
+    height: 80,
+    width: 80,
+    marginLeft: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  wrapFile: {
+    height: 50,
+    width: 50,
+    marginLeft: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  listImg: {
+    marginBottom: 20,
+    flex: 1,
+  },
+
+  wrapIconCustomIn4Chat: {
+    width: "20%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  wrapTextCustomIn4Chat: {
+    width: "80%",
+    borderBottomWidth: 1,
+    paddingVertical: 16,
+  },
+
+  textCustomIn4Chat: {
+    fontSize: 18,
+    color: "#000",
+    fontWeight: "600",
+    marginLeft: 10,
   },
 });

@@ -19,6 +19,8 @@ import {
   OptionIcon,
 } from "../components/IconBottomTabs";
 import { ApiProfile } from "../api/ApiUser";
+import Modal from "react-native-modal";
+import LoadingCircle from "../components/LoadingCircle";
 
 const { width } = Dimensions.get("window");
 const size = 24;
@@ -31,6 +33,7 @@ export const Personal = ({ navigation }) => {
   const [address, setAddress] = useState("");
   const [avatar, setAvatar] = useState();
   const [coverImg, setCoverImg] = useState();
+  const [modalLoading, setModalLoading] = useState(false);
 
   const handleLogout = () => {
     AsyncStorage.clear();
@@ -38,22 +41,34 @@ export const Personal = ({ navigation }) => {
   };
 
   const callApiProfile = useCallback(async () => {
+    setModalLoading(true);
     const token = await AsyncStorage.getItem("token");
 
     await ApiProfile.profile2(token)
       .then((res) => {
-        console.log("Thong tin user:" + res.data.introducePersonal);
+        const date = new Date(res.data.birthDate);
+        console.log(date.getDate());
+        let day = date.getDate() - 1;
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        if (day < 10) {
+          day = "0" + day;
+        }
+        if (month < 10) {
+          month = "0" + month;
+        }
         setName(res.data.name);
         setIntroduceYourself(res.data.introducePersonal);
         setGender(res.data.gender);
         setAddress(res.data.address);
-        setBirthDate(res.data.birthDate);
+        setBirthDate("Sinh nhật: " + day + "-" + month + "-" + year);
         setAvatar(res.data.avatar);
         setCoverImg(res.data.coverImg);
       })
       .catch((err) => {
         console.log("3");
       });
+    setModalLoading(false);
   }, []);
 
   useEffect(() => {
@@ -179,6 +194,26 @@ export const Personal = ({ navigation }) => {
           </View>
         </View>
       </ScrollView>
+      {/* modal loading */}
+      <View>
+        <Modal
+          isVisible={modalLoading}
+          onBackdropPress={() => setModalLoading(false)}
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {/* <LoadingCircle /> */}
+            <LoadingCircle />
+          </View>
+        </Modal>
+      </View>
     </View>
   );
 };

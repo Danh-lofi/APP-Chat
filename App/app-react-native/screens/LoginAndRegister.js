@@ -20,7 +20,7 @@ const { width } = Dimensions.get("window");
 
 const LoginAndRegister = ({ navigation }) => {
   return (
-    <SafeAreaView style={[GlobalStyles.droidSafeArea]}>
+    <SafeAreaView style={[styles.container, GlobalStyles.droidSafeArea]}>
       <View style={styles.container}>
         <Swiper
           style={styles.wrapper}
@@ -58,14 +58,14 @@ const LoginAndRegister = ({ navigation }) => {
           <View style={styles.slide}>
             <Image
               style={styles.image}
-              source={require("../assets/slideshow/z3743305699968_a5187903dfb876709d02bb67983feb34.jpg")}
+              source={require("../assets/splash.png")}
               resizeMode={"contain"}
             />
           </View>
           <View style={styles.slide}>
             <Image
               style={styles.image}
-              source={require("../assets/slideshow/s2.jpg")}
+              source={require("../assets/slideshow/s2.png")}
               resizeMode={"contain"}
             />
             <Text style={styles.textMain}>Nhật ký bạn bè</Text>
@@ -76,7 +76,7 @@ const LoginAndRegister = ({ navigation }) => {
           <View style={styles.slide}>
             <Image
               style={styles.image}
-              source={require("../assets/slideshow/s3.jpg")}
+              source={require("../assets/slideshow/s3.png")}
               resizeMode={"contain"}
             />
             <Text style={styles.textMain}>Gửi ảnh nhanh chóng</Text>
@@ -88,7 +88,7 @@ const LoginAndRegister = ({ navigation }) => {
           <View style={styles.slide}>
             <Image
               style={styles.image}
-              source={require("../assets/slideshow/s4.jpg")}
+              source={require("../assets/slideshow/s4.png")}
               resizeMode={"contain"}
             />
             <Text style={styles.textMain}>Chat nhóm tiện ích</Text>
@@ -100,7 +100,7 @@ const LoginAndRegister = ({ navigation }) => {
           <View style={styles.slide}>
             <Image
               style={styles.image}
-              source={require("../assets/slideshow/s5.jpg")}
+              source={require("../assets/slideshow/s5.png")}
               resizeMode={"contain"}
             />
             <Text style={styles.textMain}>Gọi video ổn định</Text>

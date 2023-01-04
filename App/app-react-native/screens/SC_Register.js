@@ -44,27 +44,56 @@ const SC_Register = ({ navigation }) => {
   const [statusPassword, setStatusPassword] = useState(false);
   const [errConfirmPassword, setErrConfirmPassword] = useState("");
   const [statusConfirmPassword, setStatusConfirmPassword] = useState(false);
+  const [messCheckNumberPhone, setMessCheckNumberPhone] = useState("");
 
   const handleContinue = async () => {
     const data = {
       username,
     };
 
-    try {
-      await ApiRegisterUser.checkExistAccount(data).then(async (res) => {
-        navigation.navigate(
-          "SC_OTP",
-          {
-            username: username,
-            password: password,
-          },
-          resetInput()
-        );
+    await ApiRegisterUser.checkExistAccount(data)
+      .then((res) => {
+        if (res.status === 200) {
+          Alert.alert("Số điện thoại đã được đăng ký!");
+        } else {
+          navigation.navigate(
+            "SC_Continue",
+            {
+              username: username,
+              password: password,
+            },
+            resetInput()
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Alert.alert("Hệ thống đang gặp lỗi. Vui lòng thông báo cho Admin!");
       });
-    } catch (error) {
-      console.log(error);
-      Alert.alert("Số điện thoại đã được đăng ký!");
-    }
+  };
+
+  const checkExistNumberPhone = async (text) => {
+    const data = {
+      username: text,
+    };
+    await ApiRegisterUser.checkExistAccount(data)
+      .then((res) => {
+        if (res.status === 200) {
+          setMessCheckNumberPhone("Số điện thoại đã được đăng ký!");
+          setStatusNumberPhone(false);
+        } else {
+          console.log(res.status);
+          setStatusNumberPhone(true);
+          setMessCheckNumberPhone("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setMessCheckNumberPhone(
+          "Hệ thống đang gặp lỗi. Vui lòng thông báo cho Admin!"
+        );
+        setStatusNumberPhone(false);
+      });
   };
 
   useEffect(() => {
@@ -77,14 +106,7 @@ const SC_Register = ({ navigation }) => {
     return () => subscription?.remove();
   });
 
-  // useEffect(async () => {
-  //   await AsyncStorage.setItem("username", username);
-  //   await AsyncStorage.setItem("password", password);
-  // }, [username, password]);
-
   function resetInput() {
-    // AsyncStorage.setItem("username", username);
-    // AsyncStorage.setItem("password", password);
     setUsername("");
     setPassword("");
     setConfirmPassword("");
@@ -136,6 +158,7 @@ const SC_Register = ({ navigation }) => {
                   onChangeText={(text) => {
                     if (text === "") {
                       setErrNumberPhone("Só điện thoại không được bỏ trống!");
+                      setMessCheckNumberPhone("");
                     } else {
                       setErrNumberPhone(
                         isValidNumberPhone(text)
@@ -143,15 +166,23 @@ const SC_Register = ({ navigation }) => {
                           : "Số điện thoại không hợp lệ!"
                       );
                       if (isValidNumberPhone(text)) {
-                        setStatusNumberPhone(true);
+                        checkExistNumberPhone(text);
+                        // setStatusNumberPhone(true);
                       } else {
                         setStatusNumberPhone(false);
+                        setMessCheckNumberPhone("");
                       }
                     }
                     setUsername(text);
                   }}
                 />
-                <Text style={styles.notificationError}>{errNumberPhone}</Text>
+                {messCheckNumberPhone === "" ? (
+                  <Text style={styles.notificationError}>{errNumberPhone}</Text>
+                ) : (
+                  <Text style={styles.notificationError}>
+                    {messCheckNumberPhone}
+                  </Text>
+                )}
               </View>
 
               {/* input password */}
@@ -280,17 +311,17 @@ const SC_Register = ({ navigation }) => {
                 ) : (
                   <TouchableOpacity
                     style={styles.btnRegister}
-                    // onPress={() =>
-                    //   navigation.navigate(
-                    //     "SC_OTP",
-                    //     {
-                    //       username: username,
-                    //       password: password,
-                    //     },
-                    //     resetInput()
-                    //   )
-                    // }
-                    onPress={handleContinue}
+                    onPress={() =>
+                      navigation.navigate(
+                        "SC_OTP",
+                        {
+                          username: username,
+                          password: password,
+                        },
+                        resetInput()
+                      )
+                    }
+                    // onPress={handleContinue}
                   >
                     <Text
                       style={{

@@ -5,7 +5,7 @@ const RequestFriendController = {
   getListRequest: async (req, res, next) => {
     console.log("Get List Requets: ");
 
-    const id = req.params.id;
+    const id = req.user._id;
     console.log("id nguoi nhan: " + id);
     const listRequest = await RequestFriendModel.find({
       receiverId: mongoose.Types.ObjectId(id),
@@ -31,6 +31,42 @@ const RequestFriendController = {
     next();
     // Gửi chuyển cho userController response cho client
   },
+
+  getRequestFromIdRequest: async (req, res) => {
+    const idRequest = req.params.idRequest;
+    const rs = await RequestFriendModel.find({
+      _id: mongoose.Types.ObjectId(idRequest),
+    });
+
+    if (!rs) {
+      res.status(400).json({ message: "Null" });
+    } else {
+      res.status(200).json(rs);
+    }
+  },
+
+  // get all request sent by id of sender
+  getAllRequestSentWithSenderId: async (req, res, next) => {
+    console.log("Get List Requets: ");
+
+    const id = req.user._id;
+    const list = await RequestFriendModel.find({
+      senderId: mongoose.Types.ObjectId(id),
+    });
+
+    // this array save id of receiver then switch it to router diff to handle (UserController.getListUserFromId)
+    const listTemp = [];
+    list.forEach((ls) => {
+      listTemp.push({
+        id: ls.receiverId,
+      });
+    });
+
+    req.listIdUser = listTemp;
+
+    next();
+  },
+
   getIdRequest: async (req, res) => {
     const id = req.params.id;
     const idRequest = await RequestFriendModel.find({
@@ -45,15 +81,9 @@ const RequestFriendController = {
   },
   acceptFriend: async (req, res) => {
     const idRequest = req.body.idRequest;
-    console.log(idRequest);
     const listId = await RequestFriendModel.findOne({ _id: idRequest });
-    console.log(listId);
     const senderId = listId.senderId;
     const receiverId = listId.receiverId;
-    console.log("senderId: ");
-    console.log(senderId);
-    console.log("receiverId: ");
-    console.log(receiverId);
     res.send(senderId + "+" + receiverId);
     try {
       const Result1 = await UserModel.findOneAndUpdate(
@@ -100,29 +130,70 @@ const RequestFriendController = {
     }
     console.log("End send");
   },
-  checkRequestFriend: async (req, res) => {
-    const friend = req.userFriend;
-    const user = req.user;
-    console.log(
-      "-----------------------Check Request Friend --------------------"
-    );
-
-    const senderId = user._id.toString();
-    const receiverId = friend._id.toString();
-    console.log("user");
-    console.log(senderId);
-    console.log("friend");
-    console.log(receiverId);
+  checkRequestFriend: async (req, res, next) => {
+    const senderId = req.user._id;
+    const receiverId = req.params.receiverId;
     try {
       const data = await RequestFriendModel.findOne({ senderId, receiverId });
       console.log(data);
-      res.status(200).json({
-        friend,
-        isRequired: data ? true : false,
-        idRequest: data ? data._id : null,
-      });
+      req.idRequest = data._id;
+      next();
     } catch (error) {
       res.status(402).send(error);
+    }
+  },
+  checkRequestFriend_2: async (req, res, next) => {
+    const senderId = req.params.senderId;
+    const receiverId = req.user._id;
+    try {
+      const data = await RequestFriendModel.findOne({ senderId, receiverId });
+      console.log(data);
+      req.idRequest = data._id;
+      next();
+    } catch (error) {
+      res.status(402).send(error);
+    }
+  },
+  declineFriend_diff: async (req, res) => {
+    const idRequest = req.idRequest;
+    console.log(idRequest);
+
+    const revoke = await RequestFriendModel.deleteOne({ _id: idRequest });
+    if (revoke) {
+      res.status(204).json({ message: "Khong chap nhan loi moi ket ban" });
+    } else {
+      res.status(400).json({ message: "Co loi roi" });
+    }
+  },
+  acceptFriend_diff: async (req, res) => {
+    const idRequest = req.idRequest;
+    const listId = await RequestFriendModel.findOne({ _id: idRequest });
+    const senderId = listId.senderId;
+    const receiverId = listId.receiverId;
+    res.send(senderId + "+" + receiverId);
+    try {
+      const Result1 = await UserModel.findOneAndUpdate(
+        { _id: senderId },
+        { $push: { friends: { id: receiverId } } }
+      );
+      const Result2 = await UserModel.findOneAndUpdate(
+        { _id: receiverId },
+        { $push: { friends: { id: senderId } } }
+      );
+      await RequestFriendModel.deleteOne({ _id: idRequest });
+    } catch (error) {
+      console.log("loi");
+    }
+  },
+  revokeRequestFriendHandle: async (req, res) => {
+    const idRequest = req.idRequest;
+    console.log(idRequest);
+
+    const revoke = await RequestFriendModel.deleteOne({ _id: idRequest });
+    if (revoke) {
+      res.status(204).send("Thu hoi thanh cong!");
+    } else {
+      res.status(400).send("Khong the thu hoi!");
     }
   },
 };

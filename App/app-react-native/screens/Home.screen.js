@@ -13,6 +13,7 @@ import {
   RefreshControl,
   Dimensions,
   TextInput,
+  ImageBackground,
 } from "react-native";
 import GlobalStyles from "../components/GlobalStyles";
 import {
@@ -34,13 +35,9 @@ import Modal from "react-native-modal";
 import FriendBar from "../components/FriendBar";
 import friendApi from "../api/ApiRequestFriend";
 import { chatApi } from "../api/ApiChat";
+import LoadingCircle from "../components/LoadingCircle";
 
 const size = 22;
-
-// test Touch text search
-// function alert(item) {
-//   Alert.alert(item.name);
-// }
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight =
@@ -68,17 +65,19 @@ export const Home = ({ navigation, route }) => {
   const [modalNotification, setModalNotification] = useState(false);
   const [requestFriends, setRequestFriends] = useState([]);
   const [notification, setNotification] = useState("");
+  const [listAll, setListAll] = useState();
+  const [modalLoading, setModalLoading] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [avatarAccepted, setAvatarAccepted] = useState();
 
   console.log(
     "------------------------------------------------------------------"
   );
-  // console.log(listSearch);
 
   const handleCreateGroupChat = () => setVisible(true);
 
   const handleClick = async (item) => {
     navigation.navigate("SC_Chat", { statusG: 0 });
-    // await AsyncStorage.setItem("statusG", "0");
     await AsyncStorage.setItem("idUser", user._id);
     await AsyncStorage.setItem("idFriend", item._id);
     await AsyncStorage.setItem("currentName", item.name);
@@ -115,8 +114,16 @@ export const Home = ({ navigation, route }) => {
     callApiProfile();
   }, []);
 
+  useEffect(() => {
+    socket.emit("new-user-add", id);
+    socket.on("get-users", (users) => {
+      setOnlineUsers(users);
+    });
+  }, [id]);
+
   const getFriend = useCallback(async () => {
     const token = await AsyncStorage.getItem("token");
+    setModalLoading(true);
     await ApiLoadFriend.getFriend(token)
       .then((res) => {
         console.log("122");
@@ -146,6 +153,7 @@ export const Home = ({ navigation, route }) => {
       .catch((err) => {
         console.log("406: " + err);
       });
+    setModalLoading(false);
   }, []);
 
   const reGetFriend = async () => {
@@ -203,80 +211,33 @@ export const Home = ({ navigation, route }) => {
     setModalVisible(!isModalVisible);
   };
 
-  const openModalSearch = () => {
-    setListSearch([]);
-    setValueSearch("");
-    setModalSearch(!modalSearch);
-  };
-
   const openModalNotification = () => {
     setModalNotification(!modalNotification);
   };
 
-  useEffect(() => {
-    // const id = user._id;
-    const getAllUser = async () => {
-      if (id === "" || id === null || id === undefined) {
-        console.log("111111111111111111111111111111");
-      } else {
-        const data = await ApiUser.getAllUser(id);
-        console.log("223");
-
-        setListUser(data.data.users);
-      }
-    };
-    getAllUser();
-  }, [id]);
-
-  useEffect(() => {
-    if (valueSearch === "") {
-      setListSearch([]);
+  const getRequestFriend = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (token === "" || token === null || token === undefined) {
+      setRequestFriends([]);
     } else {
-      var makeQuery = function (property, regexp) {
-        // return a callback function for filter, see MDC docs for Array.filter
-        return function (elem, index, array) {
-          return elem[property].search(regexp) !== -1;
-        };
-      };
+      const data = await friendApi.getInvitesFriend(token);
 
-      var re = new RegExp(valueSearch, "i");
-
-      if (isNaN(valueSearch)) {
-        var q = makeQuery("name", re);
-        let length = infor.filter(q).length;
-        setListSearch(infor.filter(q));
+      if (data) {
+        // console.log("get list request");
+        // console.log(data.data.listUser);
+        setRequestFriends(data.data.listUser);
       } else {
-        let obj = listUser.find((o) => o.username === valueSearch);
-        if (obj === undefined) {
-          setListSearch([]);
-        } else {
-          setListSearch([obj]);
-        }
+        console.log("khong co du lieu");
       }
     }
-  }, [valueSearch]);
+  };
 
+  // lay danh sach gui loi moi ket ban
   useEffect(() => {
-    const getRequestFriend = async () => {
-      if (id === "" || id === null || id === undefined) {
-        // console.log("33333333333333333333");
-        setRequestFriends([]);
-      } else {
-        const data = await friendApi.getInvitesFriend(id);
-        console.log("266");
-        if (data) {
-          console.log("44444444444");
-          console.log(data.data.listUser);
-          setRequestFriends(data.data.listUser);
-        } else {
-          console.log("khong co du lieu");
-        }
-      }
-    };
-
     getRequestFriend();
-  }, [id]);
+  }, []);
 
+  // tu choi loi moi ket bạn
   const deninedRequestFriendHandle = async (idRequest, friend) => {
     const data = await friendApi.declineFriend(idRequest);
     try {
@@ -287,12 +248,19 @@ export const Home = ({ navigation, route }) => {
           (user) => user.username !== friend.username
         );
         setRequestFriends(listRemoveUserAccept);
+        socket.emit("send-require-friend", {
+          userFind: friend,
+          user: user,
+          isDeclined: true,
+        });
+        console.log("socket-----");
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  // chap nhan loi moi ket ban va tao phong chat
   const acceptRequestFriendHandle = async (idRequest, friend) => {
     console.log(friend._id + " " + user._id);
     try {
@@ -305,6 +273,11 @@ export const Home = ({ navigation, route }) => {
         const creChat = await chatApi.createChat(dataChat);
         if (creChat.status === 200) {
           console.log("Kết bạn thành công");
+          socket.emit("send-require-friend", {
+            userFind: friend,
+            user: user,
+            isAccept: true,
+          });
           reGetFriend();
         } else {
           console.log("chua tao phong chat");
@@ -316,11 +289,6 @@ export const Home = ({ navigation, route }) => {
         );
         setRequestFriends(listRemoveUserAccept);
         // Gửi thông báo bạn bè kb thành công socket
-        socket.emit("send-require-friend", {
-          userFind: friend,
-          user: user,
-          isAccept: true,
-        });
       }
     } catch (error) {
       console.log(error);
@@ -385,62 +353,139 @@ export const Home = ({ navigation, route }) => {
     );
   };
 
+  const AcceptFriend = ({ nameAccept }) => {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          borderColor: "#b6b9ba",
+          borderBottomWidth: 1,
+        }}
+      >
+        <View style={styles.aMess}>
+          <View style={styles.aMess_avt}>
+            <Image
+              source={{ uri: avatarAccepted }}
+              style={styles.wrapAvatarZL}
+            />
+          </View>
+          <View style={styles.aMess_right}>
+            <View style={[styles.name_and_disMess, { width: "90%" }]}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <Text style={{ fontSize: "15" }}>
+                  {nameAccept} đã đồng ý lời mời kết bạn
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
   useEffect(() => {
-    console.log("SOCKET KET BAN HOAT DONG");
     socket.on("recieve-require-friend", (data) => {
-      setNotification(`${data.name} vừa mới gửi lời mời kết bạn`);
-      console.log(data);
+      // setNotification(`${data.name} vừa mới gửi lời mời kết bạn`);
+      // console.log("SOCKET KET BAN HOAT DONG");
+      // console.log(data);
+      getRequestFriend();
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on("accept-require-friend", (data) => {
+      setNotification(data.user.name);
+      setAvatarAccepted(data.user.avatar);
+      console.log("SOCKET KET BAN HOAT DONG");
+      console.log(data.user.name);
     });
   }, [socket]);
 
   return (
-    <SafeAreaView style={[styles.container, GlobalStyles.droidSafeArea]}>
+    <View style={[styles.container]}>
       <View style={styles.tabBarSearch}>
         <TouchableOpacity style={styles.icon}>
-          <SearchICon color="white" size={size} />
+          <SearchICon color="#fff" size={size} />
         </TouchableOpacity>
-        <Pressable style={styles.wrapTextSearch} onPress={openModalSearch}>
+        <Pressable
+          style={styles.wrapTextSearch}
+          onPress={() =>
+            navigation.navigate("SC_Search", {
+              id: id,
+            })
+          }
+        >
           <Text style={styles.txtSearch}>Tìm kiếm</Text>
         </Pressable>
         <TouchableOpacity style={styles.icon} onPress={openModalNotification}>
           <Image source={require("../assets/bell.png")} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.icon} onPress={toggleModal}>
-          <AddNewIcon color="white" size={size} />
+          <AddNewIcon color="#fff" size={size} />
         </TouchableOpacity>
       </View>
 
-      {/* list message */}
-      <View style={styles.listMess}>
-        <FlatList
-          data={infor}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <MessageBar onPress={() => handleClick(item)} listInfor={item} />
-          )}
-          // refreshControl={
-          //   <RefreshControl
-          //     refreshing={isRefreshing}
-          //     onRefresh={handleRefresh}
-          //   />
-          // }
-        />
-      </View>
-      <View style={styles.listMess}>
-        <FlatList
-          data={listGroup}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <GroupBar onPress={() => handleClick2(item)} listInfor={item} />
-          )}
-          // refreshControl={
-          //   <RefreshControl
-          //     refreshing={isRefreshing}
-          //     onRefresh={handleRefresh}
-          //   />
-          // }
-        />
-      </View>
+      {infor.length === 0 && listGroup.length === 0 ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ImageBackground
+            source={{
+              uri: "https://doot-light.react.themesbrand.com/static/media/pattern-05.ffd181cd.png",
+            }}
+            resizeMode="cover"
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: "700" }}>
+              Chào mừng bạn đến với SURA CHAT
+            </Text>
+          </ImageBackground>
+        </View>
+      ) : (
+        <View style={{ flex: 1 }}>
+          {/* list message */}
+          <View style={styles.listMess}>
+            <FlatList
+              data={infor}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => (
+                <MessageBar
+                  onPress={() => handleClick(item)}
+                  listInfor={item}
+                />
+              )}
+              // refreshControl={
+              //   <RefreshControl
+              //     refreshing={isRefreshing}
+              //     onRefresh={handleRefresh}
+              //   />
+              // }
+            />
+          </View>
+          <View style={styles.listMess}>
+            <FlatList
+              data={listGroup}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => (
+                <GroupBar onPress={() => handleClick2(item)} listInfor={item} />
+              )}
+              // refreshControl={
+              //   <RefreshControl
+              //     refreshing={isRefreshing}
+              //     onRefresh={handleRefresh}
+              //   />
+              // }
+            />
+          </View>
+        </View>
+      )}
+
       {visible ? <CreateGroupChat setVisible={setVisible} /> : ""}
       {/* modal */}
       <View>
@@ -498,79 +543,6 @@ export const Home = ({ navigation, route }) => {
         </Modal>
       </View>
 
-      {/* modal search */}
-      <View>
-        <Modal
-          isVisible={modalSearch}
-          onBackdropPress={() => setModalSearch(false)}
-          deviceWidth={deviceWidth}
-          deviceHeight={deviceHeight}
-        >
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: "#fff",
-              padding: 24,
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                width: 50,
-                height: 50,
-                position: "absolute",
-                top: 10,
-                right: 10,
-              }}
-              onPress={openModalSearch}
-            >
-              <XIcon color="#000" size={22} />
-            </TouchableOpacity>
-            {/*  */}
-            <View style={[styles.tabBarSearch, { marginTop: 50 }]}>
-              <TouchableOpacity style={styles.icon}>
-                <SearchICon color="#000" size={size} />
-              </TouchableOpacity>
-              <TextInput
-                style={styles.wrapTextSearch}
-                placeholder="Tìm kiếm"
-                value={valueSearch}
-                placeholderTextColor="#000"
-                onChangeText={(obj) => setValueSearch(obj)}
-              />
-              <TouchableOpacity
-                style={{
-                  padding: 10,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image source={require("../assets/bell.png")} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.listRs}>
-              <Text>Danh sach tim thay</Text>
-              <View style={{ height: "90%" }}>
-                {valueSearch === "" ? (
-                  ""
-                ) : (
-                  <FlatList
-                    data={listSearch}
-                    keyExtractor={(item) => item._id}
-                    renderItem={({ item }) => (
-                      <FriendBar users={item} idUser={user._id} />
-                    )}
-                  />
-                )}
-                {/* <FriendBar /> */}
-              </View>
-            </View>
-          </View>
-        </Modal>
-      </View>
-
       {/* modal thong bao */}
       <View>
         <Modal
@@ -597,9 +569,9 @@ export const Home = ({ navigation, route }) => {
             {requestFriends.length === 0 ? (
               <View style={{ justifyContent: "center", alignItems: "center" }}>
                 {notification === "" ? (
-                  <Text>Không có yêu cầu kết bạn nào !</Text>
+                  <Text>Không có thông báo nào !</Text>
                 ) : (
-                  <Text>{notification}</Text>
+                  <AcceptFriend nameAccept={notification} />
                 )}
               </View>
             ) : (
@@ -618,7 +590,28 @@ export const Home = ({ navigation, route }) => {
           </View>
         </Modal>
       </View>
-    </SafeAreaView>
+
+      {/* modal loading */}
+      <View>
+        <Modal
+          isVisible={modalLoading}
+          onBackdropPress={() => setModalLoading(false)}
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {/* <LoadingCircle /> */}
+            <LoadingCircle />
+          </View>
+        </Modal>
+      </View>
+    </View>
   );
 };
 
@@ -634,6 +627,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 10,
     backgroundColor: "#69b4f5",
+    paddingTop: 35,
   },
 
   icon: {
@@ -654,7 +648,8 @@ const styles = StyleSheet.create({
   txtSearch: {
     fontSize: 16,
     color: "white",
-    opacity: 0.5,
+    // opacity: 0.5,
+    fontWeight: "500",
   },
   // end search
 

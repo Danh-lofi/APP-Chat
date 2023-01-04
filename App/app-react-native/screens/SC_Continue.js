@@ -15,6 +15,7 @@ import {
   Platform,
   Appearance,
   Alert,
+  Image,
 } from "react-native";
 import { CheckBox } from "@rneui/themed";
 import GlobalStyles from "../components/GlobalStyles";
@@ -24,10 +25,24 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ApiRegisterUser } from "../api/ApiUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ApiUser } from "../api/ApiUser";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import Modal from "react-native-modal";
+import * as Progress from "react-native-progress";
+import LoadingBar from "../components/LoadingBar";
+
+const deviceWidth = Dimensions.get("window").width;
+const deviceHeight =
+  Platform.OS === "ios"
+    ? Dimensions.get("window").height
+    : require("react-native-extra-dimensions-android").get(
+        "REAL_WINDOW_HEIGHT"
+      );
 
 const SC_Continue = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [date, setDate] = useState(new Date());
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
   const [animatePress, setAnimatePress] = useState(new Animated.Value(1));
   const [gender, setGender] = React.useState("");
   const [address, setAddress] = React.useState("");
@@ -37,21 +52,20 @@ const SC_Continue = ({ navigation, route }) => {
   const [introduceYourself, setIntroduceYourself] = useState("");
   const [errMessage, setErrMessage] = useState("");
   const { username, password } = route.params;
-
-  // useEffect(async () => {
-  //   setUsername(await AsyncStorage.getItem("username"));
-  //   setPassword(await AsyncStorage.getItem("password"));
-  // }, []);
-
-  // for date
-  // Animated.timing(animatePress, {
-  //   toValue: 0.5,
-  //   duration: 500,
-  //   useNativeDriver: false, // Add This line
-  // }).start();
+  const [textDate, setTextDate] = useState(
+    new Date().getDate() +
+      "/" +
+      (new Date().getMonth() + 1) +
+      "/" +
+      new Date().getFullYear()
+  );
+  const [modalDate, setModalDate] = useState(false);
+  const [dateFinal, setDateFinal] = useState(new Date());
+  const [modalLoading, setModalLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const eventMale = () => {
-    setMale(true);
+    setMale(!male);
     setFemale(false);
     setGenderOther(false);
     setGender("Nam");
@@ -59,7 +73,7 @@ const SC_Continue = ({ navigation, route }) => {
 
   const eventFemale = () => {
     setMale(false);
-    setFemale(true);
+    setFemale(!female);
     setGenderOther(false);
     setGender("Nữ");
   };
@@ -67,7 +81,7 @@ const SC_Continue = ({ navigation, route }) => {
   const eventGenderOther = () => {
     setMale(false);
     setFemale(false);
-    setGenderOther(true);
+    setGenderOther(!genderOther);
     setGender("Khác");
   };
 
@@ -100,22 +114,13 @@ const SC_Continue = ({ navigation, route }) => {
       username: username,
       password: password,
       name: name,
+      birthDate: dateFinal,
       gender: gender,
       address: address,
       introducePersonal: introduceYourself,
     };
 
-    // const res = await ApiRegisterUser.register(data);
-    // if (res.status === 201) {
-    //   Alert.alert("dang ky thanh cong");
-    //   console.log("dang ky thanh cong");
-    // } else if (res.status === 400) {
-    //   Alert.alert("dang ky  khong thanh cong");
-    //   console.log("dang ky khong thanh cong");
-    // } else {
-    //   Alert.alert("loi khi tao");
-    //   console.log("loi khi tao");
-    // }
+    console.log(data);
 
     try {
       await ApiRegisterUser.register(data)
@@ -129,20 +134,58 @@ const SC_Continue = ({ navigation, route }) => {
           // navigation.navigate("SC_Login");
         })
         .catch((err) => {
-          console.log("Dang ky khong thanh cong" + err);
+          console.log("Dang ky khong thanh cong " + err);
         });
     } catch (error) {
       Alert.alert(error);
     }
   };
 
-  // useEffect(() => {
-  //   Animated.timing(date, {
-  //     toValue: 1,
-  //     duration: 2000,
-  //     useNativeDriver: false,
-  //   }).start();
-  // }, [date]);
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === "ios");
+    setDate(currentDate);
+
+    let tempDate = new Date(currentDate);
+
+    let day =
+      tempDate.getDate() < 10
+        ? `0${tempDate.getDate()}`
+        : `${tempDate.getDate()}`;
+
+    let month =
+      tempDate.getMonth() + 1 < 10
+        ? `0${tempDate.getMonth() + 1}`
+        : `${tempDate.getMonth() + 1}`;
+
+    let dDate = day + "/" + month + "/" + tempDate.getFullYear();
+    setTextDate(dDate);
+    setDateFinal(
+      new Date(
+        tempDate.getFullYear(),
+        tempDate.getMonth(),
+        tempDate.getDate() + 1
+      )
+    );
+    console.log(
+      new Date(
+        tempDate.getFullYear(),
+        tempDate.getMonth(),
+        tempDate.getDate() + 1
+      )
+    );
+  };
+
+  const showMode = (getCurrentMode) => {
+    console.log(show);
+    setMode(getCurrentMode);
+    setShow(true);
+  };
+
+  const openModalDate = () => {
+    console.log(date);
+    setModalDate(!modalDate);
+  };
 
   return (
     <LinearGradient
@@ -197,73 +240,186 @@ const SC_Continue = ({ navigation, route }) => {
               {/* input password */}
               <View style={[styles.wrapBirthDate, GlobalStyles.test3]}>
                 <Text style={styles.txtOfInput}>Ngày tháng năm sinh</Text>
-                {/* <Animated.View> */}
-                <DatePicker
-                  style={styles.datePickerStyle}
-                  date={date} //initial date from state
-                  mode="date" //The enum of date, datetime and time
-                  placeholder="select date"
-                  format="DD/MM/YYYY"
-                  minDate="01/01/2016"
-                  maxDate="01/01/2019"
-                  confirmBtnText="Confirm"
-                  cancelBtnText="Cancel"
-                  customStyles={{
-                    dateIcon: {
-                      //display: 'none',
-                      position: "absolute",
-                      left: 0,
-                      top: 4,
-                      marginLeft: 0,
-                    },
-                    dateInput: {
-                      marginLeft: 36,
-                    },
+                {/* date */}
+                <Pressable
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    borderWidth: 1,
+                    padding: 5,
+                    borderRadius: 10,
                   }}
-                  onDateChange={setDate}
-                />
-                {/* </Animated.View> */}
+                  onPress={() => openModalDate()}
+                >
+                  <Image
+                    source={require("../assets/calendar.png")}
+                    style={{ marginHorizontal: 10 }}
+                  />
+                  <Text style={{ fontSize: 18, fontWeight: "500" }}>
+                    {textDate}
+                  </Text>
+                </Pressable>
                 <Text style={styles.notificationError}>{errMessage}</Text>
+
+                <View>
+                  <Modal
+                    isVisible={modalDate}
+                    onBackdropPress={() => setModalDate(false)}
+                    deviceWidth={deviceWidth}
+                    deviceHeight={deviceHeight}
+                    style={{
+                      justifyContent: "flex-start",
+                      alignItems: "flex-end",
+                      marginTop: 50,
+                      // marginRight: "20%",
+                      shadowColor: "#4eac6d",
+                      shadowOpacity: 0.9,
+                      shadowRadius: 5,
+                      shadowOffset: {
+                        height: 2,
+                        width: 2,
+                      },
+                      elevation: 10,
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: "100%",
+                        height: "30%",
+                        backgroundColor: "#fff",
+                        padding: 12,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: "20%",
+                      }}
+                    >
+                      <View>
+                        <Text
+                          style={{
+                            fontSize: 24,
+                            fontWeight: "700",
+                            marginVertical: 24,
+                          }}
+                        >
+                          Chọn ngày tháng năm sinh
+                        </Text>
+                      </View>
+                      <DateTimePicker
+                        testID="dateTimePicker"
+                        value={date}
+                        mode={"date"}
+                        display={Platform.OS === "ios" ? "spinner" : "spinner"}
+                        onChange={onChange}
+                        style={{
+                          width: "100%",
+                          height: "90%",
+                          marginBottom: 12,
+                        }}
+                        themeVariant="light"
+                      />
+                    </View>
+                  </Modal>
+                </View>
               </View>
 
               {/* input password again */}
               <View style={[styles.wrapGender, GlobalStyles.test3]}>
                 <Text style={styles.txtOfInput}>Giới tính</Text>
                 <View style={styles.wrapCheckBoxGender}>
-                  <View>
-                    <CheckBox
-                      center
-                      title="Nam"
-                      // checkedIcon="dot-circle-o"
-                      // uncheckedIcon="circle-o"
-                      checked={male}
-                      containerStyle={{ padding: 5 }}
-                      // onPress={() => setMale(!male)}
-                      onPress={eventMale}
-                    />
-                  </View>
-                  <View>
-                    <CheckBox
-                      center
-                      title="Nữ"
-                      // checkedIcon="dot-circle-o"
-                      // uncheckedIcon="circle-o"
-                      checked={female}
-                      containerStyle={{ padding: 5 }}
-                      onPress={eventFemale}
-                    />
-                  </View>
-                  <View>
-                    <CheckBox
-                      center
-                      title="Khác"
-                      // checkedIcon="dot-circle-o"
-                      // uncheckedIcon="circle-o"
-                      checked={genderOther}
-                      containerStyle={{ padding: 5 }}
-                      onPress={eventGenderOther}
-                    />
-                  </View>
+                  <Pressable
+                    style={{ flexDirection: "row", alignItems: "center" }}
+                    onPress={eventMale}
+                  >
+                    {male === true ? (
+                      <View
+                        style={{
+                          width: 20,
+                          height: 20,
+                          backgroundColor: "#4eac6d",
+                          borderWidth: 2,
+                          borderColor: "red",
+                          borderRadius: 20,
+                          marginRight: 10,
+                        }}
+                      ></View>
+                    ) : (
+                      <View
+                        style={{
+                          width: 20,
+                          height: 20,
+                          backgroundColor: "#fff",
+                          borderWidth: 2,
+                          borderColor: "#4eac6d",
+                          borderRadius: 20,
+                          marginRight: 10,
+                        }}
+                      ></View>
+                    )}
+
+                    <Text>Nam</Text>
+                  </Pressable>
+                  <Pressable
+                    style={{ flexDirection: "row", alignItems: "center" }}
+                    onPress={eventFemale}
+                  >
+                    {female === true ? (
+                      <View
+                        style={{
+                          width: 20,
+                          height: 20,
+                          backgroundColor: "#4eac6d",
+                          borderWidth: 2,
+                          borderColor: "red",
+                          borderRadius: 20,
+                          marginRight: 10,
+                        }}
+                      ></View>
+                    ) : (
+                      <View
+                        style={{
+                          width: 20,
+                          height: 20,
+                          backgroundColor: "#fff",
+                          borderWidth: 2,
+                          borderColor: "#4eac6d",
+                          borderRadius: 20,
+                          marginRight: 10,
+                        }}
+                      ></View>
+                    )}
+                    <Text>Nữ</Text>
+                  </Pressable>
+                  <Pressable
+                    style={{ flexDirection: "row", alignItems: "center" }}
+                    onPress={eventGenderOther}
+                  >
+                    {genderOther === true ? (
+                      <View
+                        style={{
+                          width: 20,
+                          height: 20,
+                          backgroundColor: "#4eac6d",
+                          borderWidth: 2,
+                          borderColor: "red",
+                          borderRadius: 20,
+                          marginRight: 10,
+                        }}
+                      ></View>
+                    ) : (
+                      <View
+                        style={{
+                          width: 20,
+                          height: 20,
+                          backgroundColor: "#fff",
+                          borderWidth: 2,
+                          borderColor: "#4eac6d",
+                          borderRadius: 20,
+                          marginRight: 10,
+                        }}
+                      ></View>
+                    )}
+                    <Text>Khác</Text>
+                  </Pressable>
                 </View>
                 <Text style={styles.notificationError}>{errMessage}</Text>
               </View>
@@ -333,6 +489,27 @@ const SC_Continue = ({ navigation, route }) => {
           </View>
         </View>
       </KeyboardAwareScrollView>
+      {/* modal loading */}
+      <View>
+        <Modal
+          isVisible={modalLoading}
+          onBackdropPress={() => setModalLoading(false)}
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {/* <LoadingCircle /> */}
+            {/* <LoadingCircle /> */}
+            <LoadingBar progress={0.5} />
+          </View>
+        </Modal>
+      </View>
     </LinearGradient>
   );
 };
@@ -443,9 +620,9 @@ const styles = StyleSheet.create({
   },
 
   wrapCheckBoxGender: {
-    marginTop: -10,
+    marginTop: 10,
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
   },
 
   wrapBtnCompleted: {

@@ -1,8 +1,9 @@
 import { StyleSheet, Platform, Dimensions } from "react-native";
 export default StyleSheet.create({
   droidSafeArea: {
-    flex: 1,
-    paddingTop: Platform.OS === "android" ? 30 : 0,
+    // flex: 1,
+    // paddingTop: Platform.OS === "android" ? 30 : 0,
+    paddingTop: 35,
   },
   iosPD: {
     bottom: Platform.OS === "android" ? 10 : 20,
@@ -24,7 +25,7 @@ export default StyleSheet.create({
   test4: {
     height:
       Dimensions.get("window").height > 800
-        ? Dimensions.get("window").width * 2.05
+        ? Dimensions.get("window").width * 2.15
         : Dimensions.get("window").width * 1.9,
   },
 

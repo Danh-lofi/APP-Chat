@@ -63,8 +63,6 @@ export const InformationFriendChat = ({ navigation, route }) => {
         console.log("id null");
       } else {
         const data = await ApiGetUser.getProfileUserFromId(idFriend.idFriend);
-        const data2 = await TestGetFromHeroku.getTest(idFriend.idFriend);
-        console.log(data2.data);
         if (data.data === null) {
           console.log("Khong lay duoc du lieu");
         } else {
@@ -79,7 +77,6 @@ export const InformationFriendChat = ({ navigation, route }) => {
 
   const handleDeleteFriend = async () => {
     const token = await AsyncStorage.getItem("token");
-    console.log(token + " " + idFriend.idFriend);
     if (idFriend.idFriend === "") {
       console.log("id null");
     } else {
@@ -97,7 +94,7 @@ export const InformationFriendChat = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, GlobalStyles.droidSafeArea]}>
+    <View style={[styles.container, GlobalStyles.droidSafeArea]}>
       <View style={styles.tabBarChat}>
         <TouchableOpacity
           style={[styles.icon, { flexDirection: "row" }]}
@@ -189,78 +186,271 @@ export const InformationFriendChat = ({ navigation, route }) => {
       <View
         style={{ width: "100%", height: 5, backgroundColor: "#ccc" }}
       ></View>
-      <View style={styles.content}>
-        {/* img da gui */}
-        <View style={styles.listImg}>
-          <Text style={styles.textXXX}>Hình ảnh</Text>
-          <FlatList
-            data={DATA}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <ImageComponent />}
-          />
-        </View>
-        {/* file da gui */}
 
-        <View style={{ flex: 1 }}>
-          <Text style={styles.textXXX}>File</Text>
-          <FlatList
-            data={DATA}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <FileComponent />}
-          />
+      <ScrollView
+        style={{
+          paddingHorizontal: 24,
+          height: "100%",
+          // marginBottom: 50,
+        }}
+      >
+        {/* tuy chinh */}
+        <View style={{ marginTop: 24 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "600",
+              color: "#6e6d6d",
+            }}
+          >
+            Tuỳ chỉnh
+          </Text>
         </View>
-      </View>
-
-      {/*  */}
-      {/* <View style={{ paddingHorizontal: 24, marginTop: 15 }}>
-        <TouchableOpacity
+        <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingVertical: 5,
-            borderBottomWidth: 1,
+            marginTop: 5,
+            backgroundColor: "#dbdbdb",
+            borderRadius: 10,
           }}
         >
-          <View
+          {/* chu de */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            // onPress={openModalSearch}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              {/* <ListMember color="#009EFF" size={50} /> */}
+              <View style={styles.wrapIconCustomIn4Chat}>
+                <Image source={require("../assets/colour.png")} />
+              </View>
+              <View style={styles.wrapTextCustomIn4Chat}>
+                <Text style={styles.textCustomIn4Chat}>Chủ đề</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* bieu tuong cam xuc */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            // onPress={openModalSearch}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View style={styles.wrapIconCustomIn4Chat}>
+                <Image source={require("../assets/like.png")} />
+              </View>
+              <View style={styles.wrapTextCustomIn4Chat}>
+                <Text style={styles.textCustomIn4Chat}>Biểu tượng cảm xúc</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* biet danh */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              // marginBottom: 12,
+            }}
+            // onPress={openModalSearch}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View style={[styles.wrapIconCustomIn4Chat]}>
+                <Image source={require("../assets/blocks.png")} />
+              </View>
+              <View
+                style={[styles.wrapTextCustomIn4Chat, { borderBottomWidth: 0 }]}
+              >
+                <Text style={styles.textCustomIn4Chat}>Biệt danh</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* khac */}
+
+        <View style={{ marginTop: 24 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "600",
+              color: "#6e6d6d",
+            }}
+          >
+            Khác
+          </Text>
+        </View>
+        <View
+          style={{
+            marginTop: 5,
+            backgroundColor: "#dbdbdb",
+            borderRadius: 10,
+          }}
+        >
+          {/* Anh va file da gui */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            onPress={() =>
+              navigation.navigate("SC_ImageAndFilesSent", {
+                chatId: route.params.chatId,
+              })
+            }
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View style={styles.wrapIconCustomIn4Chat}>
+                <Image source={require("../assets/image.png")} />
+              </View>
+              <View style={styles.wrapTextCustomIn4Chat}>
+                <Text style={styles.textCustomIn4Chat}>Ảnh và file đã gửi</Text>
+              </View>
+              <View
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: "33%",
+                }}
+              >
+                <NextIcon size={50} color="#000" />
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* an cuoc tro chuyen */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            // onPress={openModalSearch}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View style={styles.wrapIconCustomIn4Chat}>
+                <Image source={require("../assets/hide.png")} />
+              </View>
+              <View style={styles.wrapTextCustomIn4Chat}>
+                <Text style={styles.textCustomIn4Chat}>Ẩn cuộc trò chuyện</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* xoa tro truyen */}
+          <TouchableOpacity
             style={{
               flexDirection: "row",
               alignItems: "center",
             }}
           >
-            <GeneralGroupIcon color="#009EFF" size={50} />
-            <Text
+            <View
               style={{
-                fontSize: 18,
-                color: "#000",
-                fontWeight: "600",
-                marginLeft: 10,
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              Nhóm chung
-            </Text>
-          </View>
-          <View
+              <View style={[styles.wrapIconCustomIn4Chat]}>
+                <Image source={require("../assets/bin.png")} />
+              </View>
+              <View
+                style={[styles.wrapTextCustomIn4Chat, { borderBottomWidth: 0 }]}
+              >
+                <Text style={styles.textCustomIn4Chat}>
+                  Xoá cuộc trò chuyện
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+        {/* ---- */}
+
+        {/* ho tro */}
+        <View style={{ marginTop: 24 }}>
+          <Text
             style={{
-              position: "absolute",
-              right: 0,
-              top: "35%",
+              fontSize: 16,
+              fontWeight: "600",
+              color: "#6e6d6d",
             }}
           >
-            <NextIcon color="#000" size={50} />
-          </View>
-        </TouchableOpacity>
-       
-      </View> */}
-    </SafeAreaView>
+            Hỗ trợ
+          </Text>
+        </View>
+        <View
+          style={{
+            marginTop: 5,
+            backgroundColor: "#dbdbdb",
+            borderRadius: 10,
+            marginBottom: 24,
+          }}
+        >
+          {/* bao cao */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View style={[styles.wrapIconCustomIn4Chat]}>
+                <Image source={require("../assets/warning.png")} />
+              </View>
+              <View
+                style={[styles.wrapTextCustomIn4Chat, { borderBottomWidth: 0 }]}
+              >
+                <Text style={styles.textCustomIn4Chat}>Báo cáo</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+        {/* --- */}
+      </ScrollView>
+
+      {/* <View style={styles.content}></View> */}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: 1000,
+    height: "100%",
+    // height: 1000,
   },
   tabBarChat: {
     width: "100%",
@@ -331,5 +521,24 @@ const styles = StyleSheet.create({
   listImg: {
     marginBottom: 20,
     flex: 1,
+  },
+
+  wrapIconCustomIn4Chat: {
+    width: "20%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  wrapTextCustomIn4Chat: {
+    width: "80%",
+    borderBottomWidth: 1,
+    paddingVertical: 16,
+  },
+
+  textCustomIn4Chat: {
+    fontSize: 18,
+    color: "#000",
+    fontWeight: "600",
+    marginLeft: 10,
   },
 });

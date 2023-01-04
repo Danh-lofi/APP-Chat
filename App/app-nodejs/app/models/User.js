@@ -24,8 +24,7 @@ const User = new Schema({
   },
   birthDate: {
     type: Date,
-    // required: false,
-    default: Date.now(),
+    required: false,
   },
   gender: {
     type: String,
@@ -41,11 +40,13 @@ const User = new Schema({
   },
   avatar: {
     type: String,
-    default: "",
+    default:
+      "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg",
   },
   coverImg: {
     type: String,
-    default: "",
+    default:
+      "http://groundandco.com.au/wp-content/plugins/uix-page-builder/includes/uixpbform/images/default-cover-6.jpg",
   },
   friends: [],
   groups: [],
@@ -62,15 +63,6 @@ const User = new Schema({
     type: String,
     required: false,
   },
-  avatar: {
-    type: String,
-    required: false,
-  },
-  coverImg: {
-    type: String,
-    required: false,
-  },
-  friends: [],
   idRequest: {
     type: String,
   },

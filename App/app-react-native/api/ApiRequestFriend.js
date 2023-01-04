@@ -34,9 +34,14 @@ const friendApi = {
   },
   // Lấy danh sách lời mời
   // Tìm bạn bè
-  getInvitesFriend: (id) => {
-    const url = `/request-friend/${id}`;
-    return apiGet.get(url, {});
+  getInvitesFriend: (token) => {
+    const url = `/request-friend/listRequest`;
+    return apiGet.get(url, token);
+  },
+  // Lấy danh sách gửi yêu cầu kết bạn bằng id người gửi
+  getAllRequestSentWithSenderId: (token) => {
+    const url = `/request-friend/getAllRequestSentWithSenderId`;
+    return apiGet.get(url, token);
   },
   // đồng ý lời mời
   acceptFriend: (idRequest) => {
@@ -52,10 +57,18 @@ const friendApi = {
     const url = `/friend/deleteFriend`;
     return apiGet.post(url, { friendId, token });
   },
-  // Tìm và kiểm tra yêu cầu kb
-  findAndCheck: (token, username) => {
-    const url = `/request-friend/m-check/${username}`;
-    return apiGet.get(url, token);
+  // ???
+  getIdRequestFinal: (token, receiverId) => {
+    const url = `/request-friend/m-check/${receiverId}`;
+    return apiGet.post(url, { token });
+  },
+  declineFriend_diff: (token, senderId) => {
+    const url = `/request-friend/declineFriend_diff/${senderId}`;
+    return apiGet.post(url, { token });
+  },
+  acceptFriend_diff: (token, senderId) => {
+    const url = `/request-friend/acceptFriend_diff/${senderId}`;
+    return apiGet.post(url, { token });
   },
 };
 

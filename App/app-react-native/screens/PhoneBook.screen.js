@@ -8,31 +8,12 @@ import {
   Platform,
   Image,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
+import { increment } from "../redux/testRedux";
 
 export const PhoneBook = () => {
-  const [image, setImage] = useState(null);
-
-  const chooseImg = async () => {
-    let rs = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-      base64: true,
-    });
-
-    if (rs.cancelled === true) {
-      console.log("Huy img");
-    } else {
-      console.log("Chon anh");
-      console.log(rs.fileName);
-    }
-
-    console.log(rs);
-    // console.log(rs.base64);
-    console.log(rs.uri);
-    setImage(rs.uri);
+  const reduxTest = () => {
+    console.log(increment.toString());
+    console.log(increment.type);
   };
 
   return (
@@ -47,13 +28,10 @@ export const PhoneBook = () => {
           alignItems: "center",
           borderRadius: 10,
         }}
-        onPress={chooseImg}
+        onPress={reduxTest}
       >
-        <Text>Choose Image</Text>
+        <Text>Test Redux</Text>
       </TouchableOpacity>
-      {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-      )}
     </View>
   );
 };

@@ -4,6 +4,8 @@ const MessageController = {
   addMessage: async (req, res) => {
     const { chatId, senderId, text, isImg, type, fileName } = req.body;
 
+    console.log(chatId, senderId, text, isImg, type, fileName);
+
     const message = new MessageModel({
       chatId,
       senderId,
