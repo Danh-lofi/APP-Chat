@@ -4,9 +4,11 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { cos, min } from "react-native-reanimated";
 import { ApiGetUser } from "../api/ApiUser";
+import LoadingCircleSnail from "../components/LoadingCircleSnail";
 
 export default function MessageComponent({ item, idUser, onPress, statusG }) {
   const { _id, chatId, senderId, fileName, isImg, type, text } = item;
+  // const [isLoadingImage, setIsLoadingImage] = useState(false);
   const status = item.senderId !== idUser;
   const [statusTouch, setStatusTouch] = useState(false);
   const [disTime, setDisTime] = useState("");
@@ -136,7 +138,6 @@ export default function MessageComponent({ item, idUser, onPress, statusG }) {
               <View style={{ height: 200, width: 200 }}>
                 <Image
                   style={{
-                    // flex: 1,
                     height: "100%",
                     width: "100%",
                   }}
@@ -149,11 +150,13 @@ export default function MessageComponent({ item, idUser, onPress, statusG }) {
             )}
           </Pressable>
         </View>
-        {statusTouch === true ? (
-          <Text style={{ marginLeft: 40 }}>{disTime}</Text>
-        ) : (
-          <Text style={{ marginLeft: 40 }}>{item.time}</Text>
-        )}
+        <View>
+          {statusTouch === true ? (
+            <Text style={{ marginLeft: 40 }}>{disTime}</Text>
+          ) : (
+            <Text style={{ marginLeft: 40 }}>{item.time}</Text>
+          )}
+        </View>
       </View>
     </View>
   );

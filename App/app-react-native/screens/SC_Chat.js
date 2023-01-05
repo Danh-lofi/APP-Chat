@@ -10,6 +10,8 @@ import {
   Alert,
   FlatList,
   TextInput,
+  ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import {
   BackIcon,
@@ -37,8 +39,26 @@ import LoadingCircle from "../components/LoadingCircle";
 import { apiFirebase } from "../api/ApiFirebase";
 import LoadingCircleSnail from "../components/LoadingCircleSnail";
 import uuid from "uuid";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { ListItemSubtitle } from "@rneui/base/dist/ListItem/ListItem.Subtitle";
+// import SimpleToast from "react-native-simple-toast";
 
 const size = 24;
+
+const items = [
+  {
+    key: 1,
+    name: "Nhan",
+  },
+  {
+    key: 2,
+    name: "Nhan 2",
+  },
+  {
+    key: 3,
+    name: "Nhan 3",
+  },
+];
 
 const SC_Chat = ({ navigation, route }) => {
   const [currentName, setCurrentName] = useState("");
@@ -61,6 +81,9 @@ const SC_Chat = ({ navigation, route }) => {
   const [modalLoading, setModalLoading] = useState(false);
   const [messageGetFromSocket, setMessageGetFromSocket] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isLoadingImage, setIsLoadingImage] = useState(false);
+  let listViewRef;
+  let valueInverted = true;
 
   // const handleOpenMemberChat = () => setVisible(true);
 
@@ -87,6 +110,11 @@ const SC_Chat = ({ navigation, route }) => {
   const [chatMessages, setChatMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [user, setUser] = useState("");
+
+  const scrollToEnd = () => {
+    listViewRef.scrollToEnd({ animated: true });
+    // Toast.show("Hihi");
+  };
 
   const handleNewMessage = async () => {
     const messageSender = {
@@ -165,7 +193,8 @@ const SC_Chat = ({ navigation, route }) => {
     });
 
     if (!rs.canceled) {
-      setModalLoading(true);
+      setModalLoading(false);
+      setIsLoadingImage(true);
       const hour =
         new Date().getHours() < 10
           ? `0${new Date().getHours()}`
@@ -224,12 +253,8 @@ const SC_Chat = ({ navigation, route }) => {
       }
 
       setModalLoading(false);
+      setIsLoadingImage(false);
     }
-  };
-
-  const sendImg = async () => {
-    chooseImg();
-    // console.log(sendMessImg);
   };
 
   // cach cu
@@ -341,6 +366,7 @@ const SC_Chat = ({ navigation, route }) => {
   // get all messages from chat id
   useEffect(() => {
     setLoading(true);
+    valueInverted = true;
     const getAllMessages = async (chatId) => {
       if (!chatId) {
         setChatId(null);
@@ -348,10 +374,11 @@ const SC_Chat = ({ navigation, route }) => {
       }
       const messagesData = await messageApi.getMessages(chatId);
 
-      setChatMessages(messagesData.data);
+      setChatMessages(messagesData.data.reverse());
     };
     getAllMessages(chatId);
     setLoading(false);
+    // scrollToEnd();
   }, [chatId]);
 
   // Get the message from socket server
@@ -379,8 +406,38 @@ const SC_Chat = ({ navigation, route }) => {
     }
   };
 
+  const renderLoading = () => {
+    return (
+      <View
+        style={{
+          width: "100%",
+          alignItems: "flex-end",
+        }}
+      >
+        {isLoadingImage === true ? (
+          <View
+            style={{
+              width: 150,
+              height: 150,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size="large" />
+          </View>
+        ) : (
+          ""
+        )}
+      </View>
+    );
+  };
+
+  const loadMoreMessages = () => {
+    console.log("dang load");
+  };
+
   return (
-    <SafeAreaView style={[styles.container, GlobalStyles.droidSafeArea]}>
+    <View style={[styles.container, GlobalStyles.droidSafeArea]}>
       <View style={styles.tabBarChat}>
         <TouchableOpacity
           style={styles.icon}
@@ -415,29 +472,10 @@ const SC_Chat = ({ navigation, route }) => {
           >
             <VideoIcon color="white" size={size} />
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            style={[
-              styles.icon,
-              {
-                marginLeft: 10,
-                paddingHorizontal: 15,
-              },
-            ]}
-            onPress={handleOpenMemberChat}
-          >
-            <OptionIcon color="white" size={size} />
-          </TouchableOpacity> */}
         </View>
       </View>
 
       <View style={styles.contentChat}>
-        {/* <GiftedChat
-          messages={messages}
-          onSend={(messages) => onSend(messages)}
-          user={{
-            _id: 1,
-          }}
-        /> */}
         <View style={styles.messagingScreen}>
           <View
             style={[
@@ -445,13 +483,12 @@ const SC_Chat = ({ navigation, route }) => {
               { paddingVertical: 15, paddingHorizontal: 10 },
             ]}
           >
-            <View style={{ alignItems: "center" }}>
-              {/* {statusG === 0 ? "" : <Text>Đã rời khỏi nhóm</Text>} */}
-            </View>
             {chatMessages[0] ? (
               <View>
                 <FlatList
                   data={chatMessages}
+                  inverted={valueInverted}
+                  showsVerticalScrollIndicator={false}
                   keyExtractor={(item) => item._id}
                   renderItem={({ item }) => (
                     <MessageComponent
@@ -461,9 +498,52 @@ const SC_Chat = ({ navigation, route }) => {
                       onPress={() => touchMess(item)}
                     />
                   )}
+                  ListFooterComponent={renderLoading}
+                  ref={(ref) => {
+                    listViewRef = ref;
+                  }}
                 />
               </View>
             ) : (
+              // render use ScrollView
+              // <ScrollView
+              //   style={{ flex: 1 }}
+              // >
+              //   {chatMessages.map((item) => {
+              //     return (
+              //       <View key={item._id}>
+              //         <MessageComponent
+              //           item={item}
+              //           idUser={idUser}
+              //           statusG={statusG}
+              //           isLoadingImage={isLoadingImage}
+              //           onPress={() => touchMess(item)}
+              //         />
+              //       </View>
+              //     );
+              //   })}
+              //   <View
+              //     style={{
+              //       width: "100%",
+              //       alignItems: "flex-end",
+              //     }}
+              //   >
+              //     {isLoadingImage === true ? (
+              //       <View
+              //         style={{
+              //           width: 150,
+              //           height: 150,
+              //           justifyContent: "center",
+              //           alignItems: "center",
+              //         }}
+              //       >
+              //         <ActivityIndicator size="large" />
+              //       </View>
+              //     ) : (
+              //       ""
+              //     )}
+              //   </View>
+              // </ScrollView>
               <View
                 style={{
                   width: "100%",
@@ -543,7 +623,7 @@ const SC_Chat = ({ navigation, route }) => {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  onPress={handleNewFile}
+                  onPress={() => scrollToEnd()}
                 >
                   <FileIcon color="#4eac6dd4" size={40} />
                 </TouchableOpacity>
@@ -554,7 +634,7 @@ const SC_Chat = ({ navigation, route }) => {
                     alignItems: "center",
                     marginLeft: 10,
                   }}
-                  onPress={sendImg}
+                  onPress={() => chooseImg()}
                 >
                   <ImgIcon color="#4eac6dd4" size={40} />
                 </TouchableOpacity>
@@ -579,12 +659,11 @@ const SC_Chat = ({ navigation, route }) => {
               justifyContent: "center",
             }}
           >
-            {/* <LoadingCircle /> */}
             <LoadingCircle />
           </View>
         </Modal>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
