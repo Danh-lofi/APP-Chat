@@ -12,6 +12,10 @@ import {
   TextInput,
   ActivityIndicator,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import {
   BackIcon,
@@ -110,6 +114,7 @@ const SC_Chat = ({ navigation, route }) => {
   const [chatMessages, setChatMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [user, setUser] = useState("");
+  const [messageDis, setMessageDis] = useState([]);
 
   const scrollToEnd = () => {
     listViewRef.scrollToEnd({ animated: true });
@@ -149,10 +154,10 @@ const SC_Chat = ({ navigation, route }) => {
         });
       }
 
-      setChatMessages((chatMessages) => [
-        ...chatMessages,
-        { ...messageSender, time },
-      ]);
+      // setChatMessages((chatMessages) => [
+      //   ...chatMessages,
+      //   { ...messageSender, time },
+      // ]);
       setMessage("");
     }
 
@@ -193,7 +198,6 @@ const SC_Chat = ({ navigation, route }) => {
     });
 
     if (!rs.canceled) {
-      setModalLoading(false);
       setIsLoadingImage(true);
       const hour =
         new Date().getHours() < 10
@@ -244,15 +248,14 @@ const SC_Chat = ({ navigation, route }) => {
         } else {
           Alert.alert("Khong gui duoc hinh anh!");
         }
-        setChatMessages((chatMessages) => [
-          ...chatMessages,
-          { ...messageSender, time },
-        ]);
+        // setChatMessages((chatMessages) => [
+        //   ...chatMessages,
+        //   { ...messageSender, time },
+        // ]);
       } else {
         Alert.alert("Khong gui duoc hinh anh");
       }
 
-      setModalLoading(false);
       setIsLoadingImage(false);
     }
   };
@@ -374,7 +377,7 @@ const SC_Chat = ({ navigation, route }) => {
       }
       const messagesData = await messageApi.getMessages(chatId);
 
-      setChatMessages(messagesData.data.reverse());
+      setChatMessages(messagesData.data);
     };
     getAllMessages(chatId);
     setLoading(false);
@@ -384,6 +387,7 @@ const SC_Chat = ({ navigation, route }) => {
   // Get the message from socket server
   useEffect(() => {
     socket.on("recieve-message", (data) => {
+      console.log("socket online");
       setMessageGetFromSocket(data);
     });
   }, [socket]);
@@ -405,6 +409,14 @@ const SC_Chat = ({ navigation, route }) => {
       navigation.navigate("InformationGroupChat", { idGroup: chatId, avatar });
     }
   };
+
+  useEffect(() => {
+    console.log("-----------------chatMessages");
+    console.log(chatMessages);
+    setMessageDis([...chatMessages].reverse());
+    console.log("-----------------------[...chatMessages].reverse()");
+    console.log([...chatMessages].reverse());
+  }, [chatMessages]);
 
   const renderLoading = () => {
     return (
@@ -437,233 +449,245 @@ const SC_Chat = ({ navigation, route }) => {
   };
 
   return (
-    <View style={[styles.container, GlobalStyles.droidSafeArea]}>
-      <View style={styles.tabBarChat}>
-        <TouchableOpacity
-          style={styles.icon}
-          onPress={() => navigation.goBack()}
-        >
-          <BackIcon color="white" size={size} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.aMess_avt}
-          onPress={() => informationChat()}
-        >
-          <Image source={{ uri: avatar }} style={styles.wrapAvatarZL} />
-          <View style={styles.wrapNameAndStatus}>
-            <Text
-              numberOfLines={1}
-              style={{ fontSize: 16, fontWeight: "600", marginBottom: 5 }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={[styles.container, GlobalStyles.droidSafeArea]}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <>
+          <View style={styles.tabBarChat}>
+            <TouchableOpacity
+              style={styles.icon}
+              onPress={() => navigation.goBack()}
             >
-              {currentName}
-            </Text>
-            <Text>Dang hoat dong</Text>
-          </View>
-        </TouchableOpacity>
-        <View style={styles.wrapIconPhoneVideoCall}>
-          <TouchableOpacity style={[styles.icon, { paddingHorizontal: 15 }]}>
-            <PhoneIcon color="white" size={size} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.icon,
-              { marginLeft: 10, paddingHorizontal: 15, marginRight: 20 },
-            ]}
-          >
-            <VideoIcon color="white" size={size} />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.contentChat}>
-        <View style={styles.messagingScreen}>
-          <View
-            style={[
-              styles.messagingScreen,
-              { paddingVertical: 15, paddingHorizontal: 10 },
-            ]}
-          >
-            {chatMessages[0] ? (
-              <View>
-                <FlatList
-                  data={chatMessages}
-                  inverted={valueInverted}
-                  showsVerticalScrollIndicator={false}
-                  keyExtractor={(item) => item._id}
-                  renderItem={({ item }) => (
-                    <MessageComponent
-                      item={item}
-                      idUser={idUser}
-                      statusG={statusG}
-                      onPress={() => touchMess(item)}
-                    />
-                  )}
-                  ListFooterComponent={renderLoading}
-                  ref={(ref) => {
-                    listViewRef = ref;
-                  }}
-                />
+              <BackIcon color="white" size={size} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.aMess_avt}
+              onPress={() => informationChat()}
+            >
+              <Image source={{ uri: avatar }} style={styles.wrapAvatarZL} />
+              <View style={styles.wrapNameAndStatus}>
+                <Text
+                  numberOfLines={1}
+                  style={{ fontSize: 16, fontWeight: "600", marginBottom: 5 }}
+                >
+                  {currentName}
+                </Text>
+                <Text>Dang hoat dong</Text>
               </View>
-            ) : (
-              // render use ScrollView
-              // <ScrollView
-              //   style={{ flex: 1 }}
-              // >
-              //   {chatMessages.map((item) => {
-              //     return (
-              //       <View key={item._id}>
-              //         <MessageComponent
-              //           item={item}
-              //           idUser={idUser}
-              //           statusG={statusG}
-              //           isLoadingImage={isLoadingImage}
-              //           onPress={() => touchMess(item)}
-              //         />
-              //       </View>
-              //     );
-              //   })}
-              //   <View
-              //     style={{
-              //       width: "100%",
-              //       alignItems: "flex-end",
-              //     }}
-              //   >
-              //     {isLoadingImage === true ? (
-              //       <View
-              //         style={{
-              //           width: 150,
-              //           height: 150,
-              //           justifyContent: "center",
-              //           alignItems: "center",
-              //         }}
-              //       >
-              //         <ActivityIndicator size="large" />
-              //       </View>
-              //     ) : (
-              //       ""
-              //     )}
-              //   </View>
-              // </ScrollView>
+            </TouchableOpacity>
+            <View style={styles.wrapIconPhoneVideoCall}>
+              <TouchableOpacity
+                style={[styles.icon, { paddingHorizontal: 15 }]}
+              >
+                <PhoneIcon color="white" size={size} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.icon,
+                  { marginLeft: 10, paddingHorizontal: 15, marginRight: 20 },
+                ]}
+              >
+                <VideoIcon color="white" size={size} />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.contentChat}>
+            <View style={styles.messagingScreen}>
+              <View
+                style={[
+                  styles.messagingScreen,
+                  { paddingVertical: 15, paddingHorizontal: 10 },
+                ]}
+              >
+                {messageDis[0] ? (
+                  <View>
+                    <FlatList
+                      data={messageDis}
+                      inverted={valueInverted}
+                      showsVerticalScrollIndicator={false}
+                      keyExtractor={(item) => item._id}
+                      renderItem={({ item }) => (
+                        <MessageComponent
+                          item={item}
+                          idUser={idUser}
+                          statusG={statusG}
+                          onPress={() => touchMess(item)}
+                        />
+                      )}
+                      ListHeaderComponent={renderLoading}
+                      ref={(ref) => {
+                        listViewRef = ref;
+                      }}
+                    />
+                  </View>
+                ) : (
+                  // render use ScrollView
+                  // <ScrollView
+                  //   style={{ flex: 1 }}
+                  // >
+                  //   {messageDis.map((item) => {
+                  //     return (
+                  //       <View key={item._id}>
+                  //         <MessageComponent
+                  //           item={item}
+                  //           idUser={idUser}
+                  //           statusG={statusG}
+                  //           isLoadingImage={isLoadingImage}
+                  //           onPress={() => touchMess(item)}
+                  //         />
+                  //       </View>
+                  //     );
+                  //   })}
+                  //   <View
+                  //     style={{
+                  //       width: "100%",
+                  //       alignItems: "flex-end",
+                  //     }}
+                  //   >
+                  //     {isLoadingImage === true ? (
+                  //       <View
+                  //         style={{
+                  //           width: 150,
+                  //           height: 150,
+                  //           justifyContent: "center",
+                  //           alignItems: "center",
+                  //         }}
+                  //       >
+                  //         <ActivityIndicator size="large" />
+                  //       </View>
+                  //     ) : (
+                  //       ""
+                  //     )}
+                  //   </View>
+                  // </ScrollView>
+                  <View
+                    style={{
+                      width: "100%",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      position: "absolute",
+                      top: "50%",
+                    }}
+                  >
+                    {sttWell ? (
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 18,
+                          color: "#949494",
+                        }}
+                      >
+                        Hãy bắt đầu trò truyện với nhau đi nào!
+                      </Text>
+                    ) : (
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 18,
+                          color: "#949494",
+                        }}
+                      >
+                        Các bạn hiện giờ chưa kết nối với nhau! Hãy kết bạn với
+                        nhau đi nào!
+                      </Text>
+                    )}
+                  </View>
+                )}
+              </View>
+
+              <View style={styles.messagingScreenContainer}>
+                {sttWell ? (
+                  <TextInput
+                    style={styles.messagingInput}
+                    value={message}
+                    onChangeText={(value) => setMessage(value)}
+                    placeholder="Nhập tin nhắn!"
+                  />
+                ) : (
+                  <TextInput
+                    style={[
+                      styles.messagingInput,
+                      { backgroundColor: "#949494" },
+                    ]}
+                    value={message}
+                    onChangeText={(value) => setMessage(value)}
+                    placeholder="Nhập tin nhắn!"
+                    editable={false}
+                    selectTextOnFocus={false}
+                  />
+                )}
+
+                {message !== "" ? (
+                  <TouchableOpacity
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop: 5,
+                    }}
+                    onPress={handleNewMessage}
+                  >
+                    <SendIcon color="#4eac6dd4" size={40} />
+                  </TouchableOpacity>
+                ) : (
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginTop: 5,
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                      onPress={() => scrollToEnd()}
+                    >
+                      <FileIcon color="#4eac6dd4" size={40} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginLeft: 10,
+                      }}
+                      onPress={() => chooseImg()}
+                    >
+                      <ImgIcon color="#4eac6dd4" size={40} />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            </View>
+          </View>
+          {/* {visible ? <ModalMemberGroupChat setVisible={setVisible} /> : ""} */}
+          {/* modal loading */}
+          <View>
+            <Modal
+              isVisible={modalLoading}
+              onBackdropPress={() => setModalLoading(false)}
+              style={{ alignItems: "center", justifyContent: "center" }}
+            >
               <View
                 style={{
                   width: "100%",
-                  justifyContent: "center",
+                  height: "100%",
                   alignItems: "center",
-                  position: "absolute",
-                  top: "50%",
+                  justifyContent: "center",
                 }}
               >
-                {sttWell ? (
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      fontSize: 18,
-                      color: "#949494",
-                    }}
-                  >
-                    Hãy bắt đầu trò truyện với nhau đi nào!
-                  </Text>
-                ) : (
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      fontSize: 18,
-                      color: "#949494",
-                    }}
-                  >
-                    Các bạn hiện giờ chưa kết nối với nhau! Hãy kết bạn với nhau
-                    đi nào!
-                  </Text>
-                )}
+                <LoadingCircle />
               </View>
-            )}
+            </Modal>
           </View>
-
-          <View style={styles.messagingScreenContainer}>
-            {sttWell ? (
-              <TextInput
-                style={styles.messagingInput}
-                value={message}
-                onChangeText={(value) => setMessage(value)}
-                placeholder="Nhập tin nhắn!"
-              />
-            ) : (
-              <TextInput
-                style={[styles.messagingInput, { backgroundColor: "#949494" }]}
-                value={message}
-                onChangeText={(value) => setMessage(value)}
-                placeholder="Nhập tin nhắn!"
-                editable={false}
-                selectTextOnFocus={false}
-              />
-            )}
-
-            {message !== "" ? (
-              <TouchableOpacity
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 5,
-                }}
-                onPress={handleNewMessage}
-              >
-                <SendIcon color="#4eac6dd4" size={40} />
-              </TouchableOpacity>
-            ) : (
-              <View
-                style={{
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: 5,
-                }}
-              >
-                <TouchableOpacity
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  onPress={() => scrollToEnd()}
-                >
-                  <FileIcon color="#4eac6dd4" size={40} />
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginLeft: 10,
-                  }}
-                  onPress={() => chooseImg()}
-                >
-                  <ImgIcon color="#4eac6dd4" size={40} />
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-        </View>
-      </View>
-      {/* {visible ? <ModalMemberGroupChat setVisible={setVisible} /> : ""} */}
-      {/* modal loading */}
-      <View>
-        <Modal
-          isVisible={modalLoading}
-          onBackdropPress={() => setModalLoading(false)}
-          style={{ alignItems: "center", justifyContent: "center" }}
-        >
-          <View
-            style={{
-              width: "100%",
-              height: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <LoadingCircle />
-          </View>
-        </Modal>
-      </View>
-    </View>
+        </>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 

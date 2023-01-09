@@ -3,14 +3,15 @@ import mongoose from "mongoose";
 const UserController = {
   update: (req, res, next) => {
     const user = req.user;
-    let { name, gender, birthDate, avatar } = req.body;
-    log;
+    let { name, gender, birthDate, avatar, address, introducePersonal } =
+      req.body;
     name = name ? name : user.name;
     gender = gender ? gender : user.gender;
     birthDate = birthDate ? birthDate : user.birthDate;
     avatar = avatar ? avatar : user.avatar;
-    console.log(user);
-    console.log(user.name);
+    address = address ? address : user.address;
+    // console.log(user);
+    console.log(name);
     console.log(avatar);
     UserModel.updateOne(
       { _id: user._id },
@@ -19,6 +20,8 @@ const UserController = {
         birthDate,
         gender,
         avatar,
+        address,
+        introducePersonal,
       }
     )
       .then(() => {

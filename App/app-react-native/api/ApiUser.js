@@ -90,6 +90,10 @@ export const ApiProfile = {
   profile2: async (token) => {
     return await apiGet.get(`/me`, token);
   },
+
+  updateProfile: async (token, data) => {
+    return await apiGet.post(`/user/m-update`, data, token);
+  },
 };
 
 export const ApiGetUser = {

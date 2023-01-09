@@ -497,7 +497,8 @@ export const Home = ({ navigation, route }) => {
           style={{
             justifyContent: "flex-start",
             alignItems: "flex-end",
-            marginTop: 100,
+            marginTop: 90,
+            marginRight: 10,
           }}
         >
           <View
@@ -507,8 +508,25 @@ export const Home = ({ navigation, route }) => {
               backgroundColor: "#fff",
               padding: 12,
               justifyContent: "center",
+              borderRadius: 10,
             }}
           >
+            <View
+              style={{
+                width: 0,
+                height: 0,
+                // backgroundColor: "red",
+                position: "absolute",
+                top: -12,
+                right: 7,
+                borderLeftWidth: 7,
+                borderLeftColor: "rgba(158, 150, 150, .0)",
+                borderRightWidth: 7,
+                borderRightColor: "rgba(158, 150, 150, .0)",
+                borderBottomColor: "#fff",
+                borderBottomWidth: 14,
+              }}
+            ></View>
             <TouchableOpacity
               style={{
                 flexDirection: "row",
