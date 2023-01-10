@@ -93,6 +93,44 @@ export const InformationFriendChat = ({ navigation, route }) => {
     }
   };
 
+  const askDeleteFriend = () => {
+    Alert.alert(`Bạn có chắc là muốn xoá kết bạn không?`, "", [
+      {
+        text: "Không xoá",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "Xoá", onPress: () => handleDeleteFriend() },
+    ]);
+  };
+
+  const handleSearchMessage = () => {
+    Alert.alert(
+      "Chức năng tìm tin nhắn sẽ được cập nhật ở phiên bản tiếp theo!" +
+        `\n Cảm ơn.`
+    );
+  };
+
+  const handleXemTrangCaNhan = () => {
+    Alert.alert(
+      "Chức năng xem trang cá nhân của bạn bè sẽ được cập nhật ở phiên bản tiếp theo!" +
+        `\n Cảm ơn.`
+    );
+  };
+
+  const handleTurnOffNotification = () => {
+    Alert.alert(
+      "Chức năng tắt thông báo sẽ được cập nhật ở phiên bản tiếp theo!" +
+        `\n Cảm ơn.`
+    );
+  };
+
+  const handleBlockFriend = () => {
+    Alert.alert(
+      "Chức năng chặn sẽ được cập nhật ở phiên bản tiếp theo!" + `\n Cảm ơn.`
+    );
+  };
+
   return (
     <View style={[styles.container, GlobalStyles.droidSafeArea]}>
       <View style={styles.tabBarChat}>
@@ -134,6 +172,7 @@ export const InformationFriendChat = ({ navigation, route }) => {
             }}
           >
             <TouchableOpacity
+              onPress={() => handleSearchMessage()}
               style={{
                 justifyContent: "center",
                 alignItems: "center",
@@ -146,6 +185,7 @@ export const InformationFriendChat = ({ navigation, route }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
+              onPress={() => handleXemTrangCaNhan()}
               style={{
                 justifyContent: "center",
                 alignItems: "center",
@@ -158,6 +198,7 @@ export const InformationFriendChat = ({ navigation, route }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
+              onPress={() => handleTurnOffNotification()}
               style={{
                 justifyContent: "center",
                 alignItems: "center",
@@ -170,12 +211,12 @@ export const InformationFriendChat = ({ navigation, route }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
+              onPress={() => handleBlockFriend()}
               style={{
                 justifyContent: "center",
                 alignItems: "center",
                 width: "20%",
               }}
-              onPress={() => handleDeleteFriend()}
             >
               <BlockIcon color="#000" size={size} />
               <Text style={{ textAlign: "center" }}>Chặn</Text>
@@ -372,6 +413,7 @@ export const InformationFriendChat = ({ navigation, route }) => {
               flexDirection: "row",
               alignItems: "center",
             }}
+            onPress={() => askDeleteFriend()}
           >
             <View
               style={{
@@ -385,9 +427,7 @@ export const InformationFriendChat = ({ navigation, route }) => {
               <View
                 style={[styles.wrapTextCustomIn4Chat, { borderBottomWidth: 0 }]}
               >
-                <Text style={styles.textCustomIn4Chat}>
-                  Xoá cuộc trò chuyện
-                </Text>
+                <Text style={styles.textCustomIn4Chat}>Xoá bạn bè</Text>
               </View>
             </View>
           </TouchableOpacity>

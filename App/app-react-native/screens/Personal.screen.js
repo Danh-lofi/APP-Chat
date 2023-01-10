@@ -84,9 +84,21 @@ export const Personal = ({ navigation }) => {
     setGender("Khác");
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const temp = await AsyncStorage.getItem("isRememberPassword");
+    const username = await AsyncStorage.getItem("username");
+    const password = await AsyncStorage.getItem("password");
+    console.log(JSON.parse(temp));
     AsyncStorage.clear();
     setModalLogOut(false);
+    if (JSON.parse(temp) === true) {
+      console.log(username);
+      await AsyncStorage.setItem("username", username);
+      await AsyncStorage.setItem("password", password);
+      await AsyncStorage.setItem("isRememberPassword", JSON.stringify(true));
+    } else {
+      await AsyncStorage.setItem("isRememberPassword", JSON.stringify(false));
+    }
     navigation.replace("SC_Login");
   };
 

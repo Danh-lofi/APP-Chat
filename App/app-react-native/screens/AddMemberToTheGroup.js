@@ -128,7 +128,7 @@ const AddMemberToTheGroup = ({ navigation, route }) => {
     setLoading(false);
   }, []);
 
-  const getProfile = async () => {
+  const getProfile = useCallback(async () => {
     setLoading(true);
     if (idGroup.idGroup.idGroup === "") {
       console.log("id null");
@@ -153,7 +153,7 @@ const AddMemberToTheGroup = ({ navigation, route }) => {
       }
     }
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     getFriend();

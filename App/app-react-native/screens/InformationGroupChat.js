@@ -143,7 +143,8 @@ export const InformationGroupChat = ({ navigation, route }) => {
     } else {
       if (idUser === idAdmin) {
         Alert.alert(
-          "Ban phai nhuong quyen admin cho 1 thanh vien khac truoc khi roi nhom!"
+          "Bạn đang là trưởng nhóm." +
+            `\n Hãy nhường quyền trưởng nhóm cho 1 thành viên khác trước khi rời nhóm!`
         );
         navigation.navigate("SC_ListMember", {
           idGroup,
@@ -171,6 +172,28 @@ export const InformationGroupChat = ({ navigation, route }) => {
         navigation.replace("BottomTabsNavigator");
       }
     }
+  };
+
+  const askDeleteGroup = () => {
+    Alert.alert(`Bạn có chắc là muốn giải tán nhóm này không?`, "", [
+      {
+        text: "Không",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "Có", onPress: () => deleteGroup() },
+    ]);
+  };
+
+  const askLeaveGroup = () => {
+    Alert.alert(`Bạn có chắc là muốn rời khỏi nhóm này không?`, "", [
+      {
+        text: "Không",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "Có", onPress: () => leaveGroup() },
+    ]);
   };
 
   return (
@@ -307,7 +330,7 @@ export const InformationGroupChat = ({ navigation, route }) => {
                 alignItems: "center",
                 width: "20%",
               }}
-              onPress={() => leaveGroup()}
+              onPress={() => askLeaveGroup()}
             >
               <LeaveGroup color="#000" size={size} />
               <Text style={{ textAlign: "center" }}>Rời nhóm</Text>
@@ -578,7 +601,7 @@ export const InformationGroupChat = ({ navigation, route }) => {
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={deleteGroup}
+              onPress={() => askDeleteGroup()}
             >
               <View
                 style={{

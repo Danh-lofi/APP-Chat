@@ -330,33 +330,38 @@ const SC_Chat = ({ navigation, route }) => {
 
   const handleNewImg = async () => {};
 
-  const handleNewFile = async () => {};
+  const handleNewFile = async () => {
+    Alert.alert(
+      "Chức năng gửi file sẽ được cập nhật ở phiên bản tiếp theo!" +
+        `\n Cảm ơn.`
+    );
+  };
+
+  const idRoomChat = async () => {
+    // const roomChat = await chatApi.getChat(idUser, idFriend);
+    // setChatId(roomChat.data._id);
+    await chatApi
+      .getChat(idUser, idFriend)
+      .then((res) => {
+        setChatId(res.data._id);
+        setWellCome("");
+        setSttWell(true);
+      })
+      .catch((err) => {
+        setWellCome("Các bạn hiện chưa kết nối với nhau!");
+        setSttWell(false);
+      });
+  };
+
+  const getGroupChat = async () => {
+    setSttWell(true);
+    setChatId(await AsyncStorage.getItem("idFriend"));
+  };
 
   // get id room chat
   useEffect(() => {
     if (idUser === "" || idFriend === "") {
     } else {
-      const idRoomChat = async () => {
-        // const roomChat = await chatApi.getChat(idUser, idFriend);
-        // setChatId(roomChat.data._id);
-        await chatApi
-          .getChat(idUser, idFriend)
-          .then((res) => {
-            setChatId(res.data._id);
-            setWellCome("");
-            setSttWell(true);
-          })
-          .catch((err) => {
-            setWellCome("Các bạn hiện chưa kết nối với nhau!");
-            setSttWell(false);
-          });
-      };
-
-      const getGroupChat = async () => {
-        setSttWell(true);
-        setChatId(await AsyncStorage.getItem("idFriend"));
-      };
-
       //idRoomChat();
       if (statusG === 0) {
         idRoomChat();
@@ -367,20 +372,21 @@ const SC_Chat = ({ navigation, route }) => {
   }, [idUser, idFriend]);
 
   // get all messages from chat id
-  useEffect(() => {
+  const getAllMessages = useCallback(async (chatId) => {
     setLoading(true);
     valueInverted = true;
-    const getAllMessages = async (chatId) => {
-      if (!chatId) {
-        setChatId(null);
-        return;
-      }
-      const messagesData = await messageApi.getMessages(chatId);
-
-      setChatMessages(messagesData.data);
-    };
-    getAllMessages(chatId);
+    if (!chatId) {
+      setChatId(null);
+      return;
+    }
+    const messagesData = await messageApi.getMessages(chatId);
+    console.log("messagesData.data");
+    // console.log(messagesData.data);
+    setChatMessages(messagesData.data);
     setLoading(false);
+  }, []);
+  useEffect(() => {
+    getAllMessages(chatId);
     // scrollToEnd();
   }, [chatId]);
 
@@ -412,10 +418,10 @@ const SC_Chat = ({ navigation, route }) => {
 
   useEffect(() => {
     console.log("-----------------chatMessages");
-    console.log(chatMessages);
+    // console.log(chatMessages);
     setMessageDis([...chatMessages].reverse());
     console.log("-----------------------[...chatMessages].reverse()");
-    console.log([...chatMessages].reverse());
+    // console.log([...chatMessages].reverse());
   }, [chatMessages]);
 
   const renderLoading = () => {
@@ -446,6 +452,19 @@ const SC_Chat = ({ navigation, route }) => {
 
   const loadMoreMessages = () => {
     console.log("dang load");
+  };
+
+  const handleCall = () => {
+    Alert.alert(
+      "Chức năng  thoại sẽ được cập nhật ở phiên bản tiếp theo!" + `\n Cảm ơn.`
+    );
+  };
+
+  const handleCallVideo = () => {
+    Alert.alert(
+      "Chức năng gọi video sẽ được cập nhật ở phiên bản tiếp theo!" +
+        `\n Cảm ơn.`
+    );
   };
 
   return (
@@ -479,11 +498,13 @@ const SC_Chat = ({ navigation, route }) => {
             </TouchableOpacity>
             <View style={styles.wrapIconPhoneVideoCall}>
               <TouchableOpacity
+                onPress={() => handleCall()}
                 style={[styles.icon, { paddingHorizontal: 15 }]}
               >
                 <PhoneIcon color="white" size={size} />
               </TouchableOpacity>
               <TouchableOpacity
+                onPress={() => handleCallVideo()}
                 style={[
                   styles.icon,
                   { marginLeft: 10, paddingHorizontal: 15, marginRight: 20 },
@@ -645,7 +666,7 @@ const SC_Chat = ({ navigation, route }) => {
                         justifyContent: "center",
                         alignItems: "center",
                       }}
-                      onPress={() => scrollToEnd()}
+                      onPress={() => handleNewFile()}
                     >
                       <FileIcon color="#4eac6dd4" size={40} />
                     </TouchableOpacity>

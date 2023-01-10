@@ -20,23 +20,40 @@ import ApiLoadGroupChat from "../api/LoadGroupChat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GlobalStyles from "../components/GlobalStyles";
 import LoadingCircleSnail from "../components/LoadingCircleSnail";
+import ListAddComponent from "../components/ListAddComponent";
 
 const size = 22;
+const DATA = [
+  {
+    id: 1,
+  },
+  {
+    id: 2,
+  },
+  {
+    id: 3,
+  },
+  {
+    id: 4,
+  },
+  {
+    id: 5,
+  },
+];
 
-export const CreateGroupChat = ({ navigation }) => {
-  const [nameGroup, setNameGroup] = useState();
+export const CreateGroupChat = ({ navigation, route }) => {
+  const [nameGroup, setNameGroup] = useState("");
   const [valueSearch, setValueSearch] = useState("");
   const [infor, setInfor] = useState([]);
   let aMembers = [];
   const [loading, setLoading] = useState(false);
+  const [temp, setTemp] = useState([]);
 
   const getFriend = useCallback(async () => {
     setLoading(true);
     const token = await AsyncStorage.getItem("token");
     await ApiLoadFriend.getFriend(token)
       .then((res) => {
-        console.log("get friend 2");
-        console.log(res.data.listFriend);
         setInfor(
           res.data.listFriend.filter((element) => {
             return element !== null;
@@ -56,54 +73,99 @@ export const CreateGroupChat = ({ navigation }) => {
   const handleCreateRoom = async () => {
     const id = await AsyncStorage.getItem("idUser");
     const token = await AsyncStorage.getItem("token");
-    aMembers = aMembers.filter(
-      (v, i, a) => a.findIndex((v2) => v2.id === v.id) === i
-    );
-    aMembers.unshift({ id: id });
+    // aMembers = aMembers.filter(
+    //   (v, i, a) => a.findIndex((v2) => v2.id === v.id) === i
+    // );
+    // aMembers.unshift({ id: id });
+    var arr = [];
+    for (let i = 0; i < temp.length; i++) {
+      arr.push({
+        id: temp[i]._id,
+      });
+    }
+    arr.unshift({ id: route.params.id });
+    console.log(data);
     const data = {
       nameGroupChat: nameGroup,
-      memberChat: aMembers,
+      memberChat: arr,
     };
 
-    if (aMembers.length < 3) {
-      Alert.alert("So luong thanh vien phai lon hon 2");
+    if (nameGroup.length === 0) {
+      Alert.alert("Bạn phải điền tên nhóm!");
     } else {
-      try {
-        await ApiLoadGroupChat.createGroup(token, data).then(async (res) => {
-          console.log("tao group thanh cong");
-          const arr = [];
-          const idAdmin = res.data.adminGroup;
-          const group = res.data;
-          // tao group
-          // socket.emit("send-notication-group", {
-          //   listIdUser: res.data.memberChat,
-          //   group,
-          // });
-          aMembers = [];
-          setNameGroup("");
-          Alert.alert("Tao group thanh cong");
-        });
-      } catch (error) {
-        console.log("Khong tao duoc group: " + error);
+      if (arr.length < 3) {
+        Alert.alert("So luong thanh vien phai lon hon 2");
+      } else {
+        console.log(data);
+        try {
+          await ApiLoadGroupChat.createGroup(token, data).then(async (res) => {
+            console.log("tao group thanh cong");
+            const arr = [];
+            const idAdmin = res.data.adminGroup;
+            const group = res.data;
+            // tao group
+            // socket.emit("send-notication-group", {
+            //   listIdUser: res.data.memberChat,
+            //   group,
+            // });
+            setTemp([]);
+            aMembers = [];
+            setNameGroup("");
+            Alert.alert("Tao group thanh cong");
+          });
+        } catch (error) {
+          console.log("Khong tao duoc group: " + error);
+        }
       }
     }
   };
 
   const handleClick = (item) => {
-    aMembers.push({
-      id: item._id,
-    });
-    console.log("aMembers");
-    console.log(aMembers);
+    if (temp.length === 0) {
+      aMembers.push(item);
+      setTemp((temp) => [...temp, ...aMembers]);
+    } else {
+      for (let i = 0; i < temp.length; i++) {
+        if (item._id === temp[i]._id) {
+          Alert.alert("Thành viên này đã được thêm vào danh sách!");
+          return;
+        }
+      }
+      aMembers.push(item);
+      setTemp((temp) => [...temp, ...aMembers]);
+    }
+  };
+
+  function removeObjectWithId(arr, _id) {
+    // Making a copy with the Array from() method
+    const arrCopy = Array.from(arr);
+
+    const objWithIdIndex = arrCopy.findIndex((obj) => obj._id === _id);
+    arrCopy.splice(objWithIdIndex, 1);
+    return arrCopy;
+  }
+
+  const handleDeleteInAddListMember = (item) => {
+    const newList = removeObjectWithId(temp, item._id);
+    setTemp(newList);
+    console.log(newList);
   };
 
   const cancel = () => {
     aMembers = [];
+    setTemp([]);
     navigation.goBack();
   };
 
   const ListFriend = () => (
-    <View style={{ flex: 1, backgroundColor: "#ccc", marginBottom: 90 }}>
+    <View
+      style={{
+        height: "100%",
+        width: "100%",
+        backgroundColor: "#fff",
+        // marginBottom: 90,
+      }}
+    >
       <View
         style={{
           marginRight: 20,
@@ -117,6 +179,7 @@ export const CreateGroupChat = ({ navigation }) => {
         ) : (
           <FlatList
             data={infor}
+            style={{ width: "100%", height: "100%" }}
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
               <SearchFriendBar
@@ -131,7 +194,7 @@ export const CreateGroupChat = ({ navigation }) => {
   );
 
   const PhoneBook = () => (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={{ height: "100%", width: "100%", backgroundColor: "#fff" }}>
       <Text>Danh ba</Text>
     </View>
   );
@@ -272,6 +335,31 @@ export const CreateGroupChat = ({ navigation }) => {
         initialLayout={{ width: layout.width }}
         style={{ marginTop: 5, flex: 1 }}
       />
+
+      <View
+        style={{
+          backgroundColor: "#fff",
+          marginBottom: 12,
+          // height: "10%",
+        }}
+      >
+        {temp.length === 0 ? (
+          ""
+        ) : (
+          <FlatList
+            data={temp}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+              <ListAddComponent
+                users={item}
+                onPress={() => handleDeleteInAddListMember(item)}
+              />
+            )}
+          />
+        )}
+      </View>
     </View>
   );
 };

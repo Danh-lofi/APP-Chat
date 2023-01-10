@@ -207,7 +207,7 @@ export const Home = ({ navigation, route }) => {
   };
 
   const openCreateGroup = () => {
-    navigation.navigate("CreateGroupChat");
+    navigation.navigate("CreateGroupChat", { id });
     setModalVisible(!isModalVisible);
   };
 
@@ -407,6 +407,13 @@ export const Home = ({ navigation, route }) => {
     });
   }, [socket]);
 
+  const openSearchFriend = () => {
+    navigation.navigate("SC_Search", {
+      id: id,
+    });
+    setModalVisible(false);
+  };
+
   return (
     <View style={[styles.container]}>
       <View style={styles.tabBarSearch}>
@@ -415,11 +422,7 @@ export const Home = ({ navigation, route }) => {
         </TouchableOpacity>
         <Pressable
           style={styles.wrapTextSearch}
-          onPress={() =>
-            navigation.navigate("SC_Search", {
-              id: id,
-            })
-          }
+          onPress={() => openSearchFriend()}
         >
           <Text style={styles.txtSearch}>Tìm kiếm</Text>
         </Pressable>
@@ -551,6 +554,7 @@ export const Home = ({ navigation, route }) => {
                 borderBottomWidth: 1,
                 marginTop: 5,
               }}
+              onPress={() => openSearchFriend()}
             >
               <Image source={require("../assets/add-user.png")} />
               <Text style={{ fontSize: 16, fontWeight: "500", marginLeft: 15 }}>

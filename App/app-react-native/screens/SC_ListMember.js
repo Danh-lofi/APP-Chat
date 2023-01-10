@@ -41,7 +41,7 @@ const SC_ListMember = ({ navigation, route }) => {
   const [listMemberNotAdmin, setListMemberNotAdmin] = useState([]);
   // console.log();
 
-  const getProfile = async () => {
+  const getProfile = useCallback(async () => {
     setLoading(true);
     console.log("loading: true");
     setIdUser(await AsyncStorage.getItem("idUser"));
@@ -70,7 +70,7 @@ const SC_ListMember = ({ navigation, route }) => {
       }
     }
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     getProfile();

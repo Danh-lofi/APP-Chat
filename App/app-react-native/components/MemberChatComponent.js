@@ -69,7 +69,16 @@ const MemberChatComponent = ({
             ) : (
               <View>
                 {transferRights === 0 ? (
-                  <TouchableOpacity style={styles.xxxDiff} onPress={onPress}>
+                  <TouchableOpacity
+                    style={[
+                      styles.xxxDiff,
+                      {
+                        width: 35,
+                        padding: 10,
+                      },
+                    ]}
+                    onPress={onPress}
+                  >
                     <XIcon color="#000" size={22} />
                   </TouchableOpacity>
                 ) : (

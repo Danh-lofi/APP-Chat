@@ -47,6 +47,46 @@ const SC_Login = ({ navigation }) => {
   const [test, setTest] = useState("");
   const [token, setToken] = useState("");
 
+  const [isRememberPassword, setIsRememberPassword] = useState(false);
+  // AsyncStorage.setItem(
+  //   "isRememberPassword",
+  //   JSON.stringify(isRememberPassword)
+  // );
+
+  const eventRememberPassword = async () => {
+    if (isRememberPassword === true) {
+      console.log("false");
+      setIsRememberPassword(false);
+      await AsyncStorage.setItem("isRememberPassword", JSON.stringify(false));
+    } else {
+      console.log("true");
+      setIsRememberPassword(true);
+      await AsyncStorage.setItem("isRememberPassword", JSON.stringify(true));
+    }
+  };
+
+  const getIsRememberPassword = async () => {
+    const temp = await AsyncStorage.getItem("isRememberPassword");
+    const username = await AsyncStorage.getItem("username");
+    const password = await AsyncStorage.getItem("password");
+    console.log("temp");
+    console.log(JSON.parse(temp));
+    console.log(username);
+    if (JSON.parse(temp) === true) {
+      setIsRememberPassword(JSON.parse(temp));
+      setUsername(username);
+      setPassword(password);
+    } else {
+      setIsRememberPassword(JSON.parse(temp));
+      setUsername("");
+      setPassword("");
+    }
+  };
+
+  useEffect(() => {
+    getIsRememberPassword();
+  }, []);
+
   const handleLogin = async () => {
     const data = {
       username,
@@ -60,6 +100,15 @@ const SC_Login = ({ navigation }) => {
           );
           await AsyncStorage.setItem("token", res.data.accessToken);
           await AsyncStorage.setItem("idUser", res.data.user._id);
+          if (isRememberPassword === true) {
+            console.log("luu");
+            await AsyncStorage.setItem("username", username);
+            await AsyncStorage.setItem("password", password);
+            await AsyncStorage.setItem(
+              "isRememberPassword",
+              JSON.stringify(true)
+            );
+          }
           navigation.replace("BottomTabsNavigator", {
             token: res.data.accessToken,
           });
@@ -201,7 +250,7 @@ const SC_Login = ({ navigation }) => {
               {/* remember password and forget password */}
               <View style={styles.wrapDiff}>
                 <View style={styles.checkBoxRememberPassWord}>
-                  <BouncyCheckbox
+                  {/* <BouncyCheckbox
                     size={16}
                     text="Nhớ mật khẩu"
                     fillColor="#4eac6d"
@@ -213,7 +262,39 @@ const SC_Login = ({ navigation }) => {
                     }}
                     iconStyle={{ borderColor: "#4eac6d" }}
                     innerIconStyle={{ borderWidth: 2 }}
-                  />
+
+                  /> */}
+                  <Pressable
+                    style={{ flexDirection: "row", alignItems: "center" }}
+                    onPress={() => eventRememberPassword()}
+                  >
+                    {isRememberPassword === true ? (
+                      <View
+                        style={{
+                          width: 20,
+                          height: 20,
+                          backgroundColor: "#4eac6d",
+                          borderWidth: 2,
+                          borderColor: "red",
+                          borderRadius: 20,
+                          marginRight: 10,
+                        }}
+                      ></View>
+                    ) : (
+                      <View
+                        style={{
+                          width: 20,
+                          height: 20,
+                          backgroundColor: "#fff",
+                          borderWidth: 2,
+                          borderColor: "#4eac6d",
+                          borderRadius: 20,
+                          marginRight: 10,
+                        }}
+                      ></View>
+                    )}
+                    <Text>Nhớ mật khẩu</Text>
+                  </Pressable>
                 </View>
                 <TouchableOpacity style={styles.forgetPassword}>
                   <Text style={{ fontSize: 16 }}>Quên mật khẩu ?</Text>
